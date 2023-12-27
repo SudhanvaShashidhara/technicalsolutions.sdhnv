@@ -9,11 +9,15 @@
 		const years_at_address = form_data.get('years_at_address');
 		const about = form_data.get('about');
 		const form_entered_data = { full_name, email, income, about, years_at_address };
+
+		const income_val : any = document
+				.querySelector(`option[value="${form_entered_data.income}"]`)
+				?.getAttribute('data-lead-value');
+				const years_at_address_val: any = years_at_address;
+				const total__lead_value = parseInt(income_val) + parseInt(years_at_address_val);
 		window.gtag('event', 'conversion', {
 			send_to: 'AW-700270946/XObGCK639_8YEOKS9c0C',
-			value: document
-				.querySelector(`option[value="${form_entered_data.income}"]`)
-				?.getAttribute('data-lead-value'),
+			value: total__lead_value,
 			currency: 'USD'
 		});
 		form_submitted = true;

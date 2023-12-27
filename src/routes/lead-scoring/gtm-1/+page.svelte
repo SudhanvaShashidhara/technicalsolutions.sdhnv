@@ -9,9 +9,9 @@
 		const years_at_address = form_data.get('years_at_address');
 		const about = form_data.get('about');
 		const form_entered_data = { full_name, email, income, about, years_at_address };
-		console.log(form_entered_data);
-		window.dataLayer = window.dataLayer || [];
-		window.dataLayer.push({ event: 'form_submit', form_entered_data });
+		// console.log(form_entered_data);
+		// window.dataLayer = window.dataLayer || [];
+		// window.dataLayer.push({ event: 'form_submit', form_entered_data });
 		form_submitted = true;
 		form.reset();
 	}
