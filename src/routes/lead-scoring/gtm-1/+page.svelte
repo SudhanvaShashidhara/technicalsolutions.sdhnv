@@ -6,8 +6,9 @@
 		const full_name = form_data.get('full-name');
 		const email = form_data.get('email');
 		const income = form_data.get('income');
+		const years_at_address = form_data.get('years_at_address');
 		const about = form_data.get('about');
-		const form_entered_data = { full_name, email, income, about };
+		const form_entered_data = { full_name, email, income, about, years_at_address };
 		console.log(form_entered_data);
 		window.dataLayer = window.dataLayer || [];
 		window.dataLayer.push({ event: 'form_submit', form_entered_data });
@@ -87,8 +88,25 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
+					<label for="years_at_address" class="block text-sm font-medium leading-6 text-gray-900"
+						>No of years at current address</label
+					>
+					<div class="mt-2">
+						<select
+							id="years_at_address"
+							name="years_at_address"
+							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+						>
+							<option data-lead-value="10" value="3">3</option>
+							<option data-lead-value="20" value="4">4</option>
+							<option data-lead-value="20" value="5">5</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-start-2 sm:col-span-7">
 					<label for="about" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-						>About</label
+						>Address</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
 						<textarea
