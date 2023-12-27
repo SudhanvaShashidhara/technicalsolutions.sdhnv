@@ -9,7 +9,7 @@
 				<div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
 					<h2 class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</h2>
 					<p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-						A better workflow
+						A better workflow &nbsp;
 					</p>
 					<p class="mt-6 text-lg leading-8 text-gray-600">
 						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis
