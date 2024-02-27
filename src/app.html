@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
@@ -29,8 +29,22 @@
 			gtag('js', new Date());
 
 			gtag('config', 'GT-KT5C5PC');
+			gtag('config', 'G-TTQQK4DTFD');
 		</script>
-
+		<script>
+			gtag('event', 'purchase', {
+				allow_custom_scripts: true,
+				send_to: 'DC-1234567/group1/thank123+transactions',
+				transaction_id: '00123456',
+				value: 129.97,
+				items: [
+					{ id: '123456789', price: 19.99, quantity: 1 },
+					{ id: '123456790', price: 54.0, quantity: 2 }
+				],
+				country: 'US',
+				language: 'EN'
+			});
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
