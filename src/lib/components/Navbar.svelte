@@ -76,13 +76,12 @@
 		</div>
 		<div class="hidden lg:flex lg:gap-x-12">
 			<div class="relative">
-				<button
-					type="button"
-					class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
-					aria-expanded="false"
+				<a
+					href="/contact"
+					class="text-sm font-semibold leading-6 text-gray-900"
 				>
-					Product
-					<svg
+					Contact Us
+					<!-- <svg
 						class="h-5 w-5 flex-none text-gray-400"
 						viewBox="0 0 20 20"
 						fill="currentColor"
@@ -93,8 +92,8 @@
 							d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
 							clip-rule="evenodd"
 						/>
-					</svg>
-				</button>
+					</svg> -->
+				</a>
 			</div>
 
 			<a href="#" class="text-sm font-semibold leading-6 text-gray-900">Features</a>
@@ -217,44 +216,6 @@
 									/>
 								</svg>
 							</button>
-							<!-- 'Product' sub-menu, show/hide based on menu state. -->
-							<div class="mt-2 space-y-2" id="disclosure-1">
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Analytics</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Engagement</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Security</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Integrations</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Automations</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Watch demo</a
-								>
-								<a
-									href="#"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Contact sales</a
-								>
-							</div>
 						</div>
 
 						<a
