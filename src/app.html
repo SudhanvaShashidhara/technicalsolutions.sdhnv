@@ -39,7 +39,7 @@
 			})(window, document, 'script', 'dataLayer', 'GTM-5D4XFJMQ');
 		</script>
 		<!-- End Google Tag Manager -->
-		<script>
+		<!-- <script>
 			gtag('event', 'purchase', {
 				allow_custom_scripts: true,
 				send_to: 'DC-1234567/group1/thank123+transactions',
@@ -52,6 +52,34 @@
 				country: 'US',
 				language: 'EN'
 			});
+		</script> -->
+		<script>
+			async function handleTypeformSubmissions(event){
+				if(event.origin !== "https://form.typeform.com") return;
+				if(event.data && event.data.type && event.data.type === "form-submit"){
+					const data = await fetch("/api/typeform-handler", {
+						method: "POST",
+						body: JSON.stringify(event.data),
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					const json_data = await data.json();
+					if(json_data && json_data.items){
+						const answers = json_data.items[0].answers;
+						let email = '';
+						for(let i=0; i<answers.length;i++){
+							if(answers[i].type === "email") {
+								email = answers[i].email;
+								break;
+							}
+						}
+						if(email) window.dataLayer.push({'event':'typeform_submit','email': email});
+						else window.dataLayer.push({'event':'typeform_submit'});
+					}
+				}
+			}
+			window.addEventListener("message", handleTypeformSubmissions);
 		</script>
 		%sveltekit.head%
 	</head>
