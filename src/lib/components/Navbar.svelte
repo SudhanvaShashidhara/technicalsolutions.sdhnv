@@ -43,7 +43,7 @@
 <header class="bg-white">
 	<nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
 		<div class="flex lg:flex-1">
-			<a href="." class="-m-1.5 p-1.5">
+			<a href="/" class="-m-1.5 p-1.5">
 				<span class="sr-only">Your Company</span>
 				<img
 					class="h-8 w-auto"
@@ -96,8 +96,8 @@
 				</a>
 			</div>
 
-			<a href="iframe" class="text-sm font-semibold leading-6 text-gray-900">Iframe</a>
-			<a href="." class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
+			<a href="/iframe/typeform" class="text-sm font-semibold leading-6 text-gray-900">Iframe</a>
+			<a href="/" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
 
 			<div class="relative">
 				<button
@@ -152,7 +152,7 @@
 			</div>
 		</div>
 		<div class="hidden lg:flex lg:flex-1 lg:justify-end">
-			<a href="." class="text-sm font-semibold leading-6 text-gray-900"
+			<a href="/" class="text-sm font-semibold leading-6 text-gray-900"
 				>Log in <span aria-hidden="true">&rarr;</span></a
 			>
 		</div>
@@ -165,7 +165,7 @@
 			class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
 		>
 			<div class="flex items-center justify-between">
-				<a href="." class="-m-1.5 p-1.5">
+				<a href="/" class="-m-1.5 p-1.5">
 					<span class="sr-only">Your Company</span>
 					<img
 						class="h-8 w-auto"
@@ -219,12 +219,12 @@
 						</div>
 
 						<a
-							href="iframe"
+							href="/iframe/typeform"
 							class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 							>Iframe</a
 						>
 						<a
-							href="."
+							href="/"
 							class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 							>Marketplace</a
 						>
@@ -258,27 +258,27 @@
 							<!-- 'Company' sub-menu, show/hide based on menu state. -->
 							<div class="mt-2 space-y-2" id="disclosure-2">
 								<a
-									href="."
+									href="/"
 									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 									>About us</a
 								>
 								<a
-									href="."
+									href="/"
 									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 									>Careers</a
 								>
 								<a
-									href="."
+									href="/"
 									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 									>Support</a
 								>
 								<a
-									href="."
+									href="/"
 									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 									>Press</a
 								>
 								<a
-									href="."
+									href="/"
 									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 									>Blog</a
 								>
@@ -287,7 +287,7 @@
 					</div>
 					<div class="py-6">
 						<a
-							href="."
+							href="/"
 							class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
 							>Log in</a
 						>

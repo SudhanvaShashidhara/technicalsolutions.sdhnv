@@ -13,16 +13,16 @@
 						<h3 class="text-sm font-semibold leading-6 text-white">Solutions</h3>
 						<ul role="list" class="mt-6 space-y-4">
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Marketing</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Marketing</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Analytics</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Analytics</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Commerce</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Commerce</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Insights</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Insights</a>
 							</li>
 						</ul>
 					</div>
@@ -30,40 +30,40 @@
 						<h3 class="text-sm font-semibold leading-6 text-white">Support</h3>
 						<ul role="list" class="mt-6 space-y-4">
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Pricing</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Pricing</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white"
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white"
 									>Documentation</a
 								>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Guides</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Guides</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">API Status</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">API Status</a>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="md:grid md:grid-cols-2 md:gap-8">
 					<div>
-						<h3 class="text-sm font-semibold leading-6 text-white">Company</h3>
+						<h3 class="text-sm font-semibold leading-6 text-white">Other Tags</h3>
 						<ul role="list" class="mt-6 space-y-4">
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">About</a>
+								<a href="/iframe/typeform" class="text-sm leading-6 text-gray-300 hover:text-white">Iframe(TYPEFORM)</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Blog</a>
+								<a href="/iframe/calendly" class="text-sm leading-6 text-gray-300 hover:text-white">Iframe(Calendly)</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Jobs</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Jobs</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Press</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Press</a>
 							</li>
 							<li>
-								<a href="#" class="text-sm leading-6 text-gray-300 hover:text-white">Partners</a>
+								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Partners</a>
 							</li>
 						</ul>
 					</div>
@@ -134,7 +134,7 @@
 		</div>
 		<div class="mt-8 border-t border-white/10 pt-8 md:flex md:items-center md:justify-between">
 			<div class="flex space-x-6 md:order-2">
-				<a href="#" class="text-gray-500 hover:text-gray-400">
+				<a href="/" class="text-gray-500 hover:text-gray-400">
 					<span class="sr-only">Facebook</span>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -144,7 +144,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="#" class="text-gray-500 hover:text-gray-400">
+				<a href="/" class="text-gray-500 hover:text-gray-400">
 					<span class="sr-only">Instagram</span>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -154,7 +154,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="#" class="text-gray-500 hover:text-gray-400">
+				<a href="/" class="text-gray-500 hover:text-gray-400">
 					<span class="sr-only">Twitter</span>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -162,7 +162,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="#" class="text-gray-500 hover:text-gray-400">
+				<a href="/" class="text-gray-500 hover:text-gray-400">
 					<span class="sr-only">GitHub</span>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -172,7 +172,7 @@
 						/>
 					</svg>
 				</a>
-				<a href="#" class="text-gray-500 hover:text-gray-400">
+				<a href="/" class="text-gray-500 hover:text-gray-400">
 					<span class="sr-only">YouTube</span>
 					<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -183,8 +183,8 @@
 					</svg>
 				</a>
 			</div>
-			<p class="mt-8 text-xs leading-5 text-gray-400 md:order-1 md:mt-0">
-				&copy; 2020 Your Company, Inc. All rights reserved.
+			<p class="mt-8 text-xs leading-5 text-white md:order-1 md:mt-0 bg-black p-4 rounded-md">
+				&copy;{new Date().getFullYear()} Made in BLR by <a target="_blank" rel="noopener noreferrer" class="font-black" style="color: #4285f4" href="mailto:sshashidhara@google.com">Sudhanva S</a>
 			</p>
 		</div>
 	</div>
