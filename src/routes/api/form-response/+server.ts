@@ -6,36 +6,38 @@ import { ABSTRACT_API_KEY, GSA_TYPE, GSA_PROJECT_ID, GSA_PRIVATE_KEY_ID, GSA_PRI
 
 import type { RequestHandler } from './$types';
 
+const GSA_PRIVATE_KEY_FINAL = GSA_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const firebase_service_account : any = {
+	"type": GSA_TYPE,
+	"project_id": GSA_PROJECT_ID,
+	"private_key_id": GSA_PRIVATE_KEY_ID,
+	"private_key": GSA_PRIVATE_KEY_FINAL,
+	"client_email": GSA_CLIENT_EMAIL,
+	"client_id": GSA_CLIENT_ID,
+	"auth_uri": GSA_AUTH_URI,
+	"token_uri": GSA_TOKEN_URI,
+	"auth_provider_x509_cert_url": GSA_AUTH_PROVIDER_X509_CERT_URL,
+	"client_x509_cert_url": GSA_CLIENT_X509_CERT_URL,
+	"universe_domain": GSA_UNIVERSE_DOMAIN
+};
+
+if(!getApps().length){
+	initializeApp({
+		credential: cert(firebase_service_account)
+	});  
+}
+else{
+	getApps()[0]
+}
+
+const db = getFirestore();
+db.settings({ ignoreUndefinedProperties: true });
+
 export const GET: RequestHandler = async ({ request, getClientAddress, cookies }) => {	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const header_data: any = {};
-	const GSA_PRIVATE_KEY_FINAL = GSA_PRIVATE_KEY.replace(/\\n/g, '\n');
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const firebase_service_account : any = {
-		"type": GSA_TYPE,
-		"project_id": GSA_PROJECT_ID,
-		"private_key_id": GSA_PRIVATE_KEY_ID,
-		"private_key": GSA_PRIVATE_KEY_FINAL,
-		"client_email": GSA_CLIENT_EMAIL,
-		"client_id": GSA_CLIENT_ID,
-		"auth_uri": GSA_AUTH_URI,
-		"token_uri": GSA_TOKEN_URI,
-		"auth_provider_x509_cert_url": GSA_AUTH_PROVIDER_X509_CERT_URL,
-		"client_x509_cert_url": GSA_CLIENT_X509_CERT_URL,
-		"universe_domain": GSA_UNIVERSE_DOMAIN
-	};
-
-	if(!getApps().length){
-		initializeApp({
-			credential: cert(firebase_service_account)
-		});  
-	}
-	else{
-		getApps()[0]
-	}
-
-	const db = getFirestore();
-	db.settings({ ignoreUndefinedProperties: true })
 
 	let message : string = 'Thanks for submitting the form. Have a good day!';
 	for (const pair of request.headers.entries()) {
