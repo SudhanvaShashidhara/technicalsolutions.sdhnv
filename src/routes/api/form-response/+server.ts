@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { initializeApp, cert } from "firebase-admin/app";
+import { initializeApp, cert, getApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
 import { ABSTRACT_API_KEY, GSA_TYPE, GSA_PROJECT_ID, GSA_PRIVATE_KEY_ID, GSA_PRIVATE_KEY, GSA_CLIENT_EMAIL, GSA_CLIENT_ID, GSA_AUTH_URI, GSA_TOKEN_URI, GSA_AUTH_PROVIDER_X509_CERT_URL, GSA_CLIENT_X509_CERT_URL, GSA_UNIVERSE_DOMAIN } from "$env/static/private";
@@ -25,9 +25,12 @@ export const GET: RequestHandler = async ({ request, getClientAddress, cookies }
 		"client_x509_cert_url": GSA_CLIENT_X509_CERT_URL,
 		"universe_domain": GSA_UNIVERSE_DOMAIN
 	};
-	initializeApp({
-		credential: cert(firebase_service_account)
-	  });
+
+	if(!getApp()) {
+		initializeApp({
+			credential: cert(firebase_service_account)
+		});
+	}
 	  
 	const db = getFirestore();
 	db.settings({ ignoreUndefinedProperties: true })
