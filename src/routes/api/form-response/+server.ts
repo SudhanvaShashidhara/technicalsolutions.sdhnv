@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { ABSTRACT_API_KEY } from "$env/static/private"
 
 export const GET: RequestHandler = async ({ request, getClientAddress }) => {	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,7 +10,6 @@ export const GET: RequestHandler = async ({ request, getClientAddress }) => {
 		header_data[pair[0]] = pair[1];
 	}
 	const ip_address = getClientAddress();
-	console.log(ip_address)
 	const preferred_language = header_data["accept-language"].split(',')[0];
 	const polish_message = `Dziękujemy za przesłanie formularza. Miłego dnia!`; // "accept-language": "pl,en-US;q=0.9,en;q=0.8",
 	const german_message = `Vielen Dank für das Absenden des Formulars. Haben Sie einen guten Tag!`; // "accept-language": "de,pl;q=0.9,de-AT;q=0.8,en-US;q=0.7,en;q=0.6,de-DE;q=0.5,de-LI;q=0.4,de-CH;q=0.3",
@@ -19,7 +19,12 @@ export const GET: RequestHandler = async ({ request, getClientAddress }) => {
 	else if(preferred_language.includes("fr")) message = french_message;
 	else if(preferred_language.includes("de")) message = german_message;
 	else if(preferred_language.includes("pl")) message = polish_message;
-	return json({ form_message: message, ip_address});
+	const data = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${ABSTRACT_API_KEY}&ip_address=${ip_address}`);
+	const json_data = await data.json();
+	let city = '', country_logo_link;
+	if(json_data["city"]) city =  json_data["city"];
+	if(json_data["flag"] && json_data["flag"]["png"]) country_logo_link = json_data["flag"]["png"];
+	return json({ form_message: message, ip_address, city, country_logo_link});
 };
 
 
