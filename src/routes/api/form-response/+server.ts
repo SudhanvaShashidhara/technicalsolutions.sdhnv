@@ -1,10 +1,37 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { ABSTRACT_API_KEY } from "$env/static/private"
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
-export const GET: RequestHandler = async ({ request, getClientAddress }) => {	
+import { ABSTRACT_API_KEY, GSA_TYPE, GSA_PROJECT_ID, GSA_PRIVATE_KEY_ID, GSA_PRIVATE_KEY, GSA_CLIENT_EMAIL, GSA_CLIENT_ID, GSA_AUTH_URI, GSA_TOKEN_URI, GSA_AUTH_PROVIDER_X509_CERT_URL, GSA_CLIENT_X509_CERT_URL, GSA_UNIVERSE_DOMAIN } from "$env/static/private";
+
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async ({ request, getClientAddress, cookies }) => {	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const header_data: any = {};
+	const GSA_PRIVATE_KEY_FINAL = GSA_PRIVATE_KEY.replace(/\\n/g, '\n');
+	console.log({GSA_PRIVATE_KEY,GSA_PRIVATE_KEY_FINAL});
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const firebase_service_account : any = {
+		"type": GSA_TYPE,
+		"project_id": GSA_PROJECT_ID,
+		"private_key_id": GSA_PRIVATE_KEY_ID,
+		"private_key": GSA_PRIVATE_KEY_FINAL,
+		"client_email": GSA_CLIENT_EMAIL,
+		"client_id": GSA_CLIENT_ID,
+		"auth_uri": GSA_AUTH_URI,
+		"token_uri": GSA_TOKEN_URI,
+		"auth_provider_x509_cert_url": GSA_AUTH_PROVIDER_X509_CERT_URL,
+		"client_x509_cert_url": GSA_CLIENT_X509_CERT_URL,
+		"universe_domain": GSA_UNIVERSE_DOMAIN
+	};
+	initializeApp({
+		credential: cert(firebase_service_account)
+	  });
+	  
+	const db = getFirestore();
+	db.settings({ ignoreUndefinedProperties: true })
+
 	let message : string = 'Thanks for submitting the form. Have a good day!';
 	for (const pair of request.headers.entries()) {
 		header_data[pair[0]] = pair[1];
@@ -24,7 +51,14 @@ export const GET: RequestHandler = async ({ request, getClientAddress }) => {
 	let city = '', country_logo_link;
 	if(json_data["city"]) city =  json_data["city"];
 	if(json_data["flag"] && json_data["flag"]["png"]) country_logo_link = json_data["flag"]["png"];
-	return json({ form_message: message, ip_address, city, country_logo_link});
+	const _ga_cookie = cookies.get('_ga');
+	const cookieyes_consent_cookie = cookies.get('cookieyes-consent');
+	try{
+		await db.collection('hermes_project_3_form_submit_logs').add({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie});
+	}catch(err){
+		console.log(err);
+	}	
+	return json({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie});
 };
 
 
