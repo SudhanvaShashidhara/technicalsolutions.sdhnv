@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ request, getClientAddress, cookies }
 	}catch(err){
 		console.log(err);
 	}	
-	return json({ form_message: message, ip_address, city, country_logo_link});
+	return json({ form_message: message, ip_address, city, country_logo_link}, );
 };
 
 
