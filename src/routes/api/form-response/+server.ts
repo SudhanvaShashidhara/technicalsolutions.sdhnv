@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { initializeApp, cert, getApps } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 import { ABSTRACT_API_KEY, GSA_TYPE, GSA_PROJECT_ID, GSA_PRIVATE_KEY_ID, GSA_PRIVATE_KEY, GSA_CLIENT_EMAIL, GSA_CLIENT_ID, GSA_AUTH_URI, GSA_TOKEN_URI, GSA_AUTH_PROVIDER_X509_CERT_URL, GSA_CLIENT_X509_CERT_URL, GSA_UNIVERSE_DOMAIN } from "$env/static/private";
 
@@ -35,11 +35,11 @@ else{
 const db = getFirestore();
 db.settings({ ignoreUndefinedProperties: true });
 
-export const GET: RequestHandler = async ({ request, getClientAddress, cookies }) => {	
+export const GET: RequestHandler = async ({ request, getClientAddress, cookies, url }) => {	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const header_data: any = {};
-
-	let message : string = 'Thanks for submitting the form. Have a good day!';
+	const first_name = url.searchParams.get('first_name');
+	let message : string = `Thanks for submitting the form. Have a good day ${first_name}!`;
 	for (const pair of request.headers.entries()) {
 		header_data[pair[0]] = pair[1];
 	}
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ request, getClientAddress, cookies }
 	const _ga_cookie = cookies.get('_ga');
 	const cookieyes_consent_cookie = cookies.get('cookieyes-consent');
 	try{
-		await db.collection('hermes_project_3_form_submit_logs').add({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie});
+		await db.collection('hermes_project_3_form_submit_logs').add({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie, timestamp: FieldValue.serverTimestamp() });
 	}catch(err){
 		console.log(err);
 	}	
