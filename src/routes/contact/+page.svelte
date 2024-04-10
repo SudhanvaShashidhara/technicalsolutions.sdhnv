@@ -2,12 +2,15 @@
     function handleContactFormSubmit(e: any){
         e.preventDefault();
         const form_data = new FormData(e.target);
-        console.log(form_data);
         fetch(`/api/ec-sha-tester?email=${form_data.get('email')}`)
         .then(function(res){
             return res.json();
         })
         .then(function(data){
+            window.gtag('set', 'user_data', {
+                "sha256_email_address": data.email_hash
+            });
+
             window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit'});
         });
     }
