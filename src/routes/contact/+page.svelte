@@ -7,6 +7,8 @@
             return res.json();
         })
         .then(function(data){
+            window.gtag('config','AW-10852928527', {'allow_enhanced_conversions':true});
+
             window.gtag('set', 'user_data', {
                 "sha256_email_address": data.email_hash
             });
