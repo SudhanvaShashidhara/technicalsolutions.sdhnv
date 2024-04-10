@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({  url }) => {
     if (email) {
         const email_parts = email?.split("@");
         const is_gmail = /(gmail|googlemail)\.com/g.test(email_parts[1]);
-        let normalized_email = "";
+        let normalized_email = "", normalized_email2 = "";
 
         if (!is_gmail) {
           return json({ error: "E Mail needs to be gmail or googlemail" });
@@ -52,6 +52,7 @@ export const GET: RequestHandler = async ({  url }) => {
         if (is_gmail && email_parts.length > 1) {
 
           normalized_email = email_parts[0].replace(".", "").toLowerCase() + "@" + email_parts[1].toLowerCase();
+          normalized_email2 = email.trim().toLowerCase();
 
           const email_hash = crypto
             .createHash("sha256")
@@ -59,8 +60,14 @@ export const GET: RequestHandler = async ({  url }) => {
             .update(normalized_email)
             // Encoding to be used
             .digest("base64url");
+          const email_hash2 = crypto
+            .createHash("sha256")
+            // updating data
+            .update(normalized_email2)
+            // Encoding to be used
+            .digest("base64url");
 
-          return json({ email_hash });
+          return json({ email_hash, email_hash2 });
         }
     } else {
         return json({ error: "Provide a email query parameter" });

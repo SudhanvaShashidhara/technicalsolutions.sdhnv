@@ -7,11 +7,11 @@
             return res.json();
         })
         .then(function(data){
-            window.gtag('set', 'user_data', {
-                "sha256_email_address": data.email_hash
-            });
+            // window.gtag('set', 'user_data', {
+            //     "sha256_email_address": data.email_hash
+            // });
 
-            window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit'});
+            window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit', 'email_hash2': data.email_hash2});
         });
     }
 </script>
