@@ -66,8 +66,16 @@ export const GET: RequestHandler = async ({  url }) => {
             .update(normalized_email2)
             // Encoding to be used
             .digest("base64url");
+          const email_hash3 = crypto
+            .createHash("sha256")
+            // updating data
+            .update(normalized_email);
+          const email_hash4 = crypto
+            .createHash("sha256")
+            // updating data
+            .update(normalized_email2);
 
-          return json({ email_hash, email_hash2 });
+          return json({ email_hash, email_hash2, email_hash3, email_hash4 });
         }
     } else {
         return json({ error: "Provide a email query parameter" });

@@ -1,7 +1,9 @@
 <script lang="ts">
 	let classes_to_remove = [];
 	let show_lead_scoring = false; // svelte-ignore missing-declaration
+	let show_enhanced_conversions = false; // svelte-ignore missing-declaration
 	let lead_scoring_options: null | HTMLDivElement = null;
+	let enhanced_conversions_options: null | HTMLDivElement = null;
 
 	function handle_element_transitions_hide(elem: HTMLDivElement) {
 		elem.classList.remove('transition');
@@ -37,6 +39,15 @@
 			handle_element_transitions_show(lead_scoring_options);
 		}
 		show_lead_scoring = !show_lead_scoring;
+	}
+
+	function toggle_enhanced_conversions_options() {
+		if (show_enhanced_conversions && enhanced_conversions_options) {
+			handle_element_transitions_hide(enhanced_conversions_options);
+		} else if (!show_enhanced_conversions && enhanced_conversions_options) {
+			handle_element_transitions_show(enhanced_conversions_options);
+		}
+		show_enhanced_conversions = !show_enhanced_conversions;
 	}
 </script>
 
@@ -97,7 +108,6 @@
 			</div>
 
 			<a href="/iframe/typeform" class="text-sm font-semibold leading-6 text-gray-900">Iframe</a>
-			<a href="/" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
 
 			<div class="relative">
 				<button
@@ -150,6 +160,42 @@
 					>
 				</div>
 			</div>
+			<!-- EC Section START -->
+			<div class="relative">
+				<button
+					type="button"
+					class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+					aria-expanded="false"
+					on:click={toggle_enhanced_conversions_options}
+				>
+					Enhanced Conversions
+					<svg
+						class="h-5 w-5 flex-none text-gray-400"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				</button>
+				<div bind:this={enhanced_conversions_options} class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden">
+					<a on:click={toggle_enhanced_conversions_options}
+						href="/enhanced-conversions/google-tag/prehash"
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						Google Tag(Prehash)
+					</a>
+					<a on:click={toggle_enhanced_conversions_options}
+						href="/enhanced-conversions/gtm/prehash"
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						GTM(Prehash)
+					</a>
+				</div>
+			</div>
+			<!-- EC Section END -->
 		</div>
 		<div class="hidden lg:flex lg:flex-1 lg:justify-end">
 			<a href="/" class="text-sm font-semibold leading-6 text-gray-900"

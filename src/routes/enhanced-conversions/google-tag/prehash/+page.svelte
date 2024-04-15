@@ -18,6 +18,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Enhanced Conversions - Prehash (Google Tag)</title>
+</svelte:head>
+
 <div class="space-y-10 divide-y divide-gray-900/10 w-11/12 lg:w-10/12 xl:w-9/12 mx-auto mb-10">
     <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
       <div class="px-4 sm:px-0">

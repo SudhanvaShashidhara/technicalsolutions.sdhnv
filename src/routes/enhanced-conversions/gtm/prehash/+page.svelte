@@ -1,5 +1,7 @@
 <script lang="ts">
+    let loading : boolean = false;
     function handleContactFormSubmit(e: any){
+        loading = true;
         e.preventDefault();
         const form_data = new FormData(e.target);
         fetch(`/api/ec-sha-tester?email=${form_data.get('email')}`)
@@ -7,16 +9,15 @@
             return res.json();
         })
         .then(function(data){
-            window.gtag('config','AW-10852928527', {'allow_enhanced_conversions':true});
-
-            window.gtag('set', 'user_data', {
-                "sha256_email_address": data.email_hash
-            });
-            window.gtag('event', 'conversion', {'send_to': 'AW-10852928527/FWmCCJe6oqUZEI-Yirco'});
-            // window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit', 'email_hash2': data.email_hash2});
+            window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit', 'email_hash2': data.email_hash2, 'email_hash3': data.email_hash3, 'email_hash4': data.email_hash4});
+            loading = false;
         });
     }
 </script>
+
+<svelte:head>
+    <title>Enhanced Conversions - Prehash (GTM)</title>
+</svelte:head>
 
 <div class="space-y-10 divide-y divide-gray-900/10 w-11/12 lg:w-10/12 xl:w-9/12 mx-auto mb-10">
     <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
@@ -25,7 +26,7 @@
         <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
       </div>
   
-      <form on:submit={handleContactFormSubmit} class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+      <form on:submit={handleContactFormSubmit} class:opacity-30={loading} class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
         <div class="px-4 py-6 sm:p-8">
           <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-3">
@@ -91,7 +92,13 @@
         </div>
         <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
           <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-          <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+          <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            {#if loading}
+                Loading...
+            {:else}
+                Save
+            {/if}
+          </button>
         </div>
       </form>
     </div>
