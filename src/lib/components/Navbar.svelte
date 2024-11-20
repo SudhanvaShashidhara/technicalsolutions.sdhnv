@@ -150,13 +150,13 @@
 						on:click={toggle_lead_scoring_options}
 						href="/lead-scoring/gtm-1"
 						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>GTM(HTML Predefined Values)</a
+						>GTM(dataLayer)</a
 					>
 					<a
 						on:click={toggle_lead_scoring_options}
 						href="/lead-scoring/gtm-2"
 						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>GTM(Programatic Values)</a
+						>GTM(HTML Predefined Values)</a
 					>
 				</div>
 			</div>

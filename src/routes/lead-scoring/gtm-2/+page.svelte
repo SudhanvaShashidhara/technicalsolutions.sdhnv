@@ -2,23 +2,19 @@
 	let form_submitted = false;
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
-		const form_data = new FormData(form);
-		const full_name = form_data.get('full-name');
-		const email = form_data.get('email');
-		const income = form_data.get('income');
-		const years_at_address = form_data.get('years_at_address');
-		const about = form_data.get('about');
-		const form_entered_data = { full_name, email, income, about, years_at_address };
-		console.log(form_entered_data);
-		window.dataLayer = window.dataLayer || [];
-		window.dataLayer.push({ event: 'form_submit', form_entered_data });
+		// const form_data = new FormData(form);
+		// const full_name = form_data.get('full-name');
+		// const email = form_data.get('email');
+		// const service_details = form_data.get('service_details');
+		// const additional_details = form_data.get('additional_details');
+		// const form_entered_data = { full_name, email, service_details, additional_details };
 		form_submitted = true;
 		form.reset();
 	}
 </script>
 
 <svelte:head>
-	<title>Lead Scoring Demo - GTM (Programatic Values)</title>
+	<title>Lead Scoring Demo - GTM (Pulling values from HTML fields)</title>
 </svelte:head>
 <h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-4">Lead Scoring Demo - GTM [2]</h2>
 <form
@@ -68,57 +64,36 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="income" class="block text-sm font-medium leading-6 text-gray-900"
-						>Income ($ PA)</label
+					<label for="service_details" class="block text-sm font-medium leading-6 text-gray-900"
+						>Select your service</label
 					>
 					<div class="mt-2">
 						<select
-							id="income"
-							name="income"
+							id="service_details"
+							name="service_details"
 							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
 						>
-							<option data-lead-value="10" value="<$30,000">&lt;$30,000</option>
-							<option data-lead-value="20" value="$30,000 - $45,000">$30,000 - $45,000</option>
-							<option data-lead-value="30" value="$45,000 - $65,000">$45,000 - $65,000</option>
-							<option data-lead-value="40" value="$65,000 - $85,000">$65,000 - $85,000</option>
-							<option data-lead-value="50" value="$85,000 - $100,000">$85,000 - $100,000</option>
-							<option data-lead-value="60" value="$100,000+">$100,000+</option>
-						</select>
-					</div>
-				</div>
-
-
-				<div class="col-start-2 sm:col-span-7">
-					<label for="years_at_address" class="block text-sm font-medium leading-6 text-gray-900"
-						>No of years at current address</label
-					>
-					<div class="mt-2">
-						<select
-							id="years_at_address"
-							name="years_at_address"
-							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-						>
-							<option data-lead-value="10" value="3">3</option>
-							<option data-lead-value="20" value="4">4</option>
-							<option data-lead-value="20" value="5">5</option>
+							<option data-lead-value="10" value="door_service">Door Service</option>
+							<option data-lead-value="20" value="kitchen_remodeling">Kitchen Remodeling</option>
+							<option data-lead-value="30" value="roofing">Roofing</option>
+							<option data-lead-value="40" value="plumbing">Plumbing</option>
+							<option data-lead-value="50" value="hvac">HVAC</option>
+							<option data-lead-value="60" value="landscaping">Landscaping</option>
 						</select>
 					</div>
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="about" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
-						>Address</label
+					<label for="additional_details" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+						>Additional Details</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
 						<textarea
-							id="about"
-							name="about"
+							id="additional_details"
+							name="additional_details"
 							rows="3"
 							class="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						/>
-						<p class="mt-3 text-sm leading-6 text-gray-600">
-							Write a few sentences about yourself.
-						</p>
 					</div>
 				</div>
 			</div>

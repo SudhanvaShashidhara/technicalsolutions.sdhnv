@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-	<title>Lead Scoring Demo - GTM (Using predefined values in HTML Template)</title>
+	<title>Lead Scoring Demo - GTM (dataLayer implementation)</title>
 </svelte:head>
 <h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-4">Lead Scoring Demo - GTM [1]</h2>
 <form
