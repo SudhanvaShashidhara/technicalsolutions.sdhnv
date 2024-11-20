@@ -84,6 +84,23 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
+					<label for="service_requirement" class="block text-sm font-medium leading-6 text-gray-900"
+						>Service Requirement?</label
+					>
+					<div class="mt-2">
+						<select
+							id="service_requirement"
+							name="service_requirement"
+							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+						>
+							<option data-lead-value="30" value="immediate">Immediate</option>
+							<option data-lead-value="20" value="within_week">Within the week</option>
+							<option data-lead-value="10" value="within_month">Within the month</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-start-2 sm:col-span-7">
 					<label for="additional_details" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 						>Additional Details</label
 					>
