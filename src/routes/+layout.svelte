@@ -7,7 +7,9 @@
 <!-- Header Start -->
 <Navbar />
 <!-- Header End -->
-<slot />
+ <main class="bg-slate-50">
+	<slot />
+</main>
 <!-- Footer Start -->
 <Footer />
 <!-- Footer End -->

@@ -11,4 +11,5 @@ declare namespace App {
 declare interface Window {
 	gtag: (x: string, y: string, z: unknown) => void;
 	dataLayer: Array;
+	enhanced_conversion_data: {email?: FormDataEntryValue | null, tel?: FormDataEntryValue | null};
 }

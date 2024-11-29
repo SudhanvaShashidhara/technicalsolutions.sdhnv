@@ -184,14 +184,24 @@
 				</button>
 				<div bind:this={enhanced_conversions_options} class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden">
 					<a on:click={toggle_enhanced_conversions_options}
-						href="/enhanced-conversions/google-tag/prehash"
+						href="/adsenhancedconversions/automatic"
 						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
-						Google Tag(Prehash)
+						Automatic
 					</a>
 					<a on:click={toggle_enhanced_conversions_options}
-						href="/enhanced-conversions/gtm/prehash"
+						href="/adsenhancedconversions/css-selector"
 						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
-						GTM(Prehash)
+						CSS Selector
+					</a>
+					<a on:click={toggle_enhanced_conversions_options}
+						href="/adsenhancedconversions/javascript"
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						JavaScript
+					</a>
+					<a on:click={toggle_enhanced_conversions_options}
+						href="/adsenhancedconversions/code"
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						Code
 					</a>
 				</div>
 			</div>
