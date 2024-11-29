@@ -1,14 +1,15 @@
 <script lang="ts">
-	let form_submitted = false;
+	let form_submitted = false, form_message = '';
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
-		// const form_data = new FormData(form);
+		const form_data = new FormData(form);
 		// const full_name = form_data.get('full-name');
-		// const email = form_data.get('email');
-		// const email = form_data.get('email');
+		const email = form_data.get('email');
+		const tel = form_data.get('tel');
 		// const service_details = form_data.get('service_details');
 		// const additional_details = form_data.get('additional_details');
 		// const form_entered_data = { full_name, email, service_details, additional_details };
+		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;
 		window.gtag('event', 'conversion', {
 			'send_to': 'AW-941638166/5JlPCJij0_AZEJaEgcED',
@@ -190,7 +191,7 @@
 					</svg>
 				</div>
 				<div class="ml-3">
-					<p class="text-sm font-medium text-green-800">Form successfully submitted.</p>
+					<p class="text-sm font-medium text-green-800">{form_message}</p>
 				</div>
 				<div class="ml-auto pl-3">
 					<div class="-mx-1.5 -my-1.5">
