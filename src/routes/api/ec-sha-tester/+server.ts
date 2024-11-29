@@ -63,12 +63,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             .digest("hex");
 
             try{
-              await db.collection('ec-sha-tester').add({ ip_address, timestamp: FieldValue.serverTimestamp(), email_hash, email_hash2 });
+              await db.collection('ec-sha-tester').add({ ip_address, timestamp: FieldValue.serverTimestamp(), email, email_hash, email_hash2 });
             }catch(err){
               console.log(err);
             }	
 
-          return json({ email_hash, email_hash2 });
+          return json({ email, email_hash, email_hash2 });
         }
     } else {
         return json({ error: "Provide a email query parameter" });
