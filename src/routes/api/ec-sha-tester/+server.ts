@@ -42,13 +42,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const ip_address = getClientAddress();
 
     if (email) {
-        const email_parts = email?.split("@");
-        let normalized_email = "", normalized_email2 = "";
+        const email_parts = email?.toLowerCase().split("@");
+        let normalized_email = "";
 
         if (email_parts.length > 1) {
 
-          normalized_email = email_parts[0].replace(".", "").toLowerCase() + "@" + email_parts[1].toLowerCase();
-          normalized_email2 = email.trim().toLowerCase();
+          normalized_email = email_parts[0].replace(/\./g, "") + "@" + email_parts[1];
 
           const email_hash = crypto
             .createHash("sha256")
@@ -59,25 +58,17 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           const email_hash2 = crypto
             .createHash("sha256")
             // updating data
-            .update(normalized_email2)
+            .update(normalized_email)
             // Encoding to be used
-            .digest("base64url");
-          const email_hash3 = crypto
-            .createHash("sha256")
-            // updating data
-            .update(normalized_email);
-          const email_hash4 = crypto
-            .createHash("sha256")
-            // updating data
-            .update(normalized_email2);
+            .digest("hex");
 
             try{
-              await db.collection('ec-sha-tester').add({ ip_address, timestamp: FieldValue.serverTimestamp(), email_hash, email_hash2, email_hash3, email_hash4 });
+              await db.collection('ec-sha-tester').add({ ip_address, timestamp: FieldValue.serverTimestamp(), email_hash, email_hash2 });
             }catch(err){
               console.log(err);
             }	
 
-          return json({ email_hash, email_hash2, email_hash3, email_hash4 });
+          return json({ email_hash, email_hash2 });
         }
     } else {
         return json({ error: "Provide a email query parameter" });
