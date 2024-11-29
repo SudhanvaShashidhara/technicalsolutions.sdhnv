@@ -15,8 +15,13 @@
             "phone_number": tel,
         });
         window.gtag('event', 'conversion', {
-            'send_to': 'AW-941638166/QikCCPPP5c8ZEJaEgcED',
-            'value': 10.0,
+            'send_to': 'AW-941638166/r55MCNbt0fAZEJaEgcED',
+            'value': 1.0,
+            'currency': 'INR'
+        });
+        window.gtag('event', 'conversion', {
+            'send_to': 'AW-941638166/Zdl8CPL30_AZEJaEgcED',
+            'value': 1.0,
             'currency': 'INR'
         });
 		form.reset();
