@@ -29,6 +29,15 @@
 			gtag('config', 'AW-941638166')
 		</script> -->
 		<!-- Google Tag Manager -->
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-TTQQK4DTFD"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-TTQQK4DTFD');
+		</script>		 
 		<script>
 			(function (w, d, s, l, i) {
 				w[l] = w[l] || [];
@@ -56,34 +65,6 @@
 				language: 'EN'
 			});
 		</script> -->
-		<script>
-			async function handleTypeformSubmissions(event){
-				if(event.origin !== "https://form.typeform.com") return;
-				if(event.data && event.data.type && event.data.type === "form-submit"){
-					const data = await fetch("/api/typeform-handler", {
-						method: "POST",
-						body: JSON.stringify(event.data),
-						headers: {
-							"Content-Type": "application/json"
-						}
-					});
-					const json_data = await data.json();
-					if(json_data && json_data.items){
-						const answers = json_data.items[0].answers;
-						let email = '';
-						for(let i=0; i<answers.length;i++){
-							if(answers[i].type === "email") {
-								email = answers[i].email;
-								break;
-							}
-						}
-						if(email) window.dataLayer.push({'event':'typeform_submit','email': email});
-						else window.dataLayer.push({'event':'typeform_submit'});
-					}
-				}
-			}
-			window.addEventListener("message", handleTypeformSubmissions);
-		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

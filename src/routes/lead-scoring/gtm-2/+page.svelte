@@ -1,13 +1,45 @@
 <script lang="ts">
 	let form_submitted = false;
+	const service_details_value_map = {
+		door_service: 10,
+		kitchen_remodeling: 20,
+		roofing: 30,
+		plumbing: 40,
+		hvac: 50,
+		landscaping: 60,
+	};
+	const service_requirement_value_map = {
+		immediate: 30,
+		within_week: 20,
+		within_month: 10,
+	};
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
-		// const form_data = new FormData(form);
-		// const full_name = form_data.get('full-name');
-		// const email = form_data.get('email');
-		// const service_details = form_data.get('service_details');
-		// const additional_details = form_data.get('additional_details');
-		// const form_entered_data = { full_name, email, service_details, additional_details };
+		const form_data = new FormData(form);
+		const full_name = form_data.get('full-name');
+		const email = form_data.get('email');
+		const service_details = form_data.get('service_details');
+		const service_requirement = form_data.get('service_requirement');
+		const additional_details = form_data.get('additional_details');
+		const form_entered_data = { full_name, email, service_details, service_requirement, additional_details };
+		const service_details_lead_value = service_details_value_map[service_details as keyof typeof service_details_value_map];
+		const service_requirement_lead_value = service_requirement_value_map[service_requirement as keyof typeof service_requirement_value_map];
+		const total_value = service_details_lead_value + service_requirement_lead_value;
+		console.log('Total Value:', total_value);
+		console.log(form_entered_data);
+		window.dataLayer.push({
+			event: 'form_submit_complete',
+			form_data: form_entered_data,
+			lead_value: total_value
+		});
+		window.gtag('set', 'user_data', {
+			"email": email,
+		});
+		window.gtag('event', 'lead_scoring_form_submit', {
+			'value': total_value,
+			'service_details': service_details,
+			'service_requirement': service_requirement
+		});
 		form_submitted = true;
 		form.reset();
 	}
