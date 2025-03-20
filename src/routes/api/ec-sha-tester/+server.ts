@@ -39,7 +39,37 @@ db.settings({ ignoreUndefinedProperties: true });
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {	
 
 	const email = url.searchParams.get('email');
+  const phone = url.searchParams.get('phone');
+
+
   const ip_address = getClientAddress();
+
+  if(phone){
+    const new_phone_number = phone.includes("+") ? phone : "+" + phone;
+    const normalised_phone = new_phone_number.trim().replaceAll(" ", "").toLocaleLowerCase();
+    const phone_hash = crypto
+      .createHash("sha256")
+      // updating data
+      .update(normalised_phone)
+      // Encoding to be used
+      .digest("base64url");
+
+     const phone_hash2 = crypto
+      .createHash("sha256")
+      // updating data
+      .update(normalised_phone)
+      // Encoding to be used
+      .digest("hex"); 
+
+      try{
+        await db.collection('ec-sha-tester').add({ ip_address, timestamp: FieldValue.serverTimestamp(), phone, phone_hash, phone_hash2 });
+      }catch(err){
+        console.log(err);
+      }	
+
+    return json({ normalised_phone, phone_hash, phone_hash2 });
+  }
+
 
     if (email) {
         const email_parts = email?.toLowerCase().split("@");
