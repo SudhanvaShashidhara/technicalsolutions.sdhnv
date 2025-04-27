@@ -184,7 +184,7 @@
 				</a>
 			</div>
 			<p class="mt-8 text-xs leading-5 text-white md:order-1 md:mt-0 bg-black p-4 rounded-md">
-				&copy;{new Date().getFullYear()} Made in BLR by <a target="_blank" rel="noopener noreferrer" class="font-black" style="color: #4285f4" href="mailto:sshashidhara@google.com">Sudhanva S</a>
+				&copy;{new Date().getFullYear()} Made in BLR by <a target="_blank" rel="noopener noreferrer" class="font-black" style="color: #4285f4" href="mailto:sudhanvashashidhara@gmail.com">Sudhanva S</a>
 			</p>
 		</div>
 	</div>
