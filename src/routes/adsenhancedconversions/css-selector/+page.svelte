@@ -8,8 +8,6 @@
         form_email = email;
 		const tel = form_data.get('tel');
         form_tel = tel;
-		const service_details = form_data.get('service_details');
-		const additional_details = form_data.get('additional_details');
 		// const form_entered_data = { full_name, email, service_details, additional_details };
         form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;

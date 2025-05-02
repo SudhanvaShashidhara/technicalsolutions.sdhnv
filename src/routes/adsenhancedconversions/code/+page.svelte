@@ -6,10 +6,12 @@
 		// const full_name = form_data.get('full-name');
 		const email = form_data.get('email');
 		const tel = form_data.get('tel');
+		window.dataLayer = window.dataLayer || [];
+		window.dataLayer.push({"event": "form_submit", email, tel});
         // const enhanced_conversion_data = {email,tel};
         // window['enhanced_conversion_data'] = enhanced_conversion_data;
-        // form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
-		// form_submitted = true;
+        form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
+		form_submitted = true;
         // window.gtag('set', 'user_data', {
         //     "email": email, 
         //     "phone_number": tel,
@@ -29,9 +31,9 @@
 </script>
 
 <svelte:head>
-	<title>Ads Enhanced Conversions | Code</title>
+	<title>Ads Enhanced Conversions | dataLayer</title>
 </svelte:head>
-<h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-2 pt-6">Ads Enhanced Conversions | Code</h2>
+<h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-2 pt-6">Ads Enhanced Conversions | dataLayer</h2>
 <form
 	on:submit|preventDefault={handle_submit}
 	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 pb-12"
