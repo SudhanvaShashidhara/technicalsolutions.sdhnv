@@ -20,6 +20,7 @@
 </svelte:head>
 <h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-2 pt-6">Ads Enhanced Conversions | CSS Selector</h2>
 <form
+	id="css_selector_form"
 	on:submit|preventDefault={handle_submit}
 	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 pb-12"
 >
