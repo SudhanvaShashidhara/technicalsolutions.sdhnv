@@ -11,17 +11,6 @@
 		// const form_entered_data = { full_name, email, service_details, additional_details };
 		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;
-		window.gtag('event', 'conversion', {
-			'send_to': 'AW-941638166/5JlPCJij0_AZEJaEgcED',
-			'value': 1.0,
-			'currency': 'INR'
-		});
-		window.gtag('event', 'conversion', {
-			'send_to': 'AW-941638166/OqObCPPX0_AZEJaEgcED',
-			'value': 1.0,
-			'currency': 'INR'
-		});
-
 		form.reset();
 	}
 </script>

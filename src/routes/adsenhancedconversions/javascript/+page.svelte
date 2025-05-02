@@ -10,16 +10,6 @@
         window['enhanced_conversion_data'] = enhanced_conversion_data;
         form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;
-        window.gtag('event', 'conversion', {
-            'send_to': 'AW-941638166/TrGrCI3L0_AZEJaEgcED',
-            'value': 1.0,
-            'currency': 'INR'
-        });
-        window.gtag('event', 'conversion', {
-            'send_to': 'AW-941638166/CG36CMfb0_AZEJaEgcED',
-            'value': 1.0,
-            'currency': 'INR'
-        });
 		form.reset();
 	}
 </script>

@@ -6,24 +6,24 @@
 		// const full_name = form_data.get('full-name');
 		const email = form_data.get('email');
 		const tel = form_data.get('tel');
-        const enhanced_conversion_data = {email,tel};
-        window['enhanced_conversion_data'] = enhanced_conversion_data;
-        form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
-		form_submitted = true;
-        window.gtag('set', 'user_data', {
-            "email": email, 
-            "phone_number": tel,
-        });
-        window.gtag('event', 'conversion', {
-            'send_to': 'AW-941638166/r55MCNbt0fAZEJaEgcED',
-            'value': 1.0,
-            'currency': 'INR'
-        });
-        window.gtag('event', 'conversion', {
-            'send_to': 'AW-941638166/Zdl8CPL30_AZEJaEgcED',
-            'value': 1.0,
-            'currency': 'INR'
-        });
+        // const enhanced_conversion_data = {email,tel};
+        // window['enhanced_conversion_data'] = enhanced_conversion_data;
+        // form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
+		// form_submitted = true;
+        // window.gtag('set', 'user_data', {
+        //     "email": email, 
+        //     "phone_number": tel,
+        // });
+        // window.gtag('event', 'conversion', {
+        //     'send_to': 'AW-941638166/r55MCNbt0fAZEJaEgcED',
+        //     'value': 1.0,
+        //     'currency': 'INR'
+        // });
+        // window.gtag('event', 'conversion', {
+        //     'send_to': 'AW-941638166/Zdl8CPL30_AZEJaEgcED',
+        //     'value': 1.0,
+        //     'currency': 'INR'
+        // });
 		form.reset();
 	}
 </script>
