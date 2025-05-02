@@ -7,7 +7,7 @@
 		const email = form_data.get('email');
 		const tel = form_data.get('tel');
 		window.dataLayer = window.dataLayer || [];
-		window.dataLayer.push({"event": "form_submit", email, tel});
+		window.dataLayer.push({"event": "form_submit_complete_dl", email, tel});
         // const enhanced_conversion_data = {email,tel};
         // window['enhanced_conversion_data'] = enhanced_conversion_data;
         form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
