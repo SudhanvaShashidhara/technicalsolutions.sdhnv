@@ -7,12 +7,13 @@
             return res.json();
         })
         .then(function(data){
-            window.gtag('config','AW-10852928527', {'allow_enhanced_conversions':true});
+          console.log('data', data);
+            // window.gtag('config','AW-10852928527', {'allow_enhanced_conversions':true});
 
-            window.gtag('set', 'user_data', {
-                "sha256_email_address": data.email_hash
-            });
-            window.gtag('event', 'conversion', {'send_to': 'AW-10852928527/FWmCCJe6oqUZEI-Yirco'});
+            // window.gtag('set', 'user_data', {
+            //     "sha256_email_address": data.email_hash
+            // });
+            // window.gtag('event', 'conversion', {'send_to': 'AW-10852928527/FWmCCJe6oqUZEI-Yirco'});
             // window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit', 'email_hash2': data.email_hash2});
         });
     }

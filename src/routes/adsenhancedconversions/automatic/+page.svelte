@@ -181,7 +181,7 @@
 					</svg>
 				</div>
 				<div class="ml-3">
-					<p class="text-sm font-medium text-green-800">{form_message}</p>
+					<p id="form_success" class="text-sm font-medium text-green-800">{form_message}</p>
 				</div>
 				<div class="ml-auto pl-3">
 					<div class="-mx-1.5 -my-1.5">

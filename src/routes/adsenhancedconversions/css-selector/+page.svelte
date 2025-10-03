@@ -3,12 +3,10 @@
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
 		const form_data = new FormData(form);
-		const full_name = form_data.get('full-name');
 		const email = form_data.get('email');
         form_email = email;
 		const tel = form_data.get('tel');
         form_tel = tel;
-		// const form_entered_data = { full_name, email, service_details, additional_details };
         form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;
 		form.reset();
