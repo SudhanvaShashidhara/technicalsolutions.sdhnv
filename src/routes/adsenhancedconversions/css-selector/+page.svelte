@@ -9,8 +9,9 @@
 	let recaptcha_score: number | null = null;
 
 	onMount(() => {
-		loadScript(`https://www.google.com/recaptcha/api.js?render=${v3SiteKey}`).catch((err) => {
-			recaptcha_error = 'Failed to load reCAPTCHA v3 script';
+		// Use Google reCAPTCHA Enterprise script
+		loadScript(`https://www.google.com/recaptcha/enterprise.js?render=${v3SiteKey}`).catch((err) => {
+			recaptcha_error = 'Failed to load reCAPTCHA Enterprise script';
 			console.error(err);
 		});
 	});
@@ -23,15 +24,20 @@
 		const tel = form_data.get('tel');
 		form_tel = tel;
 
-		if (typeof window !== 'undefined' && (window as any).grecaptcha) {
-			is_recaptcha_loading = true;
-			recaptcha_error = '';
-			recaptcha_score = null;
+		// Set form submitted instantly to show the visual feedback and loader immediately
+		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
+		form_submitted = true;
+		is_recaptcha_loading = true;
+		recaptcha_error = '';
+		recaptcha_token = '';
+		recaptcha_score = null;
+
+		if (typeof window !== 'undefined' && (window as any).grecaptcha && (window as any).grecaptcha.enterprise) {
 			try {
-				const grecaptcha = (window as any).grecaptcha;
+				const grecaptcha = (window as any).grecaptcha.enterprise;
 				await new Promise<void>((resolve, reject) => {
 					grecaptcha.ready(() => resolve());
-					setTimeout(() => reject(new Error('reCAPTCHA timed out')), 5000);
+					setTimeout(() => reject(new Error('reCAPTCHA Enterprise timed out')), 5000);
 				});
 				const token = await grecaptcha.execute(v3SiteKey, { action: 'submit' });
 				recaptcha_token = token;
@@ -59,19 +65,18 @@
 				} else {
 					recaptcha_error = `Server verification request failed (${verifyRes.status})`;
 				}
-			} catch (err) {
-				console.error('reCAPTCHA execution failed:', err);
-				recaptcha_error = 'reCAPTCHA v3 verification failed';
+			} catch (err: any) {
+				console.error('reCAPTCHA Enterprise execution failed:', err);
+				recaptcha_error = `reCAPTCHA Enterprise verification failed: ${err.message || err}`;
 				recaptcha_token = '';
 			} finally {
 				is_recaptcha_loading = false;
 			}
 		} else {
-			recaptcha_error = 'reCAPTCHA v3 script not loaded yet';
+			recaptcha_error = 'reCAPTCHA Enterprise script not loaded yet';
+			is_recaptcha_loading = false;
 		}
 
-		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
-		form_submitted = true;
 		form.reset();
 	}
 </script>
@@ -249,7 +254,7 @@
 						{#if recaptcha_token}
 							<div class="mt-2 space-y-2 text-xs">
 								<p class="font-semibold text-green-700">reCAPTCHA v3 Token: <span class="font-mono bg-green-100 p-1 rounded break-all select-all">{recaptcha_token}</span></p>
-								{#if recaptcha_score !== null}
+								{#if typeof recaptcha_score === 'number'}
 									<p class="font-semibold text-green-700 flex items-center gap-2">
 										reCAPTCHA v3 Score: 
 										<span class="px-2 py-0.5 rounded font-mono text-sm font-bold text-white {recaptcha_score >= 0.7 ? 'bg-emerald-600' : recaptcha_score >= 0.4 ? 'bg-amber-500' : 'bg-rose-600'}">
