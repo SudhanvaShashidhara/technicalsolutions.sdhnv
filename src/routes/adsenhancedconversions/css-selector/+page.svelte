@@ -1,13 +1,50 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { v3SiteKey, loadScript } from '$lib/recaptcha';
+
 	let form_submitted = false, form_message = '', form_email : FormDataEntryValue | null = '', form_tel : FormDataEntryValue | null = '';
-	function handle_submit(e: SubmitEvent) {
+	let recaptcha_token = '';
+	let is_recaptcha_loading = false;
+	let recaptcha_error = '';
+
+	onMount(() => {
+		loadScript(`https://www.google.com/recaptcha/api.js?render=${v3SiteKey}`).catch((err) => {
+			recaptcha_error = 'Failed to load reCAPTCHA v3 script';
+			console.error(err);
+		});
+	});
+
+	async function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
 		const form_data = new FormData(form);
 		const email = form_data.get('email');
-        form_email = email;
+		form_email = email;
 		const tel = form_data.get('tel');
-        form_tel = tel;
-        form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
+		form_tel = tel;
+
+		if (typeof window !== 'undefined' && (window as any).grecaptcha) {
+			is_recaptcha_loading = true;
+			recaptcha_error = '';
+			try {
+				const grecaptcha = (window as any).grecaptcha;
+				await new Promise<void>((resolve, reject) => {
+					grecaptcha.ready(() => resolve());
+					setTimeout(() => reject(new Error('reCAPTCHA timed out')), 5000);
+				});
+				const token = await grecaptcha.execute(v3SiteKey, { action: 'submit' });
+				recaptcha_token = token;
+			} catch (err) {
+				console.error('reCAPTCHA execution failed:', err);
+				recaptcha_error = 'reCAPTCHA v3 verification failed';
+				recaptcha_token = '';
+			} finally {
+				is_recaptcha_loading = false;
+			}
+		} else {
+			recaptcha_error = 'reCAPTCHA v3 script not loaded yet';
+		}
+
+		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
 		form_submitted = true;
 		form.reset();
 	}
@@ -178,8 +215,15 @@
 						/>
 					</svg>
 				</div>
-				<div class="ml-3">
+				<div class="ml-3 flex-1">
 					<p class="text-sm font-medium text-green-800">Thanks for submitting the form. A confirmation email is sent to <span class="ec_email">{form_email}</span>. We will also be contacting you at <span class="ec_tel">{form_tel}</span>.</p>
+					{#if is_recaptcha_loading}
+						<p class="mt-2 text-xs font-semibold text-green-700 animate-pulse">Generating reCAPTCHA v3 Token...</p>
+					{:else if recaptcha_token}
+						<p class="mt-2 text-xs font-semibold text-green-700">reCAPTCHA v3 Token: <span class="font-mono bg-green-100 p-1 rounded break-all select-all">{recaptcha_token}</span></p>
+					{:else if recaptcha_error}
+						<p class="mt-2 text-xs font-semibold text-red-700">{recaptcha_error}</p>
+					{/if}
 				</div>
 				<div class="ml-auto pl-3">
 					<div class="-mx-1.5 -my-1.5">
