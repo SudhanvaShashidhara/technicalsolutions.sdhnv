@@ -9,7 +9,7 @@
 	let widget_id: any = null;
 
 	function initRecaptchaV2() {
-		const grecaptcha = (window as any).grecaptcha;
+		const grecaptcha = (window as any).grecaptcha?.enterprise;
 		if (grecaptcha && grecaptcha.render) {
 			try {
 				widget_id = grecaptcha.render('recaptcha-v2-container', {
@@ -26,7 +26,7 @@
 					}
 				});
 			} catch (e) {
-				console.error('Error rendering reCAPTCHA v2:', e);
+				console.error('Error rendering reCAPTCHA Enterprise v2:', e);
 			}
 		}
 	}
@@ -36,11 +36,11 @@
 			initRecaptchaV2();
 		};
 
-		if ((window as any).grecaptcha && (window as any).grecaptcha.render) {
+		if ((window as any).grecaptcha?.enterprise && (window as any).grecaptcha?.enterprise.render) {
 			initRecaptchaV2();
 		} else {
-			loadScript('https://www.google.com/recaptcha/api.js?onload=onRecaptchaV2Load&render=explicit').catch((err) => {
-				recaptcha_v2_error = 'Failed to load reCAPTCHA v2 script';
+			loadScript('https://www.google.com/recaptcha/enterprise.js?onload=onRecaptchaV2Load&render=explicit').catch((err) => {
+				recaptcha_v2_error = 'Failed to load reCAPTCHA Enterprise script';
 				console.error(err);
 			});
 		}
@@ -67,8 +67,8 @@
 		recaptcha_v2_token_success = recaptcha_v2_token;
 		form_submitted = true;
 
-		if ((window as any).grecaptcha && widget_id !== null) {
-			(window as any).grecaptcha.reset(widget_id);
+		if ((window as any).grecaptcha?.enterprise && widget_id !== null) {
+			(window as any).grecaptcha.enterprise.reset(widget_id);
 		}
 		recaptcha_v2_token = '';
 		form.reset();
