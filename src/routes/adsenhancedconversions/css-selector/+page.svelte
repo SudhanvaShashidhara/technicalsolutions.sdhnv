@@ -6,6 +6,7 @@
 	let recaptcha_token = '';
 	let is_recaptcha_loading = false;
 	let recaptcha_error = '';
+	let recaptcha_score: number | null = null;
 
 	onMount(() => {
 		loadScript(`https://www.google.com/recaptcha/api.js?render=${v3SiteKey}`).catch((err) => {
@@ -25,6 +26,7 @@
 		if (typeof window !== 'undefined' && (window as any).grecaptcha) {
 			is_recaptcha_loading = true;
 			recaptcha_error = '';
+			recaptcha_score = null;
 			try {
 				const grecaptcha = (window as any).grecaptcha;
 				await new Promise<void>((resolve, reject) => {
@@ -33,6 +35,30 @@
 				});
 				const token = await grecaptcha.execute(v3SiteKey, { action: 'submit' });
 				recaptcha_token = token;
+
+				// Verify token on the backend to fetch the score
+				const verifyRes = await fetch('/api/verify-recaptcha', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						token,
+						siteKey: v3SiteKey,
+						action: 'submit'
+					})
+				});
+
+				if (verifyRes.ok) {
+					const verifyData = await verifyRes.json();
+					if (verifyData.success) {
+						recaptcha_score = verifyData.score;
+					} else {
+						recaptcha_error = `Backend verification failed: ${verifyData.error}`;
+					}
+				} else {
+					recaptcha_error = `Server verification request failed (${verifyRes.status})`;
+				}
 			} catch (err) {
 				console.error('reCAPTCHA execution failed:', err);
 				recaptcha_error = 'reCAPTCHA v3 verification failed';
@@ -218,11 +244,27 @@
 				<div class="ml-3 flex-1">
 					<p class="text-sm font-medium text-green-800">Thanks for submitting the form. A confirmation email is sent to <span class="ec_email">{form_email}</span>. We will also be contacting you at <span class="ec_tel">{form_tel}</span>.</p>
 					{#if is_recaptcha_loading}
-						<p class="mt-2 text-xs font-semibold text-green-700 animate-pulse">Generating reCAPTCHA v3 Token...</p>
-					{:else if recaptcha_token}
-						<p class="mt-2 text-xs font-semibold text-green-700">reCAPTCHA v3 Token: <span class="font-mono bg-green-100 p-1 rounded break-all select-all">{recaptcha_token}</span></p>
-					{:else if recaptcha_error}
-						<p class="mt-2 text-xs font-semibold text-red-700">{recaptcha_error}</p>
+						<p class="mt-2 text-xs font-semibold text-green-700 animate-pulse">Generating and verifying reCAPTCHA v3 Token...</p>
+					{:else}
+						{#if recaptcha_token}
+							<div class="mt-2 space-y-2 text-xs">
+								<p class="font-semibold text-green-700">reCAPTCHA v3 Token: <span class="font-mono bg-green-100 p-1 rounded break-all select-all">{recaptcha_token}</span></p>
+								{#if recaptcha_score !== null}
+									<p class="font-semibold text-green-700 flex items-center gap-2">
+										reCAPTCHA v3 Score: 
+										<span class="px-2 py-0.5 rounded font-mono text-sm font-bold text-white {recaptcha_score >= 0.7 ? 'bg-emerald-600' : recaptcha_score >= 0.4 ? 'bg-amber-500' : 'bg-rose-600'}">
+											{recaptcha_score.toFixed(1)}
+										</span>
+										<span class="text-gray-500 italic">
+											({recaptcha_score >= 0.7 ? 'Likely human (low risk)' : recaptcha_score >= 0.4 ? 'Ambiguous' : 'Likely bot (high risk)'})
+										</span>
+									</p>
+								{/if}
+							</div>
+						{/if}
+						{#if recaptcha_error}
+							<p class="mt-2 text-xs font-semibold text-red-700">{recaptcha_error}</p>
+						{/if}
 					{/if}
 				</div>
 				<div class="ml-auto pl-3">
