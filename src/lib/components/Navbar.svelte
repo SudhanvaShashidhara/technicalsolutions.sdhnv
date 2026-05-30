@@ -1,7 +1,6 @@
 <script lang="ts">
-	let classes_to_remove = [];
-	let show_lead_scoring = false; // svelte-ignore missing-declaration
-	let show_enhanced_conversions = false; // svelte-ignore missing-declaration
+	let show_lead_scoring = false;
+	let show_enhanced_conversions = false;
 	let lead_scoring_options: null | HTMLDivElement = null;
 	let enhanced_conversions_options: null | HTMLDivElement = null;
 
@@ -87,10 +86,7 @@
 		</div>
 		<div class="hidden lg:flex lg:gap-x-12">
 			<div class="relative">
-				<a
-					href="/contact"
-					class="text-sm font-semibold leading-6 text-gray-900"
-				>
+				<a href="/contact" class="text-sm font-semibold leading-6 text-gray-900">
 					Contact Us
 					<!-- <svg
 						class="h-5 w-5 flex-none text-gray-400"
@@ -182,25 +178,36 @@
 						/>
 					</svg>
 				</button>
-				<div bind:this={enhanced_conversions_options} class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden">
-					<a on:click={toggle_enhanced_conversions_options}
+				<div
+					bind:this={enhanced_conversions_options}
+					class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden"
+				>
+					<a
+						on:click={toggle_enhanced_conversions_options}
 						href="/adsenhancedconversions/automatic"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+					>
 						Automatic
 					</a>
-					<a on:click={toggle_enhanced_conversions_options}
+					<a
+						on:click={toggle_enhanced_conversions_options}
 						href="/adsenhancedconversions/css-selector"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+					>
 						CSS Selector
 					</a>
-					<a on:click={toggle_enhanced_conversions_options}
+					<a
+						on:click={toggle_enhanced_conversions_options}
 						href="/adsenhancedconversions/javascript"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+					>
 						JavaScript
 					</a>
-					<a on:click={toggle_enhanced_conversions_options}
+					<a
+						on:click={toggle_enhanced_conversions_options}
 						href="/adsenhancedconversions/code"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50">
+						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+					>
 						Code
 					</a>
 				</div>
