@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { RECAPTCHA_API_KEY, GCP_PROJECT_ID } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -10,15 +10,15 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ success: false, error: 'Token and Site Key are required' }, { status: 400 });
 		}
 
-		if (!RECAPTCHA_API_KEY) {
+		if (!env.RECAPTCHA_API_KEY) {
 			return json(
 				{ success: false, error: 'Server reCAPTCHA API Key is not configured' },
 				{ status: 500 }
 			);
 		}
 
-		const projectId = GCP_PROJECT_ID || 'tai-sdhnv';
-		const url = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${RECAPTCHA_API_KEY}`;
+		const projectId = env.GCP_PROJECT_ID || 'tai-sdhnv';
+		const url = `https://recaptchaenterprise.googleapis.com/v1/projects/${projectId}/assessments?key=${env.RECAPTCHA_API_KEY}`;
 
 		const response = await fetch(url, {
 			method: 'POST',

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { TYPEFORM_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
@@ -11,7 +11,7 @@ export async function POST({ request }) {
 		`https://api.typeform.com/forms/${form_id}/responses?included_response_ids=${response_id}`,
 		{
 			headers: {
-				Authorization: `Bearer ${TYPEFORM_TOKEN}`
+				Authorization: `Bearer ${env.TYPEFORM_TOKEN}`
 			}
 		}
 	);

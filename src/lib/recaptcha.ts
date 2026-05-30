@@ -1,10 +1,10 @@
-import { PUBLIC_RECAPTCHA_V3_SITE_KEY, PUBLIC_RECAPTCHA_V2_SITE_KEY } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
 // Fallback to Google's official public test key if keys are not defined
 const DEFAULT_TEST_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
-export const v3SiteKey = PUBLIC_RECAPTCHA_V3_SITE_KEY || DEFAULT_TEST_KEY;
-export const v2SiteKey = PUBLIC_RECAPTCHA_V2_SITE_KEY || DEFAULT_TEST_KEY;
+export const v3SiteKey = env.PUBLIC_RECAPTCHA_V3_SITE_KEY || DEFAULT_TEST_KEY;
+export const v2SiteKey = env.PUBLIC_RECAPTCHA_V2_SITE_KEY || DEFAULT_TEST_KEY;
 
 /**
  * Dynamically loads an external script in the browser, returning a promise.
