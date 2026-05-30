@@ -1,5 +1,5 @@
 <script lang="ts">
-	let form_submitted = false, form_message = '';
+	let form_submitted = false;
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
 		const form_data = new FormData(form);
@@ -7,8 +7,7 @@
 		const email = form_data.get('email');
 		const tel = form_data.get('tel');
 		window.dataLayer = window.dataLayer || [];
-		window.dataLayer.push({"event": "form_submit_complete_dl", email, tel});
-        form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
+		window.dataLayer.push({ event: 'form_submit_complete_dl', email, tel });
 		form_submitted = true;
 		form.reset();
 	}
@@ -17,14 +16,18 @@
 <svelte:head>
 	<title>Ads Enhanced Conversions | dataLayer</title>
 </svelte:head>
-<h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-2 pt-6">Ads Enhanced Conversions | dataLayer</h2>
+<h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-2 pt-6">
+	Ads Enhanced Conversions | dataLayer
+</h2>
 <form
 	on:submit|preventDefault={handle_submit}
 	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 pb-12"
 >
 	<div class="space-y-12">
 		<div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
-			<div class="relative overflow-hidden py-10 px-6 sm:px-10 xl:p-12 bg-googlegreencore rounded-md">
+			<div
+				class="relative overflow-hidden py-10 px-6 sm:px-10 xl:p-12 bg-googlegreencore rounded-md"
+			>
 				<h2 class="text-base font-semibold leading-7 text-gray-200">Contact Us</h2>
 				<p class="mt-1 text-sm leading-6 text-gray-100">
 					Use a permanent address where you can receive mail.
@@ -34,7 +37,19 @@
 						<span class="sr-only">Phone number</span>
 					</dt>
 					<dd class="flex text-base text-white">
-						<svg class="flex-shrink-0 w-6 h-6 text-gray-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+						<svg
+							class="flex-shrink-0 w-6 h-6 text-gray-100"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="2"
+							stroke="currentColor"
+							aria-hidden="true"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+							></path>
 						</svg>
 						<span class="ml-3"><a href="tel:+1 (555) 123-4567">+1 (555) 123-4567</a></span>
 					</dd>
@@ -42,11 +57,23 @@
 						<span class="sr-only">Email</span>
 					</dt>
 					<dd class="flex text-base text-white">
-						<svg class="flex-shrink-0 w-6 h-6 text-gray-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+						<svg
+							class="flex-shrink-0 w-6 h-6 text-gray-100"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="2"
+							stroke="currentColor"
+							aria-hidden="true"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+							></path>
 						</svg>
 						<span class="ml-3"><a href="mailto:me@sdhnv.com">me@sdhnv.com</a></span>
 					</dd>
-				</dl>			
+				</dl>
 			</div>
 
 			<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
@@ -136,7 +163,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="additional_details" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+					<label
+						for="additional_details"
+						class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 						>Additional Details</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
@@ -159,7 +188,6 @@
 			</div>
 		</div>
 	</div>
-
 
 	{#if form_submitted}
 		<div class="rounded-md py-4 mt-4 px-6 bg-googlegreenG50">

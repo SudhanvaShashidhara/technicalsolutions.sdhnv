@@ -11,7 +11,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		if (!RECAPTCHA_API_KEY) {
-			return json({ success: false, error: 'Server reCAPTCHA API Key is not configured' }, { status: 500 });
+			return json(
+				{ success: false, error: 'Server reCAPTCHA API Key is not configured' },
+				{ status: 500 }
+			);
 		}
 
 		const projectId = GCP_PROJECT_ID || 'tai-sdhnv';
@@ -34,7 +37,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error(`reCAPTCHA Enterprise assessment API error: ${response.status}`, errorText);
-			return json({ success: false, error: `Failed to verify token with Google: ${response.statusText}` }, { status: 502 });
+			return json(
+				{ success: false, error: `Failed to verify token with Google: ${response.statusText}` },
+				{ status: 502 }
+			);
 		}
 
 		const data = await response.json();
@@ -45,8 +51,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			invalidReason: data.tokenProperties?.invalidReason,
 			reasons: data.riskAnalysis?.reasons
 		});
-	} catch (err: any) {
+	} catch (err) {
 		console.error('Verify reCAPTCHA exception:', err);
-		return json({ success: false, error: err.message || 'Internal server error' }, { status: 500 });
+		return json(
+			{ success: false, error: err instanceof Error ? err.message : 'Internal server error' },
+			{ status: 500 }
+		);
 	}
 };

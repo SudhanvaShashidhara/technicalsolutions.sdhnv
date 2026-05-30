@@ -19,6 +19,12 @@ module.exports = {
 		es2017: true,
 		node: true
 	},
+	rules: {
+		// TypeScript already reports undefined identifiers. The core no-undef rule
+		// produces false positives on type-only references (e.g. DOM lib types such as
+		// FormDataEntryValue) in .svelte files, so typescript-eslint recommends disabling it.
+		'no-undef': 'off'
+	},
 	overrides: [
 		{
 			files: ['*.svelte'],
