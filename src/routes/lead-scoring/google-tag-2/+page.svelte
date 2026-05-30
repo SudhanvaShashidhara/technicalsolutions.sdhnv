@@ -23,20 +23,24 @@
 </h2>
 <form
 	on:submit|preventDefault={handle_submit}
-	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 pb-12"
+	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 dark:border-white/10 pb-12"
 >
 	<div class="space-y-12">
 		<div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
 			<div>
-				<h2 class="text-base font-semibold leading-7 text-gray-900">Contact Us</h2>
-				<p class="mt-1 text-sm leading-6 text-gray-600">
+				<h2 class="text-base font-semibold leading-7 text-gray-900 dark:text-gray-100">
+					Contact Us
+				</h2>
+				<p class="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
 					Use a permanent address where you can receive mail.
 				</p>
 			</div>
 
 			<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
 				<div class="col-start-2 sm:col-span-7">
-					<label for="full-name" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="full-name"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Full name</label
 					>
 					<div class="mt-2">
@@ -52,7 +56,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="email" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="email"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Email address</label
 					>
 					<div class="mt-2">
@@ -68,7 +74,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="income" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="income"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Income ($ PA)</label
 					>
 					<div class="mt-2">
@@ -88,7 +96,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="years_at_address" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="years_at_address"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>No of years at current address</label
 					>
 					<div class="mt-2">
@@ -105,7 +115,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="about" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+					<label
+						for="about"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
 						>Address</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
@@ -115,7 +127,7 @@
 							rows="3"
 							class="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 						></textarea>
-						<p class="mt-3 text-sm leading-6 text-gray-600">
+						<p class="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">
 							Write a few sentences about yourself.
 						</p>
 					</div>

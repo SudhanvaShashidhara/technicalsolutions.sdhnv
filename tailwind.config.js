@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+	darkMode: 'class',
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+			},
 			colors: {
 				googlebluecore: '#4285F4',
 				googleredcore: '#EA4335',

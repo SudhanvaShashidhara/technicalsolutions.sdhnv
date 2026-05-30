@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	html {
+		font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	}
+
+	body {
+		@apply bg-white text-googlegreyG900 antialiased;
+		@apply dark:bg-googlegreyG900 dark:text-gray-100;
+	}
+}

@@ -1,123 +1,110 @@
 <script lang="ts">
-	let show_lead_scoring = false;
-	let show_enhanced_conversions = false;
-	let lead_scoring_options: null | HTMLDivElement = null;
-	let enhanced_conversions_options: null | HTMLDivElement = null;
+	import ThemeToggle from './ThemeToggle.svelte';
 
-	function handle_element_transitions_hide(elem: HTMLDivElement) {
-		elem.classList.remove('transition');
-		elem.classList.remove('ease-out');
-		elem.classList.remove('duration-200');
-		elem.classList.remove('opacity-100');
-		elem.classList.remove('translate-y-0');
-		elem.classList.add('hidden');
-		elem.classList.add('transition');
-		elem.classList.add('ease-in');
-		elem.classList.add('duration-150');
-		elem.classList.add('opacity-0');
-		elem.classList.add('translate-y-1');
+	const lead_scoring = [
+		{ href: '/lead-scoring/google-tag-1', label: 'Google Tag (HTML Predefined Values)' },
+		{ href: '/lead-scoring/google-tag-2', label: 'Google Tag (Programatic Values)' },
+		{ href: '/lead-scoring/gtm-1', label: 'GTM (dataLayer)' },
+		{ href: '/lead-scoring/gtm-2', label: 'GTM (HTML Predefined Values)' }
+	];
+
+	const enhanced_conversions = [
+		{ href: '/adsenhancedconversions/automatic', label: 'Automatic' },
+		{ href: '/adsenhancedconversions/css-selector', label: 'CSS Selector' },
+		{ href: '/adsenhancedconversions/javascript', label: 'JavaScript' },
+		{ href: '/adsenhancedconversions/code', label: 'Code' }
+	];
+
+	let mobile_open = false;
+	let open_menu: 'lead' | 'ec' | null = null;
+
+	function toggle(menu: 'lead' | 'ec') {
+		open_menu = open_menu === menu ? null : menu;
 	}
 
-	function handle_element_transitions_show(elem: HTMLDivElement) {
-		elem.classList.remove('hidden');
-		elem.classList.remove('transition');
-		elem.classList.remove('ease-in');
-		elem.classList.remove('duration-150');
-		elem.classList.remove('opacity-0');
-		elem.classList.remove('translate-y-1');
-		elem.classList.add('transition');
-		elem.classList.add('ease-out');
-		elem.classList.add('duration-200');
-		elem.classList.add('opacity-100');
-		elem.classList.add('translate-y-0');
-	}
-	function toggle_lead_scoring_options() {
-		if (show_lead_scoring && lead_scoring_options) {
-			handle_element_transitions_hide(lead_scoring_options);
-		} else if (!show_lead_scoring && lead_scoring_options) {
-			handle_element_transitions_show(lead_scoring_options);
-		}
-		show_lead_scoring = !show_lead_scoring;
-	}
-
-	function toggle_enhanced_conversions_options() {
-		if (show_enhanced_conversions && enhanced_conversions_options) {
-			handle_element_transitions_hide(enhanced_conversions_options);
-		} else if (!show_enhanced_conversions && enhanced_conversions_options) {
-			handle_element_transitions_show(enhanced_conversions_options);
-		}
-		show_enhanced_conversions = !show_enhanced_conversions;
+	function close_all() {
+		open_menu = null;
+		mobile_open = false;
 	}
 </script>
 
-<header class="bg-white">
-	<nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+<svelte:window on:click={() => (open_menu = null)} />
+
+<header
+	class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-googlegreyG900/80"
+>
+	<nav class="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8" aria-label="Global">
+		<!-- Wordmark -->
 		<div class="flex lg:flex-1">
-			<a href="/" class="-m-1.5 p-1.5">
-				<span class="sr-only">Your Company</span>
-				<img
-					class="h-8 w-auto"
-					src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-					alt=""
-				/>
+			<a href="/" class="-m-1.5 flex items-center gap-2 p-1.5">
+				<span class="grid grid-cols-2 gap-0.5">
+					<span class="h-2 w-2 rounded-full bg-googlebluecore"></span>
+					<span class="h-2 w-2 rounded-full bg-googleredcore"></span>
+					<span class="h-2 w-2 rounded-full bg-googleyellowcore"></span>
+					<span class="h-2 w-2 rounded-full bg-googlegreencore"></span>
+				</span>
+				<span class="text-base font-semibold tracking-tight text-googlegreyG900 dark:text-white">
+					Technical Solutions
+				</span>
 			</a>
 		</div>
-		<div class="flex lg:hidden">
+
+		<!-- Mobile controls -->
+		<div class="flex items-center gap-1 lg:hidden">
+			<ThemeToggle />
 			<button
 				type="button"
-				class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+				class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-googlegreyG800 dark:text-gray-300"
+				on:click={() => (mobile_open = !mobile_open)}
 			>
-				<span class="sr-only">Open main menu</span>
+				<span class="sr-only">Toggle main menu</span>
 				<svg
 					class="h-6 w-6"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke-width="1.5"
 					stroke="currentColor"
-					aria-hidden="true"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-					/>
+					{#if mobile_open}
+						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+					{:else}
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+						/>
+					{/if}
 				</svg>
 			</button>
 		</div>
-		<div class="hidden lg:flex lg:gap-x-12">
-			<div class="relative">
-				<a href="/contact" class="text-sm font-semibold leading-6 text-gray-900">
-					Contact Us
-					<!-- <svg
-						class="h-5 w-5 flex-none text-gray-400"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-							clip-rule="evenodd"
-						/>
-					</svg> -->
-				</a>
-			</div>
 
-			<a href="/iframe/typeform" class="text-sm font-semibold leading-6 text-gray-900">Iframe</a>
+		<!-- Desktop links -->
+		<div class="hidden lg:flex lg:items-center lg:gap-x-8">
+			<a
+				href="/contact"
+				class="text-sm font-medium text-googlegreyG800 transition-colors hover:text-googlebluecore dark:text-gray-300 dark:hover:text-white"
+			>
+				Contact Us
+			</a>
+			<a
+				href="/iframe/typeform"
+				class="text-sm font-medium text-googlegreyG800 transition-colors hover:text-googlebluecore dark:text-gray-300 dark:hover:text-white"
+			>
+				Iframe
+			</a>
 
 			<div class="relative">
 				<button
 					type="button"
-					class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
-					aria-expanded="false"
-					on:click={toggle_lead_scoring_options}
+					class="flex items-center gap-x-1 text-sm font-medium text-googlegreyG800 transition-colors hover:text-googlebluecore dark:text-gray-300 dark:hover:text-white"
+					aria-expanded={open_menu === 'lead'}
+					on:click|stopPropagation={() => toggle('lead')}
 				>
 					Lead Scoring
 					<svg
-						class="h-5 w-5 flex-none text-gray-400"
+						class="h-4 w-4 transition-transform {open_menu === 'lead' ? 'rotate-180' : ''}"
 						viewBox="0 0 20 20"
 						fill="currentColor"
-						aria-hidden="true"
 					>
 						<path
 							fill-rule="evenodd"
@@ -126,50 +113,35 @@
 						/>
 					</svg>
 				</button>
-				<div
-					bind:this={lead_scoring_options}
-					class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden"
-				>
-					<a
-						on:click={toggle_lead_scoring_options}
-						href="/lead-scoring/google-tag-1"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>Google Tag(HTML Predefined Values)</a
+				{#if open_menu === 'lead'}
+					<div
+						class="absolute -left-4 top-full z-10 mt-3 w-72 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 dark:bg-googlegreyG800 dark:ring-white/10"
 					>
-					<a
-						on:click={toggle_lead_scoring_options}
-						href="/lead-scoring/google-tag-2"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>Google Tag(Programatic Values)</a
-					>
-					<a
-						on:click={toggle_lead_scoring_options}
-						href="/lead-scoring/gtm-1"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>GTM(dataLayer)</a
-					>
-					<a
-						on:click={toggle_lead_scoring_options}
-						href="/lead-scoring/gtm-2"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-						>GTM(HTML Predefined Values)</a
-					>
-				</div>
+						{#each lead_scoring as item}
+							<a
+								href={item.href}
+								on:click={close_all}
+								class="block rounded-lg px-3 py-2 text-sm font-medium text-googlegreyG800 transition-colors hover:bg-googleblueG50 hover:text-googleblueG800 dark:text-gray-200 dark:hover:bg-white/5 dark:hover:text-white"
+							>
+								{item.label}
+							</a>
+						{/each}
+					</div>
+				{/if}
 			</div>
-			<!-- EC Section START -->
+
 			<div class="relative">
 				<button
 					type="button"
-					class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
-					aria-expanded="false"
-					on:click={toggle_enhanced_conversions_options}
+					class="flex items-center gap-x-1 text-sm font-medium text-googlegreyG800 transition-colors hover:text-googlebluecore dark:text-gray-300 dark:hover:text-white"
+					aria-expanded={open_menu === 'ec'}
+					on:click|stopPropagation={() => toggle('ec')}
 				>
 					Enhanced Conversions
 					<svg
-						class="h-5 w-5 flex-none text-gray-400"
+						class="h-4 w-4 transition-transform {open_menu === 'ec' ? 'rotate-180' : ''}"
 						viewBox="0 0 20 20"
 						fill="currentColor"
-						aria-hidden="true"
 					>
 						<path
 							fill-rule="evenodd"
@@ -178,185 +150,76 @@
 						/>
 					</svg>
 				</button>
-				<div
-					bind:this={enhanced_conversions_options}
-					class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 opacity-0 translate-y-1 hidden"
-				>
-					<a
-						on:click={toggle_enhanced_conversions_options}
-						href="/adsenhancedconversions/automatic"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
+				{#if open_menu === 'ec'}
+					<div
+						class="absolute -left-4 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5 dark:bg-googlegreyG800 dark:ring-white/10"
 					>
-						Automatic
-					</a>
-					<a
-						on:click={toggle_enhanced_conversions_options}
-						href="/adsenhancedconversions/css-selector"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-					>
-						CSS Selector
-					</a>
-					<a
-						on:click={toggle_enhanced_conversions_options}
-						href="/adsenhancedconversions/javascript"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-					>
-						JavaScript
-					</a>
-					<a
-						on:click={toggle_enhanced_conversions_options}
-						href="/adsenhancedconversions/code"
-						class="block rounded-lg px-3 py-2 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
-					>
-						Code
-					</a>
-				</div>
+						{#each enhanced_conversions as item}
+							<a
+								href={item.href}
+								on:click={close_all}
+								class="block rounded-lg px-3 py-2 text-sm font-medium text-googlegreyG800 transition-colors hover:bg-googleblueG50 hover:text-googleblueG800 dark:text-gray-200 dark:hover:bg-white/5 dark:hover:text-white"
+							>
+								{item.label}
+							</a>
+						{/each}
+					</div>
+				{/if}
 			</div>
-			<!-- EC Section END -->
 		</div>
-		<div class="hidden lg:flex lg:flex-1 lg:justify-end">
-			<a href="/" class="text-sm font-semibold leading-6 text-gray-900"
-				>Log in <span aria-hidden="true">&rarr;</span></a
+
+		<div class="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-x-4">
+			<ThemeToggle />
+			<a
+				href="/contact"
+				class="rounded-full bg-googlebluecore px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-googleblueG800"
 			>
+				Get in touch
+			</a>
 		</div>
 	</nav>
-	<!-- Mobile menu, show/hide based on menu open state. -->
-	<div class="lg:hidden" role="dialog" aria-modal="true">
-		<!-- Background backdrop, show/hide based on slide-over state. -->
-		<div class="fixed inset-0 z-10"></div>
-		<div
-			class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
-		>
-			<div class="flex items-center justify-between">
-				<a href="/" class="-m-1.5 p-1.5">
-					<span class="sr-only">Your Company</span>
-					<img
-						class="h-8 w-auto"
-						src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-						alt=""
-					/>
-				</a>
-				<button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-					<span class="sr-only">Close menu</span>
-					<svg
-						class="h-6 w-6"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						aria-hidden="true"
+
+	<!-- Mobile menu -->
+	{#if mobile_open}
+		<div class="border-t border-gray-200 lg:hidden dark:border-white/10">
+			<div class="space-y-1 px-4 py-4">
+				<a
+					href="/contact"
+					on:click={close_all}
+					class="block rounded-lg px-3 py-2 text-base font-medium text-googlegreyG800 hover:bg-googleblueG50 dark:text-gray-200 dark:hover:bg-white/5"
+					>Contact Us</a
+				>
+				<a
+					href="/iframe/typeform"
+					on:click={close_all}
+					class="block rounded-lg px-3 py-2 text-base font-medium text-googlegreyG800 hover:bg-googleblueG50 dark:text-gray-200 dark:hover:bg-white/5"
+					>Iframe</a
+				>
+
+				<p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wide text-googlegreycore">
+					Lead Scoring
+				</p>
+				{#each lead_scoring as item}
+					<a
+						href={item.href}
+						on:click={close_all}
+						class="block rounded-lg px-3 py-2 text-sm font-medium text-googlegreyG800 hover:bg-googleblueG50 dark:text-gray-200 dark:hover:bg-white/5"
+						>{item.label}</a
 					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
-			</div>
-			<div class="mt-6 flow-root">
-				<div class="-my-6 divide-y divide-gray-500/10">
-					<div class="space-y-2 py-6">
-						<div class="-mx-3">
-							<button
-								type="button"
-								class="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-								aria-controls="disclosure-1"
-								aria-expanded="false"
-							>
-								Product
-								<!--
-                    Expand/collapse icon, toggle classes based on menu open state.
-  
-                    Open: "rotate-180", Closed: ""
-                  -->
-								<svg
-									class="h-5 w-5 flex-none"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							</button>
-						</div>
+				{/each}
 
-						<a
-							href="/iframe/typeform"
-							class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-							>Iframe</a
-						>
-						<a
-							href="/"
-							class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-							>Marketplace</a
-						>
-
-						<div class="-mx-3">
-							<button
-								type="button"
-								class="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-								aria-controls="disclosure-2"
-								aria-expanded="false"
-							>
-								Company
-								<!--
-                    Expand/collapse icon, toggle classes based on menu open state.
-  
-                    Open: "rotate-180", Closed: ""
-                  -->
-								<svg
-									class="h-5 w-5 flex-none"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							</button>
-							<!-- 'Company' sub-menu, show/hide based on menu state. -->
-							<div class="mt-2 space-y-2" id="disclosure-2">
-								<a
-									href="/"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>About us</a
-								>
-								<a
-									href="/"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Careers</a
-								>
-								<a
-									href="/"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Support</a
-								>
-								<a
-									href="/"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Press</a
-								>
-								<a
-									href="/"
-									class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-									>Blog</a
-								>
-							</div>
-						</div>
-					</div>
-					<div class="py-6">
-						<a
-							href="/"
-							class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-							>Log in</a
-						>
-					</div>
-				</div>
+				<p class="px-3 pt-4 text-xs font-semibold uppercase tracking-wide text-googlegreycore">
+					Enhanced Conversions
+				</p>
+				{#each enhanced_conversions as item}
+					<a
+						href={item.href}
+						on:click={close_all}
+						class="block rounded-lg px-3 py-2 text-sm font-medium text-googlegreyG800 hover:bg-googleblueG50 dark:text-gray-200 dark:hover:bg-white/5"
+						>{item.label}</a
+					>
+				{/each}
 			</div>
 		</div>
-	</div>
+	{/if}
 </header>
