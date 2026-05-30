@@ -27,7 +27,7 @@
 // if(!getApps().length){
 // 	initializeApp({
 // 		credential: cert(firebase_service_account)
-// 	});  
+// 	});
 // }
 // else{
 // 	getApps()[0]
@@ -36,7 +36,7 @@
 // const db = getFirestore();
 // db.settings({ ignoreUndefinedProperties: true });
 
-// export const POST: RequestHandler = async ({ request, getClientAddress }) => {	
+// export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 // 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // 	const header_data: any = {};
 // 	for (const pair of request.headers.entries()) {
@@ -59,20 +59,16 @@
 //             .update(normalized_email)
 //             // Encoding to be used
 //             .digest("base64url");
-    
+
 //           return json({ email_hash });
 //         }
 //       } else {
 //         return json({ error: "Provide a email query parameter" });
 //       }
-	
+
 // 	try{
 // 		await db.collection('hermes_project_3_form_submit_logs').add({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie, timestamp: FieldValue.serverTimestamp() });
 // 	}catch(err){
 // 		console.log(err);
-// 	}	
+// 	}
 // };
-
-
-
-	

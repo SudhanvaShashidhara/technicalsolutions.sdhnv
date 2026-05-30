@@ -86,7 +86,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="additional_details" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+					<label
+						for="additional_details"
+						class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 						>Additional Details</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">

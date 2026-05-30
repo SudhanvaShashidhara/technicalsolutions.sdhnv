@@ -1,13 +1,8 @@
 <script>
-    
 </script>
 
 <svelte:head>
-    <title>
-        Floodlight GTM implementation | dataLayer
-    </title>
+	<title>Floodlight GTM implementation | dataLayer</title>
 </svelte:head>
 
-<h1>
-    Floodlight GTM implementation | dataLayer
-</h1>
+<h1>Floodlight GTM implementation | dataLayer</h1>
