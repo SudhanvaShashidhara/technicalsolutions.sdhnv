@@ -9,14 +9,14 @@
 		const additional_details = form_data.get('additional_details');
 		const form_entered_data = { full_name, email, service_details, additional_details };
 
-		const service_val : any = document
-				.querySelector(`option[value="${form_entered_data.service_details}"]`)
-				?.getAttribute('data-lead-value');
-				console.log(form_entered_data)
-				console.log(parseInt(service_val))
-				window.gtag('event', 'conversion', {
-					send_to: 'AW-700270946/XObGCK639_8YEOKS9c0C',
-			value: parseInt(service_val),
+		const service_val = document
+			.querySelector(`option[value="${form_entered_data.service_details}"]`)
+			?.getAttribute('data-lead-value');
+		console.log(form_entered_data);
+		console.log(parseInt(service_val ?? ''));
+		window.gtag('event', 'conversion', {
+			send_to: 'AW-700270946/XObGCK639_8YEOKS9c0C',
+			value: parseInt(service_val ?? ''),
 			currency: 'USD'
 		});
 		form_submitted = true;
@@ -97,7 +97,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="additional_details" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+					<label
+						for="additional_details"
+						class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
 						>Additional Details</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
