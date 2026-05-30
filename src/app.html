@@ -8,6 +8,19 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 		<meta name="viewport" content="width=device-width" />
+		<!-- Set theme before first paint to avoid a flash of the wrong mode -->
+		<script>
+			(function () {
+				try {
+					var stored = localStorage.getItem('theme');
+					var dark =
+						stored === 'dark' ||
+						(!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+					document.documentElement.classList.toggle('dark', dark);
+					document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+				} catch (e) {}
+			})();
+		</script>
 		<script src="https://www.google.com/recaptcha/enterprise.js?render=6Ld4dvEsAAAAAG7XroCc9SEzqIvqX3ftm7YtwQF7"></script>
 		<script>
 			(function (w, d, s, l, i) {

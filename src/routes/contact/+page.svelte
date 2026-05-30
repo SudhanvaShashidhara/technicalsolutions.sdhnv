@@ -19,11 +19,15 @@
 	}
 </script>
 
-<div class="space-y-10 divide-y divide-gray-900/10 w-11/12 lg:w-10/12 xl:w-9/12 mx-auto mb-10">
+<div
+	class="mx-auto mb-10 w-11/12 space-y-10 divide-y divide-gray-900/10 lg:w-10/12 xl:w-9/12 dark:divide-white/10"
+>
 	<div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
 		<div class="px-4 sm:px-0">
-			<h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-			<p class="mt-1 text-sm leading-6 text-gray-600">
+			<h2 class="text-base font-semibold leading-7 text-gray-900 dark:text-gray-100">
+				Personal Information
+			</h2>
+			<p class="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
 				Use a permanent address where you can receive mail.
 			</p>
 		</div>

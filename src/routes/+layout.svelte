@@ -7,7 +7,7 @@
 <!-- Header Start -->
 <Navbar />
 <!-- Header End -->
-<main class="bg-slate-50">
+<main class="min-h-screen bg-slate-50 transition-colors dark:bg-googlegreyG900">
 	<slot />
 </main>
 <!-- Footer Start -->

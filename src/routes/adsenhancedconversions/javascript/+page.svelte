@@ -22,7 +22,7 @@
 <form
 	id="javascript_form"
 	on:submit|preventDefault={handle_submit}
-	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 pb-12"
+	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 dark:border-white/10 pb-12"
 >
 	<div class="space-y-12">
 		<div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
@@ -79,7 +79,9 @@
 
 			<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
 				<div class="col-start-2 sm:col-span-7">
-					<label for="full-name" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="full-name"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Full name</label
 					>
 					<div class="mt-2">
@@ -95,7 +97,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="email" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="email"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Email address</label
 					>
 					<div class="mt-2">
@@ -111,7 +115,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="tel" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="tel"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Phone Number</label
 					>
 					<div class="mt-2">
@@ -127,7 +133,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="service_details" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="service_details"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Select your service</label
 					>
 					<div class="mt-2">
@@ -147,7 +155,9 @@
 				</div>
 
 				<div class="col-start-2 sm:col-span-7">
-					<label for="service_requirement" class="block text-sm font-medium leading-6 text-gray-900"
+					<label
+						for="service_requirement"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
 						>Service Requirement?</label
 					>
 					<div class="mt-2">
@@ -166,7 +176,7 @@
 				<div class="col-start-2 sm:col-span-7">
 					<label
 						for="additional_details"
-						class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5"
+						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
 						>Additional Details</label
 					>
 					<div class="mt-2 sm:col-span-2 sm:mt-0">
