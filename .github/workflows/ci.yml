@@ -9,6 +9,16 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # SvelteKit generates types for `$env/static/*` from the env present at
+    # `svelte-kit sync` time, so these must be set for `check`/`build` to pass.
+    # Real values come from repo secrets if configured; otherwise placeholders
+    # are fine — CI only type-checks, builds, and loads the landing page.
+    env:
+      PUBLIC_RECAPTCHA_V3_SITE_KEY: ${{ secrets.PUBLIC_RECAPTCHA_V3_SITE_KEY || 'ci-placeholder' }}
+      PUBLIC_RECAPTCHA_V2_SITE_KEY: ${{ secrets.PUBLIC_RECAPTCHA_V2_SITE_KEY || 'ci-placeholder' }}
+      RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY || 'ci-placeholder' }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID || 'ci-placeholder' }}
+      TYPEFORM_TOKEN: ${{ secrets.TYPEFORM_TOKEN || 'ci-placeholder' }}
     steps:
       - uses: actions/checkout@v4
 
