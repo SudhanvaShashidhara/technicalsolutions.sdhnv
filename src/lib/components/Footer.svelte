@@ -51,10 +51,14 @@
 						<h3 class="text-sm font-semibold leading-6 text-white">Other Tags</h3>
 						<ul role="list" class="mt-6 space-y-4">
 							<li>
-								<a href="/iframe/typeform" class="text-sm leading-6 text-gray-300 hover:text-white">Iframe(TYPEFORM)</a>
+								<a href="/iframe/typeform" class="text-sm leading-6 text-gray-300 hover:text-white"
+									>Iframe(TYPEFORM)</a
+								>
 							</li>
 							<li>
-								<a href="/iframe/calendly" class="text-sm leading-6 text-gray-300 hover:text-white">Iframe(Calendly)</a>
+								<a href="/iframe/calendly" class="text-sm leading-6 text-gray-300 hover:text-white"
+									>Iframe(Calendly)</a
+								>
 							</li>
 							<li>
 								<a href="/" class="text-sm leading-6 text-gray-300 hover:text-white">Jobs</a>
@@ -184,7 +188,14 @@
 				</a>
 			</div>
 			<p class="mt-8 text-xs leading-5 text-white md:order-1 md:mt-0 bg-black p-4 rounded-md">
-				&copy;{new Date().getFullYear()} Made in BLR by <a target="_blank" rel="noopener noreferrer" class="font-black" style="color: #4285f4" href="mailto:sudhanvashashidhara@gmail.com">Sudhanva S</a>
+				&copy;{new Date().getFullYear()} Made in BLR by
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					class="font-black"
+					style="color: #4285f4"
+					href="mailto:sudhanvashashidhara@gmail.com">Sudhanva S</a
+				>
 			</p>
 		</div>
 	</div>
