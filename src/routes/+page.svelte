@@ -92,7 +92,7 @@
 					<div
 						class="absolute -inset-y-px -left-3 -z-10 w-full origin-bottom-left skew-x-[-30deg] bg-indigo-100 opacity-20 ring-1 ring-inset ring-white"
 						aria-hidden="true"
-					/>
+					></div>
 					<div class="mx-auto max-w-2xl sm:mx-0 sm:max-w-none">
 						<img
 							src="https://tailwindui.com/img/component-images/project-app-screenshot.png"
@@ -105,7 +105,7 @@
 					<div
 						class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 sm:rounded-3xl"
 						aria-hidden="true"
-					/>
+					></div>
 				</div>
 			</div>
 		</div>
