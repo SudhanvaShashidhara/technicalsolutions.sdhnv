@@ -15,13 +15,10 @@
 		const email = form_data.get('email');
 		const additional_details = form_data.get('additional_details');
 		const interest = form_data.getAll('interest');
-		console.log(interest);
 		const form_entered_data = { full_name, email, additional_details, interest };
 		interest.forEach((interests) => {
 			lead_value += lead_value_map[interests as keyof typeof lead_value_map];
 		});
-		console.log(form_entered_data);
-		console.log(lead_value);
 		window.dataLayer.push({
 			event: 'form_submit_complete',
 			form_data: form_entered_data,

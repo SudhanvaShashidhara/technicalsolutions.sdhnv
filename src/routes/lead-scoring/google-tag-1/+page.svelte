@@ -12,8 +12,6 @@
 		const service_val = document
 			.querySelector(`option[value="${form_entered_data.service_details}"]`)
 			?.getAttribute('data-lead-value');
-		console.log(form_entered_data);
-		console.log(parseInt(service_val ?? ''));
 		window.gtag('event', 'conversion', {
 			send_to: 'AW-700270946/XObGCK639_8YEOKS9c0C',
 			value: parseInt(service_val ?? ''),

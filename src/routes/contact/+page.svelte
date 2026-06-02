@@ -1,7 +1,10 @@
 <script lang="ts">
+	let form_submitted = false;
+
 	function handleContactFormSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		const form_data = new FormData(e.target as HTMLFormElement);
+		const form = e.target as HTMLFormElement;
+		const form_data = new FormData(form);
 		fetch(`/api/ec-sha-tester?email=${form_data.get('email')}`)
 			.then(function (res) {
 				return res.json();
@@ -16,6 +19,8 @@
 				// window.gtag('event', 'conversion', {'send_to': 'AW-10852928527/FWmCCJe6oqUZEI-Yirco'});
 				// window.dataLayer.push({'sha256_email_address': data.email_hash, 'event': 'contact_form_submit', 'email_hash2': data.email_hash2});
 			});
+		form_submitted = true;
+		form.reset();
 	}
 </script>
 
@@ -170,6 +175,27 @@
 					>Save</button
 				>
 			</div>
+			{#if form_submitted}
+				<div
+					class="flex items-center rounded-b-xl bg-googlegreenG50 px-4 py-4 sm:px-8 dark:bg-googlegreenG900/20"
+				>
+					<svg
+						class="h-5 w-5 flex-shrink-0 text-googlegreenG800 dark:text-green-400"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					<p class="ml-3 text-sm font-medium text-googlegreenG800 dark:text-green-300">
+						Thanks! Your details have been submitted.
+					</p>
+				</div>
+			{/if}
 		</form>
 	</div>
 </div>
