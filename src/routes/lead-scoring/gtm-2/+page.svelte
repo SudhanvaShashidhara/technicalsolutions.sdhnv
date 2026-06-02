@@ -35,8 +35,6 @@
 				service_requirement as keyof typeof service_requirement_value_map
 			];
 		const total_value = service_details_lead_value + service_requirement_lead_value;
-		console.log('Total Value:', total_value);
-		console.log(form_entered_data);
 		window.dataLayer.push({
 			event: 'form_submit_complete',
 			form_data: form_entered_data,

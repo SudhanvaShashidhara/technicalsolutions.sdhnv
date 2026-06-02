@@ -2,14 +2,6 @@
 	let form_submitted = false;
 	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
-		const form_data = new FormData(form);
-		const full_name = form_data.get('full-name');
-		const email = form_data.get('email');
-		const income = form_data.get('income');
-		const years_at_address = form_data.get('years_at_address');
-		const about = form_data.get('about');
-		const form_entered_data = { full_name, email, income, about, years_at_address };
-		console.log(form_entered_data);
 		form_submitted = true;
 		form.reset();
 	}
