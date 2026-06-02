@@ -1,79 +1,15 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { v2SiteKey, loadScript } from '$lib/recaptcha';
-
-	let form_submitted = false,
-		form_message = '';
-	let recaptcha_v2_token = '';
-	let recaptcha_v2_token_success = '';
-	let recaptcha_v2_error = '';
-	let widget_id: number | null = null;
-
-	function initRecaptchaV2() {
-		const grecaptcha = window.grecaptcha?.enterprise;
-		if (grecaptcha && grecaptcha.render) {
-			try {
-				widget_id = grecaptcha.render('recaptcha-v2-container', {
-					sitekey: v2SiteKey,
-					callback: (token: string) => {
-						recaptcha_v2_token = token;
-						recaptcha_v2_error = '';
-					},
-					'expired-callback': () => {
-						recaptcha_v2_token = '';
-					},
-					'error-callback': () => {
-						recaptcha_v2_error = 'reCAPTCHA encountered an error. Please try again.';
-					}
-				});
-			} catch (e) {
-				console.error('Error rendering reCAPTCHA Enterprise v2:', e);
-			}
-		}
-	}
-
-	onMount(() => {
-		window.onRecaptchaV2Load = () => {
-			initRecaptchaV2();
-		};
-
-		if (window.grecaptcha?.enterprise) {
-			initRecaptchaV2();
-		} else {
-			loadScript(
-				'https://www.google.com/recaptcha/enterprise.js?onload=onRecaptchaV2Load&render=explicit'
-			).catch((err) => {
-				recaptcha_v2_error = 'Failed to load reCAPTCHA Enterprise script';
-				console.error(err);
-			});
-		}
-	});
-
-	onDestroy(() => {
-		if (typeof window !== 'undefined') {
-			delete window.onRecaptchaV2Load;
-		}
-	});
+	let form_submitted = false;
+	let form_message = '';
 
 	function handle_submit(e: SubmitEvent) {
-		if (!recaptcha_v2_token) {
-			recaptcha_v2_error = 'Please complete the reCAPTCHA checkbox verification.';
-			return;
-		}
-
 		const form = e.target as HTMLFormElement;
 		const form_data = new FormData(form);
 		const email = form_data.get('email');
 		const tel = form_data.get('tel');
 
 		form_message = `Thanks for submitting the form. A confirmation email is sent to ${email}. We will also be contacting you at ${tel}`;
-		recaptcha_v2_token_success = recaptcha_v2_token;
 		form_submitted = true;
-
-		if (window.grecaptcha?.enterprise && widget_id !== null) {
-			window.grecaptcha.enterprise.reset(widget_id);
-		}
-		recaptcha_v2_token = '';
 		form.reset();
 	}
 </script>
@@ -254,13 +190,6 @@
 					</div>
 				</div>
 
-				<div class="col-start-2 sm:col-span-7">
-					<div id="recaptcha-v2-container" class="my-4"></div>
-					{#if recaptcha_v2_error}
-						<p class="text-sm text-red-600 mt-1 font-medium">{recaptcha_v2_error}</p>
-					{/if}
-				</div>
-
 				<div class="col-start-2 flex justify-end sm:col-span-7">
 					<button
 						type="submit"
@@ -291,14 +220,6 @@
 				</div>
 				<div class="ml-3 flex-1">
 					<p id="form_success" class="text-sm font-medium text-green-800">{form_message}</p>
-					{#if recaptcha_v2_token_success}
-						<p class="mt-2 text-xs font-semibold text-green-700">
-							reCAPTCHA v2 Token: <span
-								class="font-mono bg-green-100 p-1 rounded break-all select-all"
-								>{recaptcha_v2_token_success}</span
-							>
-						</p>
-					{/if}
 				</div>
 				<div class="ml-auto pl-3">
 					<div class="-mx-1.5 -my-1.5">
