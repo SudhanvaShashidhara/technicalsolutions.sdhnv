@@ -21,7 +21,7 @@
 		{
 			href: '/contact',
 			title: 'Contact',
-			body: 'reCAPTCHA-protected contact forms wired to the verification backend.',
+			body: 'A contact form demo for capturing and validating lead details.',
 			dot: 'bg-googlegreencore'
 		}
 	];
