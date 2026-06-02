@@ -1,85 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { v3SiteKey, loadScript } from '$lib/recaptcha';
-
 	let form_submitted = false,
 		form_email: FormDataEntryValue | null = '',
 		form_tel: FormDataEntryValue | null = '';
-	let recaptcha_token = '';
-	let is_recaptcha_loading = false;
-	let recaptcha_error = '';
-	let recaptcha_score: number | null = null;
 
-	onMount(() => {
-		// Use Google reCAPTCHA Enterprise script
-		loadScript(`https://www.google.com/recaptcha/enterprise.js?render=${v3SiteKey}`).catch(
-			(err) => {
-				recaptcha_error = 'Failed to load reCAPTCHA Enterprise script';
-				console.error(err);
-			}
-		);
-	});
-
-	async function handle_submit(e: SubmitEvent) {
+	function handle_submit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
 		const form_data = new FormData(form);
-		const email = form_data.get('email');
-		form_email = email;
-		const tel = form_data.get('tel');
-		form_tel = tel;
-
-		// Set form submitted instantly to show the visual feedback and loader immediately
+		form_email = form_data.get('email');
+		form_tel = form_data.get('tel');
 		form_submitted = true;
-		is_recaptcha_loading = true;
-		recaptcha_error = '';
-		recaptcha_token = '';
-		recaptcha_score = null;
-
-		if (typeof window !== 'undefined' && window.grecaptcha && window.grecaptcha.enterprise) {
-			try {
-				const grecaptcha = window.grecaptcha.enterprise;
-				await new Promise<void>((resolve, reject) => {
-					grecaptcha.ready(() => resolve());
-					setTimeout(() => reject(new Error('reCAPTCHA Enterprise timed out')), 5000);
-				});
-				const token = await grecaptcha.execute(v3SiteKey, { action: 'submit' });
-				recaptcha_token = token;
-
-				// Verify token on the backend to fetch the score
-				const verifyRes = await fetch('/api/verify-recaptcha', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						token,
-						siteKey: v3SiteKey,
-						action: 'submit'
-					})
-				});
-
-				if (verifyRes.ok) {
-					const verifyData = await verifyRes.json();
-					if (verifyData.success) {
-						recaptcha_score = verifyData.score;
-					} else {
-						recaptcha_error = `Backend verification failed: ${verifyData.error}`;
-					}
-				} else {
-					recaptcha_error = `Server verification request failed (${verifyRes.status})`;
-				}
-			} catch (err) {
-				console.error('reCAPTCHA Enterprise execution failed:', err);
-				recaptcha_error = `reCAPTCHA Enterprise verification failed: ${err instanceof Error ? err.message : err}`;
-				recaptcha_token = '';
-			} finally {
-				is_recaptcha_loading = false;
-			}
-		} else {
-			recaptcha_error = 'reCAPTCHA Enterprise script not loaded yet';
-			is_recaptcha_loading = false;
-		}
-
 		form.reset();
 	}
 </script>
@@ -294,47 +223,6 @@
 							>{form_email}</span
 						>. We will also be contacting you at <span class="ec_tel">{form_tel}</span>.
 					</p>
-					{#if is_recaptcha_loading}
-						<p class="mt-2 text-xs font-semibold text-green-700 animate-pulse">
-							Generating and verifying reCAPTCHA v3 Token...
-						</p>
-					{:else}
-						{#if recaptcha_token}
-							<div class="mt-2 space-y-2 text-xs">
-								<p class="font-semibold text-green-700">
-									reCAPTCHA v3 Token: <span
-										class="font-mono bg-green-100 p-1 rounded break-all select-all"
-										>{recaptcha_token}</span
-									>
-								</p>
-								{#if typeof recaptcha_score === 'number'}
-									<p class="font-semibold text-green-700 flex items-center gap-2">
-										reCAPTCHA v3 Score:
-										<span
-											class="px-2 py-0.5 rounded font-mono text-sm font-bold text-white {recaptcha_score >=
-											0.7
-												? 'bg-emerald-600'
-												: recaptcha_score >= 0.4
-													? 'bg-amber-500'
-													: 'bg-rose-600'}"
-										>
-											{recaptcha_score.toFixed(1)}
-										</span>
-										<span class="text-gray-500 italic">
-											({recaptcha_score >= 0.7
-												? 'Likely human (low risk)'
-												: recaptcha_score >= 0.4
-													? 'Ambiguous'
-													: 'Likely bot (high risk)'})
-										</span>
-									</p>
-								{/if}
-							</div>
-						{/if}
-						{#if recaptcha_error}
-							<p class="mt-2 text-xs font-semibold text-red-700">{recaptcha_error}</p>
-						{/if}
-					{/if}
 				</div>
 				<div class="ml-auto pl-3">
 					<div class="-mx-1.5 -my-1.5">
