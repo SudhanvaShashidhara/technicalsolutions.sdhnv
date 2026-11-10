@@ -1,10 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+	--color-googlebluecore: #4285f4;
+	--color-googleredcore: #ea4335;
+	--color-googleyellowcore: #fbbc04;
+	--color-googlegreencore: #34a853;
+	--color-googlegreycore: #9aa0a6;
+	--color-googleblue600: #1a73e8;
+	--color-googleblue700: #1557b0;
+	--color-googleblue300: #8ab4f8;
+	--color-googleblue200: #aecbfa;
+	--color-googleblueG50: #e8f0fe;
+	--color-googleredG50: #fce8e6;
+	--color-googleyellowG50: #fef7e0;
+	--color-googlegreenG50: #e6f4ea;
+	--color-googlegreyG50: #f8f9fa;
+	--color-googlegreyG100: #f1f3f4;
+	--color-googlegreyG200: #e8eaed;
+	--color-googlegreyG300: #dadce0;
+	--color-googlegreyG600: #80868b;
+	--color-googlegreyG700: #5f6368;
+	--color-googleblueG800: #185abc;
+	--color-googleredG800: #b31412;
+	--color-googleyellowG800: #ea8600;
+	--color-googlegreenG800: #137333;
+	--color-googlegreyG800: #3c4043;
+	--color-googleblueG900: #174ea6;
+	--color-googleredG900: #a50e0e;
+	--color-googleyellowG900: #e37400;
+	--color-googlegreenG900: #0d652d;
+	--color-googlegreyG900: #202124;
+	--color-googledarkcard: #292a2d;
+	--color-googledarktonal: #303134;
+}
 
 @layer base {
 	html {
-		font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+		font-family: var(--font-sans);
 		scroll-behavior: smooth;
 	}
 
@@ -15,13 +53,14 @@
 }
 
 @layer components {
-	.g-card {
+	.g-card,
+	.g-card-interactive {
 		@apply rounded-2xl border border-googlegreyG300 bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.06)];
 		@apply dark:border-googlegreyG800 dark:bg-googledarkcard dark:shadow-none;
 	}
 
 	.g-card-interactive {
-		@apply g-card transition-[border-color,box-shadow] duration-150;
+		@apply transition-[border-color,box-shadow] duration-150;
 		@apply hover:border-googleblue600/50 hover:shadow-[0_1px_3px_0_rgba(60,64,67,0.16),0_4px_8px_3px_rgba(60,64,67,0.08)];
 		@apply dark:hover:border-googleblue300/50 dark:hover:bg-googledarktonal;
 	}
@@ -34,7 +73,7 @@
 		@apply block w-full rounded-lg border border-googlegreyG300 bg-white px-3.5 py-2.5 text-sm text-googlegreyG900 transition-colors;
 		@apply placeholder:text-googlegreyG600;
 		@apply hover:border-googlegreyG600;
-		@apply focus:border-googleblue600 focus:outline-none focus:ring-2 focus:ring-googleblue600/20;
+		@apply focus:border-googleblue600 focus:ring-2 focus:ring-googleblue600/20 focus:outline-none;
 		@apply dark:border-googlegreyG700 dark:bg-googlegreyG900 dark:text-googlegreyG200 dark:placeholder:text-googlegreycore;
 		@apply dark:hover:border-googlegreycore dark:focus:border-googleblue300 dark:focus:ring-googleblue300/25;
 	}
@@ -54,27 +93,32 @@
 		@apply dark:border-googlegreyG700 dark:bg-transparent dark:text-googleblue300 dark:hover:border-googleblue300/40 dark:hover:bg-googleblue300/10;
 	}
 
-	.g-chip {
+	.g-chip,
+	.g-chip-blue,
+	.g-chip-green,
+	.g-chip-yellow,
+	.g-chip-red,
+	.g-chip-neutral {
 		@apply inline-flex items-center rounded-md px-2 py-0.5 font-mono text-xs font-medium;
 	}
 
 	.g-chip-blue {
-		@apply g-chip bg-googleblueG50 text-googleblueG800 dark:bg-googleblue300/15 dark:text-googleblue300;
+		@apply bg-googleblueG50 text-googleblueG800 dark:bg-googleblue300/15 dark:text-googleblue300;
 	}
 
 	.g-chip-green {
-		@apply g-chip bg-googlegreenG50 text-googlegreenG800 dark:bg-googlegreencore/15 dark:text-[#81C995];
+		@apply bg-googlegreenG50 text-googlegreenG800 dark:bg-googlegreencore/15 dark:text-[#81C995];
 	}
 
 	.g-chip-yellow {
-		@apply g-chip bg-googleyellowG50 text-googleyellowG900 dark:bg-googleyellowcore/15 dark:text-[#FDD663];
+		@apply bg-googleyellowG50 text-googleyellowG900 dark:bg-googleyellowcore/15 dark:text-[#FDD663];
 	}
 
 	.g-chip-red {
-		@apply g-chip bg-googleredG50 text-googleredG800 dark:bg-googleredcore/15 dark:text-[#F28B82];
+		@apply bg-googleredG50 text-googleredG800 dark:bg-googleredcore/15 dark:text-[#F28B82];
 	}
 
 	.g-chip-neutral {
-		@apply g-chip bg-googlegreyG100 text-googlegreyG700 dark:bg-googlegreyG800 dark:text-googlegreyG200;
+		@apply bg-googlegreyG100 text-googlegreyG700 dark:bg-googlegreyG800 dark:text-googlegreyG200;
 	}
 }

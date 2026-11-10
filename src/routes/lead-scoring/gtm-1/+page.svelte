@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { leadScoringLinks } from '$lib/nav';
-	import { pushDataLayer } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { leadScoringLinks } from '#lib/nav.ts';
+	import { pushDataLayer } from '#lib/gtag.ts';
 
 	let submitted = $state(false);
 	let livePayload = $state<Record<string, unknown> | null>(null);

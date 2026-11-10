@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { page } from '$app/stores';
-	import type { NavItem } from '$lib/nav';
+	import { page } from '$app/state';
+	import type { NavItem } from '#lib/nav.ts';
 
 	interface Props {
 		title: string;
@@ -100,7 +100,7 @@
 			<nav class="-mb-px mt-6 flex gap-1 overflow-x-auto" aria-label="{category} implementations">
 				{#each tabs as tab (tab.href)}
 					{@const cleanHref = tab.href.split('?')[0]}
-					{@const active = $page.url.pathname === cleanHref}
+					{@const active = page.url.pathname === cleanHref}
 					<a
 						href={tab.href}
 						aria-current={active ? 'page' : undefined}

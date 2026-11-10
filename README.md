@@ -5,17 +5,18 @@ conversions, Search Ads 360 Floodlight tagging, cross-origin iframe embeds, and 
 normalization. Every page pairs a working demo with a **Live Tag Payload** inspector and copy-ready
 implementation snippet.
 
-Built with **SvelteKit 2 + Svelte 5** (TypeScript, strict mode), styled with **Tailwind CSS** in a
-clean Google Material / Google Developers aesthetic with persisted **dark mode**, and deployed to
-**Vercel** (`@sveltejs/adapter-vercel`, runtime `nodejs22.x`).
+Built with **SvelteKit 3 + Svelte 5** (TypeScript 6, strict mode, Vite 8), styled with **Tailwind
+CSS v4** in a clean Google Material / Google Developers aesthetic with persisted **dark mode**, and
+deployed to **Vercel** (`@sveltejs/adapter-vercel` v7).
 
 Live: https://technicalsolutions.sdhnv.com
 
 ## Features
 
-- **Google Developers / Material UI + Dark Mode** — unified design primitives (`src/app.css`),
-  persisted theme store (`src/lib/theme.ts`) with a no-flash inline script in `src/app.html`,
-  sibling implementation tabs, and live JSON payload inspection on every demo page.
+- **Google Developers / Material UI + Dark Mode** — unified Tailwind CSS v4 design tokens and
+  primitives (`src/app.css`), persisted theme store (`src/lib/theme.ts`) with a no-flash inline
+  script in `src/app.html`, sibling implementation tabs, and live JSON payload inspection on every
+  demo page.
 - **Lead Scoring (`/lead-scoring/*`)** — pass qualification scores via HTML `data-lead-value`
   attributes, programmatic JavaScript lookup maps, GTM `dataLayer`, combined multi-field scores, and
   multi-select checkboxes.
@@ -31,8 +32,7 @@ Live: https://technicalsolutions.sdhnv.com
 
 ## Getting started
 
-Requires **Node `>=22`** (matches the Vercel `nodejs22.x` runtime; `.npmrc` sets
-`engine-strict=true`).
+Requires **Node `>=24`** (`.npmrc` sets `engine-strict=true`).
 
 ```bash
 npm install
@@ -47,18 +47,20 @@ npm run dev            # start Vite dev server
 | `npm run dev`              | Start Vite dev server                                   |
 | `npm run build`            | Build production bundle                                 |
 | `npm run preview`          | Preview production build                                |
-| `npm run check`            | `svelte-kit sync` + `svelte-check` (TypeScript)         |
-| `npm run lint`             | `prettier --check .` + `eslint .`                       |
+| `npm run check`            | `svelte-kit sync` + `svelte-check` (TypeScript 6)       |
+| `npm run lint`             | `prettier --check .` + `eslint .` (ESLint 10)           |
 | `npm run format`           | Format codebase with Prettier                           |
-| `npm run test:unit`        | Run Vitest unit & API endpoint tests (`vitest run`)     |
+| `npm run test:unit`        | Run Vitest 5 unit & API endpoint tests (`vitest run`)   |
 | `npm run test:integration` | Run Playwright end-to-end tests (`tests/`)              |
 | `npm run test`             | Run Playwright integration tests then Vitest unit tests |
 
 ## Project structure
 
-- `src/lib/nav.ts` — centralized route metadata and shared scoring options
-- `src/lib/ec-hash.ts` — Google Ads Enhanced Conversions email/phone normalization & SHA-256 hashing
-- `src/lib/gtag.ts` — safe `callGtag` and `pushDataLayer` wrappers
+- `vite.config.ts` — Vite 8, Tailwind CSS v4 (`@tailwindcss/vite`), and SvelteKit 3 + Vercel adapter configuration
+- `src/env.ts` — typed SvelteKit 3 environment variable schema (`TYPEFORM_TOKEN`)
+- `src/lib/nav.ts` — centralized route metadata and shared scoring options (`#lib/nav.ts`)
+- `src/lib/ec-hash.ts` — Google Ads Enhanced Conversions email/phone normalization & SHA-256 hashing (`#lib/ec-hash.ts`)
+- `src/lib/gtag.ts` — safe `callGtag` and `pushDataLayer` wrappers (`#lib/gtag.ts`)
 - `src/lib/components/` — `Navbar`, `Footer`, `ThemeToggle`, `DemoPageShell`, `ServiceLeadForm`
 - `src/routes/` — file-based pages and `/api/*` server endpoints
 

@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 /**
  * Safely pushes an event/payload object onto `window.dataLayer`.

@@ -4,22 +4,22 @@ This file provides guidance to AI coding assistants working in this repository.
 
 ## Project
 
-SvelteKit 2 + Svelte 5 app (TypeScript, strict mode) deployed to Vercel via `@sveltejs/adapter-vercel` (runtime `nodejs22.x`). Hosts interactive reference implementations for Google Ads measurement — lead scoring, enhanced conversions, Search Ads 360 Floodlight tagging, cross-origin iframe embeds, and SHA-256 normalization/hashing tools. Styled with Tailwind CSS in a Google Material / Google Developers design language with persisted dark mode.
+SvelteKit 3 + Svelte 5 app (TypeScript 6, strict mode, Vite 8) deployed to Vercel via `@sveltejs/adapter-vercel` v7. Hosts interactive reference implementations for Google Ads measurement — lead scoring, enhanced conversions, Search Ads 360 Floodlight tagging, cross-origin iframe embeds, and SHA-256 normalization/hashing tools. Styled with Tailwind CSS v4 (`@tailwindcss/vite`) in a Google Material / Google Developers design language with persisted dark mode.
 
 ## Commands
 
 - `npm run check` — `svelte-kit sync` + `svelte-check` (TypeScript validation). **Run this before considering any change done.**
-- `npm run lint` — `prettier --check .` then `eslint .`
+- `npm run lint` — `prettier --check .` then `eslint .` (ESLint 10 flat config in `eslint.config.js`)
 - `npm run format` — `prettier --write .`
-- `npm run test:unit` — Vitest unit and API handler tests (`vitest run`)
+- `npm run test:unit` — Vitest 5 unit and API handler tests (`vitest run`)
 - `npm run test:integration` — Playwright end-to-end tests (`tests/`)
 - `npm run test` — Runs Playwright integration tests followed by Vitest unit tests
 - `npm run dev` / `npm run build` / `npm run preview` — standard Vite/SvelteKit commands
 
 ## Setup
 
-- Requires Node `>=22` (`.npmrc` sets `engine-strict=true`; Vercel runtime is `nodejs22.x`).
-- Copy `.env.example` to `.env` if testing `/api/typeform-handler` (`TYPEFORM_TOKEN`). All other pages and endpoints run without environment variables.
+- Requires Node `>=24` (`.npmrc` sets `engine-strict=true`; `@sveltejs/adapter-vercel` auto-selects the build Node runtime on Vercel).
+- Copy `.env.example` to `.env` if testing `/api/typeform-handler` (`TYPEFORM_TOKEN`, declared in `src/env.ts`). All other pages and endpoints run without environment variables.
 
 ## Git workflow
 
@@ -31,6 +31,9 @@ Prettier enforces: **tabs**, single quotes, no trailing commas, print width 100,
 
 ## Architecture & Gotchas
 
+- **SvelteKit 3 conventions**:
+  - SvelteKit and `@sveltejs/adapter-vercel` are configured directly inside `vite.config.ts` (no `svelte.config.js`).
+  - Use Node subpath imports (`#lib/*` with explicit `.ts` / `.svelte` extensions) instead of legacy `$lib/*`, `$app/state` (`page`) instead of `$app/stores`, `$app/env` instead of `$app/environment`, and `src/env.ts` + `$app/env/private` instead of `$env/*`.
 - **Shared UI & navigation**:
   - Navigation links and service scoring options live in `src/lib/nav.ts` (consumed by `Navbar.svelte`, `Footer.svelte`, `+page.svelte`, and demo page tabs).
   - Demo pages use `src/lib/components/DemoPageShell.svelte` (header, tabs, live payload inspector, reference snippet) and `src/lib/components/ServiceLeadForm.svelte`.

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { leadScoringLinks } from '$lib/nav';
-	import { callGtag, pushDataLayer } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { leadScoringLinks } from '#lib/nav.ts';
+	import { callGtag, pushDataLayer } from '#lib/gtag.ts';
 
 	const interestOptions = [
 		{ id: 'coding', value: 'coding', label: 'Coding & Engineering', points: 10 },

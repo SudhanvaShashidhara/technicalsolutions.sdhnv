@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { leadScoringLinks } from '$lib/nav';
-	import { callGtag } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { leadScoringLinks } from '#lib/nav.ts';
+	import { callGtag } from '#lib/gtag.ts';
 
 	const incomeScores: Record<string, number> = {
 		'<$30,000': 10,

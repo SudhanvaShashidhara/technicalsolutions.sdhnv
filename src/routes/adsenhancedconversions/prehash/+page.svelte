@@ -1,9 +1,9 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { enhancedConversionsLinks } from '$lib/nav';
-	import { normalizeEmail, normalizePhone, sha256Hex } from '$lib/ec-hash';
-	import { callGtag, pushDataLayer } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { enhancedConversionsLinks } from '#lib/nav.ts';
+	import { normalizeEmail, normalizePhone, sha256Hex } from '#lib/ec-hash.ts';
+	import { callGtag, pushDataLayer } from '#lib/gtag.ts';
 
 	let submitted = $state(false);
 	let livePayload = $state<Record<string, unknown> | null>(null);

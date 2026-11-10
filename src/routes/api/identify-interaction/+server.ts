@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -6,7 +5,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		data = (await request.json()) as Record<string, unknown>;
 	} catch {
-		return json({ error: 'Invalid JSON request body.' }, { status: 400 });
+		return Response.json({ error: 'Invalid JSON request body.' }, { status: 400 });
 	}
 
 	try {
@@ -15,10 +14,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		const applicationType = data.applicationType ?? data.appLicationType;
 
 		if (!Array.isArray(eventLog)) {
-			return json({ error: 'Missing or invalid required field: eventLog.' }, { status: 400 });
+			return Response.json(
+				{ error: 'Missing or invalid required field: eventLog.' },
+				{ status: 400 }
+			);
 		}
 
-		return json({
+		return Response.json({
 			success: true,
 			receivedEvents: eventLog.length,
 			hasDomStructure: typeof domStructure === 'string' && domStructure.length > 0,
@@ -26,6 +28,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	} catch (err) {
 		console.error('Error in /api/identify-interaction:', err);
-		return json({ error: 'An error occurred while processing the request.' }, { status: 500 });
+		return Response.json(
+			{ error: 'An error occurred while processing the request.' },
+			{ status: 500 }
+		);
 	}
 };

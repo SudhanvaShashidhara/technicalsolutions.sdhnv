@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { serviceOptions, serviceRequirementOptions } from '$lib/nav';
+	import { serviceOptions, serviceRequirementOptions } from '#lib/nav.ts';
 
 	interface Props {
 		formId?: string;
@@ -142,8 +142,7 @@
 				name="additional_details"
 				rows="3"
 				placeholder="Project scope, preferred contact hours, or notes..."
-				class="g-input"
-			></textarea>
+				class="g-input"></textarea>
 		</div>
 	</div>
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import { toolsLinks } from '$lib/nav';
-	import { pushDataLayer } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import { toolsLinks } from '#lib/nav.ts';
+	import { pushDataLayer } from '#lib/gtag.ts';
 
 	let livePayload = $state<Record<string, unknown> | null>(null);
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { enhancedConversionsLinks } from '$lib/nav';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { enhancedConversionsLinks } from '#lib/nav.ts';
 
 	let submitted = $state(false);
 	let ecValues = $state<{ email: string; tel: string } | null>(null);
