@@ -31,3 +31,26 @@ test('pre-hashed enhanced conversions form computes SHA-256 digests on submit', 
 	await expect(page.getByRole('button', { name: 'Copy JSON' })).toBeVisible();
 	await expect(page.getByText('"janedoe@gmail.com"')).toBeVisible();
 });
+
+test('serves self-hosted variable fonts without external Google Fonts requests and preserves /ogt/landing-page 302 redirect', async ({
+	page
+}) => {
+	const googleFontRequests: string[] = [];
+	page.on('request', (req) => {
+		const url = req.url();
+		if (url.includes('fonts.googleapis.com') || url.includes('fonts.gstatic.com')) {
+			googleFontRequests.push(url);
+		}
+	});
+
+	await page.goto('/');
+	const fontFamily = await page.evaluate(
+		() => getComputedStyle(document.documentElement).fontFamily
+	);
+	expect(fontFamily).toContain('Inter Variable');
+	expect(googleFontRequests).toHaveLength(0);
+
+	await page.goto('/ogt/landing-page?gclid=TeSt_GcLiD_987XYZ');
+	expect(page.url()).toContain('?gclid=test_gclid_987xyz');
+	await expect(page.getByText('test_gclid_987xyz').first()).toBeVisible();
+});
