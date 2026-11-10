@@ -1,5 +1,4 @@
-import { json } from '@sveltejs/kit';
-import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '$lib/ec-hash';
+import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '#lib/ec-hash.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -7,7 +6,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		data = (await request.json()) as Record<string, unknown>;
 	} catch {
-		return json({ error: 'Invalid JSON request body.' }, { status: 400 });
+		return Response.json({ error: 'Invalid JSON request body.' }, { status: 400 });
 	}
 
 	const rawEmail = typeof data.email === 'string' ? data.email : '';
@@ -15,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const normalized_email = normalizeEmail(rawEmail);
 	if (!normalized_email) {
-		return json({ error: 'Please provide a valid email address.' }, { status: 400 });
+		return Response.json({ error: 'Please provide a valid email address.' }, { status: 400 });
 	}
 
 	const email_hash = await sha256Base64Url(normalized_email);
@@ -28,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (rawPhone.trim()) {
 		normalised_phone = normalizePhone(rawPhone);
 		if (!normalised_phone) {
-			return json(
+			return Response.json(
 				{ error: 'Invalid phone number. Include country code (e.g. +1 555 123 4567).' },
 				{ status: 400 }
 			);
@@ -37,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		phone_hash2 = await sha256Hex(normalised_phone);
 	}
 
-	return json({
+	return Response.json({
 		success: true,
 		normalized_email,
 		email_hash,

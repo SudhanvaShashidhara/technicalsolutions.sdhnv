@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import { toolsLinks } from '$lib/nav';
+	import { page } from '$app/state';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import { toolsLinks } from '#lib/nav.ts';
 
-	let currentGclid = $derived($page.url.searchParams.get('gclid'));
+	let currentGclid = $derived(page.url.searchParams.get('gclid'));
 
 	const codeSnippet = `// src/hooks.server.ts
 if (event.url.pathname.includes('ogt/landing-page') && event.url.searchParams.has('gclid')) {
@@ -19,12 +19,12 @@ if (event.url.pathname.includes('ogt/landing-page') && event.url.searchParams.ha
 	let livePayload = $derived<Record<string, unknown>>(
 		currentGclid
 			? {
-					pathname: $page.url.pathname,
+					pathname: page.url.pathname,
 					active_gclid: currentGclid,
 					is_lowercase: currentGclid === currentGclid.toLowerCase()
 				}
 			: {
-					pathname: $page.url.pathname,
+					pathname: page.url.pathname,
 					active_gclid: null,
 					note: 'Click a mixed-case test URL below to trigger the 302 server redirect.'
 				}

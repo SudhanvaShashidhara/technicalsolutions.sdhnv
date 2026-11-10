@@ -1,5 +1,4 @@
-import { json } from '@sveltejs/kit';
-import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '$lib/ec-hash';
+import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '#lib/ec-hash.ts';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -7,7 +6,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const phoneParam = url.searchParams.get('phone');
 
 	if (!emailParam && !phoneParam) {
-		return json({ error: 'Provide an email or phone query parameter.' }, { status: 400 });
+		return Response.json({ error: 'Provide an email or phone query parameter.' }, { status: 400 });
 	}
 
 	const payload: Record<string, string> = {};
@@ -15,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (phoneParam) {
 		const normalised_phone = normalizePhone(phoneParam);
 		if (!normalised_phone) {
-			return json(
+			return Response.json(
 				{ error: 'Invalid phone number. Expected digits in E.164 format (e.g. +15551234567).' },
 				{ status: 400 }
 			);
@@ -28,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (emailParam) {
 		const normalized_email = normalizeEmail(emailParam);
 		if (!normalized_email) {
-			return json({ error: 'Invalid email address.' }, { status: 400 });
+			return Response.json({ error: 'Invalid email address.' }, { status: 400 });
 		}
 		payload.email = emailParam.trim();
 		payload.normalized_email = normalized_email;
@@ -36,5 +35,5 @@ export const GET: RequestHandler = async ({ url }) => {
 		payload.email_hash2 = await sha256Hex(normalized_email);
 	}
 
-	return json(payload);
+	return Response.json(payload);
 };

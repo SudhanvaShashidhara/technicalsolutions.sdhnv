@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { enhancedConversionsLinks } from '$lib/nav';
-	import { normalizePhone } from '$lib/ec-hash';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { enhancedConversionsLinks } from '#lib/nav.ts';
+	import { normalizePhone } from '#lib/ec-hash.ts';
 
 	let submitted = $state(false);
 	let livePayload = $state<Record<string, unknown> | null>(null);

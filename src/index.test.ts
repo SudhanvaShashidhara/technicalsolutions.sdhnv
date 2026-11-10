@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '$lib/ec-hash';
-import { handle } from './hooks.server';
-import { POST as identifyPost } from './routes/api/identify-interaction/+server';
-import { GET as ecShaGet } from './routes/api/ec-sha-tester/+server';
-import { POST as contactPost } from './routes/api/contact-form/+server';
-import { POST as typeformPost } from './routes/api/typeform-handler/+server';
+import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '#lib/ec-hash.ts';
+import { handle } from './hooks.server.ts';
+import { POST as identifyPost } from './routes/api/identify-interaction/+server.ts';
+import { GET as ecShaGet } from './routes/api/ec-sha-tester/+server.ts';
+import { POST as contactPost } from './routes/api/contact-form/+server.ts';
+import { POST as typeformPost } from './routes/api/typeform-handler/+server.ts';
 
 describe('Enhanced Conversions normalization & SHA-256 utilities', () => {
 	it('strips dots only on gmail.com and googlemail.com domains', () => {

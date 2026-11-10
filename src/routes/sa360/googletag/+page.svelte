@@ -1,8 +1,8 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
-	import { sa360Links, serviceOptions } from '$lib/nav';
-	import { callGtag } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '#lib/components/ServiceLeadForm.svelte';
+	import { sa360Links, serviceOptions } from '#lib/nav.ts';
+	import { callGtag } from '#lib/gtag.ts';
 
 	const scoreByService = Object.fromEntries(serviceOptions.map((s) => [s.value, s.leadValue]));
 

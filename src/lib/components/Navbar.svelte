@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { navGroups, type NavGroup } from '$lib/nav';
+	import { page } from '$app/state';
+	import { navGroups, type NavGroup } from '#lib/nav.ts';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let mobileOpen = $state(false);
@@ -61,7 +61,7 @@
 		<!-- Desktop navigation groups -->
 		<div class="hidden lg:flex lg:items-center lg:gap-x-1">
 			{#each navGroups as group (group.id)}
-				{@const active = isGroupActive(group, $page.url.pathname)}
+				{@const active = isGroupActive(group, page.url.pathname)}
 				<div class="relative">
 					<button
 						type="button"
@@ -104,7 +104,7 @@
 							<div class="my-1 border-t border-googlegreyG200 dark:border-googlegreyG800"></div>
 							{#each group.items as item (item.href)}
 								{@const itemPath = item.href.split('?')[0]}
-								{@const itemActive = $page.url.pathname === itemPath}
+								{@const itemActive = page.url.pathname === itemPath}
 								<a
 									href={item.href}
 									onclick={closeAll}
@@ -190,7 +190,7 @@
 					<div class="space-y-0.5">
 						{#each group.items as item (item.href)}
 							{@const itemPath = item.href.split('?')[0]}
-							{@const itemActive = $page.url.pathname === itemPath}
+							{@const itemActive = page.url.pathname === itemPath}
 							<a
 								href={item.href}
 								onclick={closeAll}

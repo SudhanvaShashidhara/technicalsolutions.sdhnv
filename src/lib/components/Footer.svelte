@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { navGroups } from '$lib/nav';
+	import { navGroups } from '#lib/nav.ts';
 </script>
 
 <footer

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
-	import { toolsLinks } from '$lib/nav';
-	import { callGtag, pushDataLayer } from '$lib/gtag';
+	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
+	import { toolsLinks } from '#lib/nav.ts';
+	import { callGtag, pushDataLayer } from '#lib/gtag.ts';
 
 	let submitting = $state(false);
 	let errorMessage = $state('');
