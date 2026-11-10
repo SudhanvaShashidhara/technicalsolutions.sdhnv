@@ -5,10 +5,76 @@
 @layer base {
 	html {
 		font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+		scroll-behavior: smooth;
 	}
 
 	body {
-		@apply bg-white text-googlegreyG900 antialiased;
-		@apply dark:bg-googlegreyG900 dark:text-gray-100;
+		@apply bg-googlegreyG50 text-googlegreyG900 antialiased;
+		@apply dark:bg-googlegreyG900 dark:text-googlegreyG200;
+	}
+}
+
+@layer components {
+	.g-card {
+		@apply rounded-2xl border border-googlegreyG300 bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.06)];
+		@apply dark:border-googlegreyG800 dark:bg-googledarkcard dark:shadow-none;
+	}
+
+	.g-card-interactive {
+		@apply g-card transition-[border-color,box-shadow] duration-150;
+		@apply hover:border-googleblue600/50 hover:shadow-[0_1px_3px_0_rgba(60,64,67,0.16),0_4px_8px_3px_rgba(60,64,67,0.08)];
+		@apply dark:hover:border-googleblue300/50 dark:hover:bg-googledarktonal;
+	}
+
+	.g-label {
+		@apply mb-1.5 block text-sm font-medium text-googlegreyG800 dark:text-googlegreyG200;
+	}
+
+	.g-input {
+		@apply block w-full rounded-lg border border-googlegreyG300 bg-white px-3.5 py-2.5 text-sm text-googlegreyG900 transition-colors;
+		@apply placeholder:text-googlegreyG600;
+		@apply hover:border-googlegreyG600;
+		@apply focus:border-googleblue600 focus:outline-none focus:ring-2 focus:ring-googleblue600/20;
+		@apply dark:border-googlegreyG700 dark:bg-googlegreyG900 dark:text-googlegreyG200 dark:placeholder:text-googlegreycore;
+		@apply dark:hover:border-googlegreycore dark:focus:border-googleblue300 dark:focus:ring-googleblue300/25;
+	}
+
+	.g-btn-primary {
+		@apply inline-flex items-center justify-center gap-2 rounded-full bg-googleblue600 px-6 py-2.5 text-sm font-medium text-white transition-all;
+		@apply hover:bg-googleblue700 hover:shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)];
+		@apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-googleblue600;
+		@apply active:bg-googleblueG900 disabled:cursor-not-allowed disabled:opacity-50;
+		@apply dark:bg-googleblue300 dark:text-googlegreyG900 dark:hover:bg-googleblue200 dark:focus-visible:outline-googleblue300;
+	}
+
+	.g-btn-secondary {
+		@apply inline-flex items-center justify-center gap-2 rounded-full border border-googlegreyG300 bg-white px-5 py-2.5 text-sm font-medium text-googleblue600 transition-colors;
+		@apply hover:border-googleblue600/30 hover:bg-googleblueG50/60;
+		@apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-googleblue600;
+		@apply dark:border-googlegreyG700 dark:bg-transparent dark:text-googleblue300 dark:hover:border-googleblue300/40 dark:hover:bg-googleblue300/10;
+	}
+
+	.g-chip {
+		@apply inline-flex items-center rounded-md px-2 py-0.5 font-mono text-xs font-medium;
+	}
+
+	.g-chip-blue {
+		@apply g-chip bg-googleblueG50 text-googleblueG800 dark:bg-googleblue300/15 dark:text-googleblue300;
+	}
+
+	.g-chip-green {
+		@apply g-chip bg-googlegreenG50 text-googlegreenG800 dark:bg-googlegreencore/15 dark:text-[#81C995];
+	}
+
+	.g-chip-yellow {
+		@apply g-chip bg-googleyellowG50 text-googleyellowG900 dark:bg-googleyellowcore/15 dark:text-[#FDD663];
+	}
+
+	.g-chip-red {
+		@apply g-chip bg-googleredG50 text-googleredG800 dark:bg-googleredcore/15 dark:text-[#F28B82];
+	}
+
+	.g-chip-neutral {
+		@apply g-chip bg-googlegreyG100 text-googlegreyG700 dark:bg-googlegreyG800 dark:text-googlegreyG200;
 	}
 }

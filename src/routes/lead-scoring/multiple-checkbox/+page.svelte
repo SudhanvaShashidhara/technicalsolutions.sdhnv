@@ -1,342 +1,144 @@
 <script lang="ts">
-	let form_submitted = false;
-	const lead_value_map = {
+	import DemoPageShell from '$lib/components/DemoPageShell.svelte';
+	import ServiceLeadForm from '$lib/components/ServiceLeadForm.svelte';
+	import { leadScoringLinks } from '$lib/nav';
+	import { callGtag, pushDataLayer } from '$lib/gtag';
+
+	const interestOptions = [
+		{ id: 'coding', value: 'coding', label: 'Coding & Engineering', points: 10 },
+		{ id: 'music', value: 'music', label: 'Music Production', points: 5 },
+		{ id: 'bike_riding', value: 'bike_riding', label: 'Bike Riding', points: 3 },
+		{ id: 'martial_arts', value: 'martial_arts', label: 'Martial Arts', points: 2 }
+	] as const;
+
+	const leadValueMap: Record<string, number> = {
 		coding: 10,
 		music: 5,
 		bike_riding: 3,
 		martial_arts: 2
 	};
 
-	function handle_submit(e: SubmitEvent) {
-		let lead_value = 0;
-		const form = e.target as HTMLFormElement;
-		const form_data = new FormData(form);
-		const full_name = form_data.get('full-name');
-		const email = form_data.get('email');
-		const additional_details = form_data.get('additional_details');
-		const interest = form_data.getAll('interest');
-		console.log(interest);
+	let submitted = $state(false);
+	let selectedInterests = $state<string[]>(['coding']);
+	let livePayload = $state<Record<string, unknown> | null>(null);
+
+	let previewScore = $derived(
+		selectedInterests.reduce((sum, key) => sum + (leadValueMap[key] ?? 0), 0)
+	);
+
+	const codeSnippet = `const interests = formData.getAll('interest').map(String);
+const leadValue = interests.reduce((sum, key) => sum + (leadValueMap[key] ?? 0), 0);
+
+window.dataLayer = window.dataLayer || [];
+window.dataLayer.push({
+  event: 'form_submit_complete',
+  form_data: { full_name, email, additional_details, interest: interests },
+  lead_value: leadValue
+});
+
+gtag('set', 'user_data', { email });
+gtag('event', 'lead_scoring_form_submit', {
+  value: leadValue,
+  interest: interests.join(',')
+});`;
+
+	function handleSubmit(formData: FormData, form: HTMLFormElement) {
+		const full_name = String(formData.get('full-name') ?? '').trim();
+		const email = String(formData.get('email') ?? '').trim();
+		const additional_details = String(formData.get('additional_details') ?? '').trim();
+		const interest = formData.getAll('interest').map(String);
+
+		const lead_value = interest.reduce((sum, item) => sum + (leadValueMap[item] ?? 0), 0);
 		const form_entered_data = { full_name, email, additional_details, interest };
-		interest.forEach((interests) => {
-			lead_value += lead_value_map[interests as keyof typeof lead_value_map];
-		});
-		console.log(form_entered_data);
-		console.log(lead_value);
-		window.dataLayer.push({
+
+		const dlPayload = {
 			event: 'form_submit_complete',
 			form_data: form_entered_data,
-			lead_value: lead_value
-		});
-		window.gtag('set', 'user_data', {
-			email: email
-		});
-		window.gtag('event', 'lead_scoring_form_submit', {
+			lead_value
+		};
+
+		pushDataLayer(dlPayload);
+		callGtag('set', 'user_data', { email });
+		callGtag('event', 'lead_scoring_form_submit', {
 			value: lead_value,
-			interest: interest.toString
+			interest: interest.join(',')
 		});
-		form_submitted = true;
+
+		livePayload = {
+			dataLayer_push: dlPayload,
+			gtag_event: {
+				name: 'lead_scoring_form_submit',
+				value: lead_value,
+				interest: interest.join(',')
+			}
+		};
+		submitted = true;
 		form.reset();
+		selectedInterests = [];
 	}
 </script>
 
-<svelte:head>
-	<title>Lead Scoring Demo - Multiple Checkbox selections (gtag.js)</title>
-</svelte:head>
-
-<h2 class="w-10/12 lg:w-6/12 mx-auto text-3xl text-center mt-4">
-	Lead Scoring Demo - Multiple Checkbox selections (gtag.js)
-</h2>
-
-<div class="w-10/12 lg:w-6/12 mx-auto mt-4 text-center">
-	<p>
-		This is a test form to review Lead Scoring setup on checkboxes where multiple selections are
-		possible.
-	</p>
-	<p>The form below has a multi select checkbox field with the name "interest".</p>
-	<p>
-		Let's assign an arbitrary lead score to the options under the "interest" field. with the below
-		scores
-	</p>
-	<ul>
-		<li>Coding: 10</li>
-		<li>Music: 5</li>
-		<li>Bike Riding: 3</li>
-		<li>Martial Arts: 2</li>
-	</ul>
-</div>
-
-<form
-	on:submit|preventDefault={handle_submit}
-	id="lead_scoring_form_multiple_checkbox"
-	class="w-11/12 lg:w-8/12 p-4 lg:py-10 m-auto border-b border-gray-900/10 dark:border-white/10 pb-12"
+<DemoPageShell
+	title="Lead Scoring Demo - Multiple Checkbox Selections (gtag.js)"
+	heading="Lead Scoring: Multiple Checkboxes"
+	category="Lead Scoring"
+	badge="gtag.js"
+	badgeColor="blue"
+	description="Aggregates qualification points across multiple selected checkbox inputs (name=&quot;interest&quot;) via FormData.getAll('interest') and passes both the numeric total and comma-joined list to Google Tag."
+	tabs={leadScoringLinks}
+	{codeSnippet}
+	{livePayload}
+	inspectorNotes={[
+		'Form retains id="lead_scoring_form_multiple_checkbox" and checkbox name="interest".',
+		'Fixes serialization of selected checkboxes using interest.join(",") instead of an uninvoked toString reference.',
+		'Live score badge updates reactively as you toggle interest checkboxes.'
+	]}
 >
-	<div class="space-y-12">
-		<div class="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-3">
-			<div>
-				<h2 class="text-base font-semibold leading-7 text-gray-900 dark:text-gray-100">
-					Contact Us
-				</h2>
-				<p class="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
-					Use a permanent address where you can receive mail.
-				</p>
-			</div>
-
-			<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-				<div class="col-start-2 sm:col-span-7">
-					<label
-						for="full-name"
-						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-						>Full name</label
-					>
-					<div class="mt-2">
-						<input
-							type="text"
-							required
-							name="full-name"
-							id="full-name"
-							autocomplete="given-name"
-							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-						/>
-					</div>
+	<ServiceLeadForm
+		formId="lead_scoring_form_multiple_checkbox"
+		heading="Multi-interest lead qualification"
+		subheading="Select one or more interests below to accumulate a composite lead value."
+		showServiceSelect={false}
+		{submitted}
+		onSubmit={handleSubmit}
+		onDismiss={() => (submitted = false)}
+	>
+		{#snippet customFields()}
+			<fieldset>
+				<div class="flex items-center justify-between">
+					<legend class="text-sm font-medium text-googlegreyG800 dark:text-googlegreyG200">
+						Choose your interests
+					</legend>
+					<span class="g-chip-blue">Current score: {previewScore} pts</span>
 				</div>
 
-				<div class="col-start-2 sm:col-span-7">
-					<label
-						for="email"
-						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200"
-						>Email address</label
-					>
-					<div class="mt-2">
-						<input
-							id="email"
-							name="email"
-							type="email"
-							required
-							autocomplete="email"
-							class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-						/>
-					</div>
-				</div>
-
-				<div class="col-start-2 sm:col-span-7">
-					<fieldset>
-						<legend class="text-base font-semibold text-gray-900">Choose your interests</legend>
-						<div class="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200">
-							<div class="relative flex gap-3 py-4">
-								<div class="min-w-0 flex-1 text-sm/6">
-									<label for="coding" class="select-none font-medium text-gray-900">Coding</label>
-								</div>
-								<div class="flex h-6 shrink-0 items-center">
-									<div class="group grid size-4 grid-cols-1">
-										<input
-											id="coding"
-											value="coding"
-											name="interest"
-											type="checkbox"
-											class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-										/>
-										<svg
-											class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
-											viewBox="0 0 14 14"
-											fill="none"
-										>
-											<path
-												class="opacity-0 group-has-[:checked]:opacity-100"
-												d="M3 8L6 11L11 3.5"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-											<path
-												class="opacity-0 group-has-[:indeterminate]:opacity-100"
-												d="M3 7H11"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<div class="relative flex gap-3 py-4">
-								<div class="min-w-0 flex-1 text-sm/6">
-									<label for="music" class="select-none font-medium text-gray-900">Music</label>
-								</div>
-								<div class="flex h-6 shrink-0 items-center">
-									<div class="group grid size-4 grid-cols-1">
-										<input
-											id="music"
-											value="music"
-											name="interest"
-											type="checkbox"
-											class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-										/>
-										<svg
-											class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
-											viewBox="0 0 14 14"
-											fill="none"
-										>
-											<path
-												class="opacity-0 group-has-[:checked]:opacity-100"
-												d="M3 8L6 11L11 3.5"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-											<path
-												class="opacity-0 group-has-[:indeterminate]:opacity-100"
-												d="M3 7H11"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<div class="relative flex gap-3 py-4">
-								<div class="min-w-0 flex-1 text-sm/6">
-									<label for="bike_riding" class="select-none font-medium text-gray-900"
-										>Bike Riding</label
-									>
-								</div>
-								<div class="flex h-6 shrink-0 items-center">
-									<div class="group grid size-4 grid-cols-1">
-										<input
-											id="bike_riding"
-											value="bike_riding"
-											name="interest"
-											type="checkbox"
-											class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-										/>
-										<svg
-											class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
-											viewBox="0 0 14 14"
-											fill="none"
-										>
-											<path
-												class="opacity-0 group-has-[:checked]:opacity-100"
-												d="M3 8L6 11L11 3.5"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-											<path
-												class="opacity-0 group-has-[:indeterminate]:opacity-100"
-												d="M3 7H11"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-									</div>
-								</div>
-							</div>
-							<div class="relative flex gap-3 py-4">
-								<div class="min-w-0 flex-1 text-sm/6">
-									<label for="martial_arts" class="select-none font-medium text-gray-900"
-										>Martial Arts</label
-									>
-								</div>
-								<div class="flex h-6 shrink-0 items-center">
-									<div class="group grid size-4 grid-cols-1">
-										<input
-											id="martial_arts"
-											value="martial_arts"
-											name="interest"
-											type="checkbox"
-											class="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-										/>
-										<svg
-											class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-[:disabled]:stroke-gray-950/25"
-											viewBox="0 0 14 14"
-											fill="none"
-										>
-											<path
-												class="opacity-0 group-has-[:checked]:opacity-100"
-												d="M3 8L6 11L11 3.5"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-											<path
-												class="opacity-0 group-has-[:indeterminate]:opacity-100"
-												d="M3 7H11"
-												stroke-width="2"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-									</div>
-								</div>
-							</div>
-						</div>
-					</fieldset>
-				</div>
-
-				<div class="col-start-2 sm:col-span-7">
-					<label
-						for="additional_details"
-						class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200 sm:pt-1.5"
-						>Additional Details</label
-					>
-					<div class="mt-2 sm:col-span-2 sm:mt-0">
-						<textarea
-							id="additional_details"
-							name="additional_details"
-							rows="3"
-							class="block w-full max-w-2xl rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-						></textarea>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="mt-6 flex items-center justify-end gap-x-6">
-		<button
-			type="submit"
-			class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-			>SUBMIT</button
-		>
-	</div>
-	{#if form_submitted}
-		<div class="rounded-md bg-green-50 py-4 mt-4 px-6">
-			<div class="flex">
-				<div class="flex-shrink-0">
-					<svg
-						class="h-5 w-5 text-green-400"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-				</div>
-				<div class="ml-3">
-					<p class="text-sm font-medium text-green-800">Form successfully submitted.</p>
-				</div>
-				<div class="ml-auto pl-3">
-					<div class="-mx-1.5 -my-1.5">
-						<button
-							on:click={() => (form_submitted = false)}
-							type="button"
-							class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+				<div class="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+					{#each interestOptions as opt (opt.id)}
+						{@const checked = selectedInterests.includes(opt.value)}
+						<label
+							for={opt.id}
+							class="flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors {checked
+								? 'border-googleblue600 bg-googleblueG50/60 dark:border-googleblue300 dark:bg-googleblue300/10'
+								: 'border-googlegreyG300 bg-white hover:bg-googlegreyG50 dark:border-googlegreyG700 dark:bg-googlegreyG900 dark:hover:bg-googledarktonal'}"
 						>
-							<span class="sr-only">Dismiss</span>
-							<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path
-									d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+							<span class="flex items-center gap-3">
+								<input
+									id={opt.id}
+									value={opt.value}
+									name="interest"
+									type="checkbox"
+									bind:group={selectedInterests}
+									class="h-4 w-4 rounded border-googlegreyG600 text-googleblue600 focus:ring-googleblue600 dark:border-googlegreycore dark:bg-googlegreyG900 dark:text-googleblue300"
 								/>
-							</svg>
-						</button>
-					</div>
+								<span class="text-sm font-medium text-googlegreyG900 dark:text-googlegreyG200">
+									{opt.label}
+								</span>
+							</span>
+							<span class="g-chip-neutral">+{opt.points}</span>
+						</label>
+					{/each}
 				</div>
-			</div>
-		</div>
-	{/if}
-</form>
+			</fieldset>
+		{/snippet}
+	</ServiceLeadForm>
+</DemoPageShell>

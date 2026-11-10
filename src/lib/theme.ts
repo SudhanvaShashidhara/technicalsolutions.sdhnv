@@ -12,7 +12,11 @@ function create_theme() {
 		if (browser) {
 			document.documentElement.classList.toggle('dark', next === 'dark');
 			document.documentElement.style.colorScheme = next;
-			localStorage.setItem('theme', next);
+			try {
+				localStorage.setItem('theme', next);
+			} catch {
+				// Ignore storage errors in restricted browsing modes
+			}
 		}
 		set(next);
 	}
@@ -20,7 +24,10 @@ function create_theme() {
 	return {
 		subscribe,
 		set: apply,
-		toggle: () => apply(document.documentElement.classList.contains('dark') ? 'light' : 'dark')
+		toggle: () => {
+			if (!browser) return;
+			apply(document.documentElement.classList.contains('dark') ? 'light' : 'dark');
+		}
 	};
 }
 
