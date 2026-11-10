@@ -1,56 +1,40 @@
 import { json } from '@sveltejs/kit';
-import crypto from 'crypto';
-
+import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '$lib/ec-hash';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url }) => {
-	const email = url.searchParams.get('email');
-	const phone = url.searchParams.get('phone');
+	const emailParam = url.searchParams.get('email');
+	const phoneParam = url.searchParams.get('phone');
 
-	if (phone) {
-		const new_phone_number = phone.includes('+') ? phone : '+' + phone;
-		const normalised_phone = new_phone_number.trim().replaceAll(' ', '').toLocaleLowerCase();
-		const phone_hash = crypto
-			.createHash('sha256')
-			// updating data
-			.update(normalised_phone)
-			// Encoding to be used
-			.digest('base64url');
-
-		const phone_hash2 = crypto
-			.createHash('sha256')
-			// updating data
-			.update(normalised_phone)
-			// Encoding to be used
-			.digest('hex');
-
-		return json({ normalised_phone, phone_hash, phone_hash2 });
+	if (!emailParam && !phoneParam) {
+		return json({ error: 'Provide an email or phone query parameter.' }, { status: 400 });
 	}
 
-	if (email) {
-		const email_parts = email?.toLowerCase().split('@');
-		let normalized_email = '';
+	const payload: Record<string, string> = {};
 
-		if (email_parts.length > 1) {
-			normalized_email = email_parts[0].replace(/\./g, '') + '@' + email_parts[1];
-
-			const email_hash = crypto
-				.createHash('sha256')
-				// updating data
-				.update(normalized_email)
-				// Encoding to be used
-				.digest('base64url');
-			const email_hash2 = crypto
-				.createHash('sha256')
-				// updating data
-				.update(normalized_email)
-				// Encoding to be used
-				.digest('hex');
-
-			return json({ email, email_hash, email_hash2 });
+	if (phoneParam) {
+		const normalised_phone = normalizePhone(phoneParam);
+		if (!normalised_phone) {
+			return json(
+				{ error: 'Invalid phone number. Expected digits in E.164 format (e.g. +15551234567).' },
+				{ status: 400 }
+			);
 		}
-	} else {
-		return json({ error: 'Provide a email query parameter' });
+		payload.normalised_phone = normalised_phone;
+		payload.phone_hash = await sha256Base64Url(normalised_phone);
+		payload.phone_hash2 = await sha256Hex(normalised_phone);
 	}
-	return json({ error: 'Provide a email query parameter' });
+
+	if (emailParam) {
+		const normalized_email = normalizeEmail(emailParam);
+		if (!normalized_email) {
+			return json({ error: 'Invalid email address.' }, { status: 400 });
+		}
+		payload.email = emailParam.trim();
+		payload.normalized_email = normalized_email;
+		payload.email_hash = await sha256Base64Url(normalized_email);
+		payload.email_hash2 = await sha256Hex(normalized_email);
+	}
+
+	return json(payload);
 };

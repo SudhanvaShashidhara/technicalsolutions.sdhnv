@@ -1,103 +1,149 @@
 <script lang="ts">
-	const sections = [
-		{
-			href: '/lead-scoring/google-tag-1',
-			title: 'Lead Scoring',
-			body: 'Pass qualification values into Google Ads via the Google Tag and GTM dataLayer.',
-			dot: 'bg-googlebluecore'
-		},
-		{
-			href: '/adsenhancedconversions/automatic',
-			title: 'Enhanced Conversions',
-			body: 'Automatic, CSS-selector, and JavaScript enhanced-conversion implementations.',
-			dot: 'bg-googleredcore'
-		},
-		{
-			href: '/sa360/googletag',
-			title: 'SA360',
-			body: 'Search Ads 360 tagging via Google Tag, dataLayer, and Floodlight formats.',
-			dot: 'bg-googleyellowcore'
-		},
-		{
-			href: '/contact',
-			title: 'Contact',
-			body: 'A contact form demo for capturing and validating lead details.',
-			dot: 'bg-googlegreencore'
-		}
-	];
+	import { navGroups } from '$lib/nav';
+
+	const accentDot: Record<string, string> = {
+		blue: 'bg-googlebluecore',
+		red: 'bg-googleredcore',
+		yellow: 'bg-googleyellowcore',
+		green: 'bg-googlegreencore'
+	};
+
+	const accentChip: Record<string, string> = {
+		blue: 'g-chip-blue',
+		red: 'g-chip-red',
+		yellow: 'g-chip-yellow',
+		green: 'g-chip-green'
+	};
 </script>
 
 <svelte:head>
 	<title>Technical Solutions Team</title>
+	<meta
+		name="description"
+		content="Live, verifiable reference implementations for Google Ads measurement: lead scoring, enhanced conversions, Search Ads 360 Floodlight, and iframe tagging."
+	/>
 </svelte:head>
 
-<section class="relative overflow-hidden">
-	<!-- Soft Google-colored glow -->
-	<div
-		class="pointer-events-none absolute inset-x-0 -top-40 -z-10 flex justify-center opacity-30 blur-3xl"
-		aria-hidden="true"
-	>
-		<div
-			class="h-72 w-[40rem] bg-gradient-to-r from-googlebluecore via-googleredcore to-googleyellowcore"
-		></div>
-	</div>
+<!-- Clean Google Developers Hero -->
+<section
+	class="border-b border-googlegreyG300 bg-white dark:border-googlegreyG800 dark:bg-googledarkcard"
+>
+	<div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+		<div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+			<div class="lg:col-span-7">
+				<div class="flex items-center gap-1.5" aria-hidden="true">
+					<span class="h-2 w-2 rounded-full bg-googlebluecore"></span>
+					<span class="h-2 w-2 rounded-full bg-googleredcore"></span>
+					<span class="h-2 w-2 rounded-full bg-googleyellowcore"></span>
+					<span class="h-2 w-2 rounded-full bg-googlegreencore"></span>
+					<span
+						class="ml-2 text-xs font-medium uppercase tracking-wider text-googlegreyG700 dark:text-googlegreycore"
+					>
+						Google Ads Measurement Sandbox
+					</span>
+				</div>
 
-	<div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-		<div class="mx-auto max-w-3xl text-center">
-			<span
-				class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-googlegreyG800 dark:border-white/10 dark:text-gray-300"
-			>
-				<span class="grid grid-cols-2 gap-0.5">
-					<span class="h-1.5 w-1.5 rounded-full bg-googlebluecore"></span>
-					<span class="h-1.5 w-1.5 rounded-full bg-googleredcore"></span>
-					<span class="h-1.5 w-1.5 rounded-full bg-googleyellowcore"></span>
-					<span class="h-1.5 w-1.5 rounded-full bg-googlegreencore"></span>
-				</span>
-				Google Ads measurement reference
-			</span>
-			<h1
-				class="mt-6 text-4xl font-bold tracking-tight text-googlegreyG900 dark:text-white sm:text-6xl"
-			>
-				Tagging that <span class="text-googlebluecore">just works</span>.
-			</h1>
-			<p class="mt-6 text-lg leading-8 text-googlegreyG800 dark:text-gray-300">
-				Working implementations of lead scoring, enhanced conversions, and SA360 tagging &mdash;
-				each page is a live, copy-ready example you can verify end to end.
-			</p>
-			<div class="mt-10 flex items-center justify-center gap-4">
-				<a
-					href="/lead-scoring/google-tag-1"
-					class="rounded-full bg-googlebluecore px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-googleblueG800"
+				<h1
+					class="mt-4 text-4xl font-normal tracking-tight text-googlegreyG900 sm:text-5xl dark:text-white"
 				>
-					Explore the demos
-				</a>
-				<a
-					href="/contact"
-					class="text-sm font-semibold text-googlegreyG900 transition-colors hover:text-googlebluecore dark:text-white"
+					Tagging that just works.
+				</h1>
+
+				<p
+					class="mt-5 max-w-2xl text-base leading-7 text-googlegreyG700 sm:text-lg dark:text-googlegreycore"
 				>
-					Contact us <span aria-hidden="true">&rarr;</span>
-				</a>
+					Interactive, copy-ready reference implementations for lead qualification scoring, enhanced
+					conversions, Search Ads 360 Floodlight tags, and cross-origin iframe embeds &mdash; wired
+					with live payload inspection.
+				</p>
+
+				<div class="mt-8 flex flex-wrap items-center gap-3">
+					<a href="/lead-scoring/google-tag-1" class="g-btn-primary">Explore demos</a>
+					<a href="/contact" class="g-btn-secondary">SHA-256 Hash Verifier</a>
+				</div>
+			</div>
+
+			<!-- Reference architecture preview card -->
+			<div class="lg:col-span-5">
+				<div
+					class="overflow-hidden rounded-2xl border border-googlegreyG300 bg-googlegreyG900 text-googlegreyG200 shadow-sm dark:border-googlegreyG800 dark:bg-[#17181B]"
+				>
+					<div class="flex items-center justify-between border-b border-white/10 px-4 py-3">
+						<div class="flex items-center gap-2">
+							<span class="h-2.5 w-2.5 rounded-full bg-googleredcore"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-googleyellowcore"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-googlegreencore"></span>
+						</div>
+						<span class="font-mono text-xs text-googlegreycore">gtag + dataLayer</span>
+					</div>
+					<pre class="overflow-x-auto p-5 font-mono text-xs leading-6"><code
+							><span class="text-googlegreycore">// 1. Normalized first-party user data</span>
+gtag('set', 'user_data', &#123;
+  sha256_email_address: 'f660ab912ec121d1b1e928a0bb4bc61b...',
+  sha256_phone_number: '422282c8899a441a036c5b3f833159b3...'
+&#125;);
+
+<span class="text-googlegreycore">// 2. Value-based lead conversion</span>
+gtag('event', 'conversion', &#123;
+  send_to: 'AW-700270946/XObGCK639_8YEOKS9c0C',
+  value: 80,
+  currency: 'USD'
+&#125;);</code
+						></pre>
+				</div>
 			</div>
 		</div>
+	</div>
+</section>
 
-		<div class="mx-auto mt-20 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-			{#each sections as s}
-				<a
-					href={s.href}
-					class="group rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-googlebluecore/40 hover:shadow-lg dark:border-white/10 dark:bg-googlegreyG800 dark:hover:border-googlebluecore/50"
-				>
-					<span class="block h-2.5 w-2.5 rounded-full {s.dot}"></span>
-					<h3 class="mt-4 text-base font-semibold text-googlegreyG900 dark:text-white">
-						{s.title}
-					</h3>
-					<p class="mt-2 text-sm leading-6 text-googlegreyG800 dark:text-gray-400">{s.body}</p>
-					<span
-						class="mt-4 inline-block text-sm font-medium text-googlebluecore opacity-0 transition-opacity group-hover:opacity-100"
-					>
-						Open &rarr;
-					</span>
-				</a>
-			{/each}
-		</div>
+<!-- Measurement Directory -->
+<section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+	<div class="space-y-12">
+		{#each navGroups as group (group.id)}
+			<div>
+				<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+					<div class="flex items-center gap-2.5">
+						<span class="h-2.5 w-2.5 rounded-full {accentDot[group.accent]}"></span>
+						<h2 class="text-xl font-normal tracking-tight text-googlegreyG900 dark:text-white">
+							{group.title}
+						</h2>
+					</div>
+					<p class="text-sm text-googlegreyG700 dark:text-googlegreycore">
+						{group.summary}
+					</p>
+				</div>
+
+				<div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					{#each group.items as item (item.href)}
+						<a href={item.href} class="g-card-interactive group flex flex-col justify-between p-5">
+							<div>
+								<div class="flex items-start justify-between gap-3">
+									<h3
+										class="text-sm font-medium text-googlegreyG900 group-hover:text-googleblue600 dark:text-white dark:group-hover:text-googleblue300"
+									>
+										{item.label}
+									</h3>
+									{#if item.badge}
+										<span class="{accentChip[group.accent]} shrink-0">{item.badge}</span>
+									{/if}
+								</div>
+								<p class="mt-2 text-xs leading-5 text-googlegreyG700 dark:text-googlegreycore">
+									{item.description}
+								</p>
+							</div>
+							<div
+								class="mt-4 flex items-center gap-1 text-xs font-medium text-googleblue600 dark:text-googleblue300"
+							>
+								<span>Open implementation</span>
+								<span
+									class="transition-transform duration-150 group-hover:translate-x-0.5"
+									aria-hidden="true">&rarr;</span
+								>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		{/each}
 	</div>
 </section>

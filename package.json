@@ -12,12 +12,14 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest run",
+		"test:unit:watch": "vitest"
+	},
+	"engines": {
+		"node": ">=22"
 	},
 	"devDependencies": {
-		"@google/genai": "^1.34.0",
 		"@playwright/test": "^1.28.1",
-		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-vercel": "^6.3.3",
 		"@sveltejs/kit": "^2.61.1",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
@@ -42,10 +44,6 @@
 		"vitest": "^4.1.7"
 	},
 	"type": "module",
-	"dependencies": {
-		"@vercel/postgres": "^0.10.0",
-		"firebase-admin": "^13.10.0"
-	},
 	"overrides": {
 		"@typescript-eslint/typescript-estree": {
 			"minimatch": "9.0.9"

@@ -1,74 +1,49 @@
-// import { json } from '@sveltejs/kit';
-// import crypto from "crypto";
-// import { initializeApp, cert, getApps } from "firebase-admin/app";
-// import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { json } from '@sveltejs/kit';
+import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '$lib/ec-hash';
+import type { RequestHandler } from './$types';
 
-// import { GSA_TYPE, GSA_PROJECT_ID, GSA_PRIVATE_KEY_ID, GSA_PRIVATE_KEY, GSA_CLIENT_EMAIL, GSA_CLIENT_ID, GSA_AUTH_URI, GSA_TOKEN_URI, GSA_AUTH_PROVIDER_X509_CERT_URL, GSA_CLIENT_X509_CERT_URL, GSA_UNIVERSE_DOMAIN } from "$env/static/private";
+export const POST: RequestHandler = async ({ request }) => {
+	let data: Record<string, unknown>;
+	try {
+		data = (await request.json()) as Record<string, unknown>;
+	} catch {
+		return json({ error: 'Invalid JSON request body.' }, { status: 400 });
+	}
 
-// import type { RequestHandler } from './$types';
+	const rawEmail = typeof data.email === 'string' ? data.email : '';
+	const rawPhone = typeof data.phone === 'string' ? data.phone : '';
 
-// const GSA_PRIVATE_KEY_FINAL = GSA_PRIVATE_KEY.replace(/\\n/g, '\n');
+	const normalized_email = normalizeEmail(rawEmail);
+	if (!normalized_email) {
+		return json({ error: 'Please provide a valid email address.' }, { status: 400 });
+	}
 
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// const firebase_service_account : any = {
-// 	"type": GSA_TYPE,
-// 	"project_id": GSA_PROJECT_ID,
-// 	"private_key_id": GSA_PRIVATE_KEY_ID,
-// 	"private_key": GSA_PRIVATE_KEY_FINAL,
-// 	"client_email": GSA_CLIENT_EMAIL,
-// 	"client_id": GSA_CLIENT_ID,
-// 	"auth_uri": GSA_AUTH_URI,
-// 	"token_uri": GSA_TOKEN_URI,
-// 	"auth_provider_x509_cert_url": GSA_AUTH_PROVIDER_X509_CERT_URL,
-// 	"client_x509_cert_url": GSA_CLIENT_X509_CERT_URL,
-// 	"universe_domain": GSA_UNIVERSE_DOMAIN
-// };
+	const email_hash = await sha256Base64Url(normalized_email);
+	const email_hash2 = await sha256Hex(normalized_email);
 
-// if(!getApps().length){
-// 	initializeApp({
-// 		credential: cert(firebase_service_account)
-// 	});
-// }
-// else{
-// 	getApps()[0]
-// }
+	let normalised_phone: string | null = null;
+	let phone_hash: string | null = null;
+	let phone_hash2: string | null = null;
 
-// const db = getFirestore();
-// db.settings({ ignoreUndefinedProperties: true });
+	if (rawPhone.trim()) {
+		normalised_phone = normalizePhone(rawPhone);
+		if (!normalised_phone) {
+			return json(
+				{ error: 'Invalid phone number. Include country code (e.g. +1 555 123 4567).' },
+				{ status: 400 }
+			);
+		}
+		phone_hash = await sha256Base64Url(normalised_phone);
+		phone_hash2 = await sha256Hex(normalised_phone);
+	}
 
-// export const POST: RequestHandler = async ({ request, getClientAddress }) => {
-// 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// 	const header_data: any = {};
-// 	for (const pair of request.headers.entries()) {
-// 		header_data[pair[0]] = pair[1];
-// 	}
-// 	const ip_address = getClientAddress();
-
-//     if (email) {
-//         const email_parts = email?.split("@");
-//         const is_gmail = /(gmail|googlemail)\.com/g.test(email_parts[1]);
-//         let normalized_email = "";
-//         if (!is_gmail) {
-//           return json({ error: "E Mail needs to be gmail or googlemail" });
-//         }
-//         if (is_gmail && email_parts.length > 1) {
-//           normalized_email = email_parts[0].replace(".", "") + "@" + email_parts[1];
-//           const email_hash = crypto
-//             .createHash("sha256")
-//             // updating data
-//             .update(normalized_email)
-//             // Encoding to be used
-//             .digest("base64url");
-
-//           return json({ email_hash });
-//         }
-//       } else {
-//         return json({ error: "Provide a email query parameter" });
-//       }
-
-// 	try{
-// 		await db.collection('hermes_project_3_form_submit_logs').add({ form_message: message, ip_address, city, country_logo_link, _ga_cookie, cookieyes_consent_cookie, timestamp: FieldValue.serverTimestamp() });
-// 	}catch(err){
-// 		console.log(err);
-// 	}
-// };
+	return json({
+		success: true,
+		normalized_email,
+		email_hash,
+		email_hash2,
+		normalised_phone,
+		phone_hash,
+		phone_hash2
+	});
+};

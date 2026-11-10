@@ -1,15 +1,36 @@
-// See https://kit.svelte.dev/docs/types#app
+// See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-// and what to do when importing types
-declare namespace App {
-	// interface Error {}
-	// interface Locals {}
-	// interface PageData {}
-	// interface Platform {}
+declare global {
+	namespace App {
+		// interface Error {}
+		// interface Locals {}
+		// interface PageData {}
+		// interface PageState {}
+		// interface Platform {}
+	}
+
+	interface EnhancedConversionData {
+		email?: string;
+		tel?: string;
+		phone_number?: string;
+		sha256_email_address?: string;
+		sha256_phone_number?: string;
+	}
+
+	interface FloodlightData {
+		u1?: string;
+		u2?: string;
+		cost?: number;
+		ord?: string;
+		qty?: number;
+	}
+
+	interface Window {
+		gtag?: (...args: unknown[]) => void;
+		dataLayer?: Array<Record<string, unknown> | IArguments | unknown[]>;
+		enhanced_conversion_data?: EnhancedConversionData;
+		floodlight_data?: FloodlightData;
+	}
 }
 
-declare interface Window {
-	gtag: (x: string, y: string, z: unknown) => void;
-	dataLayer: Array;
-	enhanced_conversion_data: { email?: FormDataEntryValue | null; tel?: FormDataEntryValue | null };
-}
+export {};
