@@ -1,5 +1,6 @@
-import type { Handle } from '@sveltejs/kit/hooks';
+import { building } from '$app/env';
 import { redirect } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
 
 export const corsHeaders: Record<string, string> = {
 	'Access-Control-Allow-Origin': '*',
@@ -15,7 +16,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 		});
 	}
 
-	if (event.url.pathname.includes('ogt/landing-page') && event.url.searchParams.has('gclid')) {
+	if (
+		!building &&
+		event.url.pathname.includes('ogt/landing-page') &&
+		event.url.searchParams.has('gclid')
+	) {
 		const currentGclid = event.url.searchParams.get('gclid') ?? '';
 		const lowerGclid = currentGclid.toLowerCase();
 		if (currentGclid !== lowerGclid) {

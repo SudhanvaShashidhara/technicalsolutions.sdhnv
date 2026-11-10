@@ -34,6 +34,8 @@ Prettier enforces: **tabs**, single quotes, no trailing commas, print width 100,
 - **SvelteKit 3 conventions**:
   - SvelteKit and `@sveltejs/adapter-vercel` are configured directly inside `vite.config.ts` (no `svelte.config.js`).
   - Use Node subpath imports (`#lib/*` with explicit `.ts` / `.svelte` extensions) instead of legacy `$lib/*`, `$app/state` (`page`) instead of `$app/stores`, `$app/env` instead of `$app/environment`, and `src/env.ts` + `$app/env/private` instead of `$env/*`.
+  - Static demo routes are prerendered to Vercel's CDN edge via `export const prerender = true` in `src/routes/+layout.ts`, while `/ogt/landing-page` (`src/routes/ogt/landing-page/+page.server.ts`) and `/api/*` remain dynamic on the server.
+  - Fonts (`@fontsource-variable/inter` and `@fontsource-variable/roboto-mono`) are self-hosted via `src/routes/+layout.svelte` with zero external Google Fonts stylesheets.
 - **Shared UI & navigation**:
   - Navigation links and service scoring options live in `src/lib/nav.ts` (consumed by `Navbar.svelte`, `Footer.svelte`, `+page.svelte`, and demo page tabs).
   - Demo pages use `src/lib/components/DemoPageShell.svelte` (header, tabs, live payload inspector, reference snippet) and `src/lib/components/ServiceLeadForm.svelte`.

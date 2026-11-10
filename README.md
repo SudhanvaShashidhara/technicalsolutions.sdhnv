@@ -14,9 +14,10 @@ Live: https://technicalsolutions.sdhnv.com
 ## Features
 
 - **Google Developers / Material UI + Dark Mode** — unified Tailwind CSS v4 design tokens and
-  primitives (`src/app.css`), persisted theme store (`src/lib/theme.ts`) with a no-flash inline
-  script in `src/app.html`, sibling implementation tabs, and live JSON payload inspection on every
-  demo page.
+  primitives (`src/app.css`), self-hosted `Inter Variable` & `Roboto Mono Variable` fonts, persisted
+  theme store (`src/lib/theme.ts`) with a no-flash inline script in `src/app.html`, edge-prerendered
+  static routes (`src/routes/+layout.ts`), sibling implementation tabs, and live JSON payload
+  inspection on every demo page.
 - **Lead Scoring (`/lead-scoring/*`)** — pass qualification scores via HTML `data-lead-value`
   attributes, programmatic JavaScript lookup maps, GTM `dataLayer`, combined multi-field scores, and
   multi-select checkboxes.
