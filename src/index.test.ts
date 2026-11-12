@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '#lib/ec-hash.ts';
+import {
+	normalizeEmail,
+	normalizePhone,
+	sha256Base64,
+	sha256Base64Url,
+	sha256Hex
+} from '#lib/ec-hash.ts';
 import { handle } from './hooks.server.ts';
 import { POST as identifyPost } from './routes/api/identify-interaction/+server.ts';
 import { GET as ecShaGet } from './routes/api/ec-sha-tester/+server.ts';
@@ -27,13 +33,16 @@ describe('Enhanced Conversions normalization & SHA-256 utilities', () => {
 		expect(normalizePhone('123')).toBeNull();
 	});
 
-	it('computes deterministic SHA-256 hex and base64url digests', async () => {
+	it('computes deterministic SHA-256 hex, standard base64, and base64url digests', async () => {
 		const hex = await sha256Hex('alexmorgan@gmail.com');
-		const b64 = await sha256Base64Url('alexmorgan@gmail.com');
+		const b64Standard = await sha256Base64('alexmorgan@gmail.com');
+		const b64Url = await sha256Base64Url('alexmorgan@gmail.com');
 		expect(hex).toMatch(/^[0-9a-f]{64}$/);
-		expect(b64).not.toContain('=');
-		expect(b64).not.toContain('+');
-		expect(b64).not.toContain('/');
+		expect(b64Standard).toMatch(/^[A-Za-z0-9+/]{43}=$/);
+		expect(b64Url).toHaveLength(43);
+		expect(b64Url).not.toContain('=');
+		expect(b64Url).not.toContain('+');
+		expect(b64Url).not.toContain('/');
 	});
 });
 
@@ -122,7 +131,11 @@ describe('API endpoints', () => {
 		const data = await okRes.json();
 		expect(data.normalized_email).toBe('first.last@company.com');
 		expect(data.normalised_phone).toBe('+15552345678');
+		expect(data.email_hash).toHaveLength(43);
+		expect(data.email_hash_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
 		expect(data.email_hash2).toHaveLength(64);
+		expect(data.phone_hash).toHaveLength(43);
+		expect(data.phone_hash_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
 		expect(data.phone_hash2).toHaveLength(64);
 	});
 
@@ -137,6 +150,12 @@ describe('API endpoints', () => {
 		const data = await res.json();
 		expect(data.normalized_email).toBe('janedoe@gmail.com');
 		expect(data.normalised_phone).toBe('+15559876543');
+		expect(data.email_hash).toHaveLength(43);
+		expect(data.email_hash_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
+		expect(data.email_hash2).toHaveLength(64);
+		expect(data.phone_hash).toHaveLength(43);
+		expect(data.phone_hash_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
+		expect(data.phone_hash2).toHaveLength(64);
 	});
 
 	it('POST /api/typeform-handler returns 503 when token is unset and blocks path traversal', async () => {

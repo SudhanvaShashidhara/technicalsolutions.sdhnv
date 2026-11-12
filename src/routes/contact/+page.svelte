@@ -60,8 +60,11 @@ gtag('set', 'user_data', {
 			pushDataLayer({
 				event: 'contact_form_submit',
 				sha256_email_address: data.email_hash2,
+				email_hash_base64: data.email_hash_base64,
 				email_hash_base64url: data.email_hash,
-				sha256_phone_number: data.phone_hash2
+				sha256_phone_number: data.phone_hash2,
+				phone_hash_base64: data.phone_hash_base64,
+				phone_hash_base64url: data.phone_hash
 			});
 
 			livePayload = {
@@ -73,6 +76,10 @@ gtag('set', 'user_data', {
 				sha256_hex: {
 					email: data.email_hash2,
 					phone: data.phone_hash2
+				},
+				sha256_base64: {
+					email: data.email_hash_base64,
+					phone: data.phone_hash_base64
 				},
 				sha256_base64url: {
 					email: data.email_hash,
@@ -101,14 +108,14 @@ gtag('set', 'user_data', {
 	category="Tools & Embeds"
 	badge="API Verifier"
 	badgeColor="green"
-	description="Validates Google Ads Enhanced Conversions normalization rules (Gmail dot removal vs custom domains, E.164 phone formatting) via the server API and returns both hexadecimal and base64url SHA-256 digests."
+	description="Validates Google Ads Enhanced Conversions normalization rules (Gmail dot removal vs custom domains, E.164 phone formatting) via the server API and returns hexadecimal, standard Base64, and Base64URL SHA-256 digests."
 	tabs={toolsLinks}
 	{codeSnippet}
 	{livePayload}
 	inspectorNotes={[
 		'Try "alex.morgan@gmail.com" vs "alex.morgan@company.com": dots are stripped only on gmail.com / googlemail.com.',
 		'Properly URL-encodes "+" aliases (e.g. alex+ads@gmail.com) so plus signs are not corrupted into spaces.',
-		'Outputs both lowercase hex (Google Ads Enhanced Conversions standard) and base64url digests.'
+		'Outputs lowercase hex (gtag / Google Ads API), standard Base64 (RFC 4648), and Base64URL (Google Tag tv.1~em. wire format).'
 	]}
 >
 	<form onsubmit={handleContactSubmit} class="g-card overflow-hidden">
@@ -232,22 +239,63 @@ gtag('set', 'user_data', {
 
 		{#if hashResult}
 			<div
-				class="space-y-2 border-t border-googlegreenG800/20 bg-googlegreenG50 px-6 py-4 text-xs sm:px-8 dark:border-googlegreencore/30 dark:bg-googlegreencore/15"
+				class="space-y-4 border-t border-googlegreenG800/20 bg-googlegreenG50 px-6 py-5 text-xs sm:px-8 dark:border-googlegreencore/30 dark:bg-googlegreencore/15"
 				role="status"
 			>
-				<p class="text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
-					Normalized email: <code class="font-mono">{hashResult.normalized_email}</code>
-				</p>
-				<p class="break-all font-mono text-googlegreenG800 dark:text-[#81C995]">
-					SHA-256 (hex): {hashResult.email_hash2}
-				</p>
+				<div class="space-y-1.5">
+					<p class="text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
+						Normalized email: <code class="font-mono">{hashResult.normalized_email}</code>
+					</p>
+					<div class="space-y-1 break-all font-mono text-googlegreenG800 dark:text-[#81C995]">
+						<p>
+							<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+								>SHA-256 (hex):</span
+							>
+							{hashResult.email_hash2}
+						</p>
+						<p>
+							<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+								>SHA-256 (base64):</span
+							>
+							{hashResult.email_hash_base64}
+						</p>
+						<p>
+							<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+								>SHA-256 (base64url):</span
+							>
+							{hashResult.email_hash}
+						</p>
+					</div>
+				</div>
+
 				{#if hashResult.normalised_phone && hashResult.phone_hash2}
-					<p class="pt-1 text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
-						Normalized phone: <code class="font-mono">{hashResult.normalised_phone}</code>
-					</p>
-					<p class="break-all font-mono text-googlegreenG800 dark:text-[#81C995]">
-						SHA-256 (hex): {hashResult.phone_hash2}
-					</p>
+					<div
+						class="space-y-1.5 border-t border-googlegreenG800/15 pt-3 dark:border-googlegreencore/25"
+					>
+						<p class="text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
+							Normalized phone: <code class="font-mono">{hashResult.normalised_phone}</code>
+						</p>
+						<div class="space-y-1 break-all font-mono text-googlegreenG800 dark:text-[#81C995]">
+							<p>
+								<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+									>SHA-256 (hex):</span
+								>
+								{hashResult.phone_hash2}
+							</p>
+							<p>
+								<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+									>SHA-256 (base64):</span
+								>
+								{hashResult.phone_hash_base64}
+							</p>
+							<p>
+								<span class="font-sans font-medium text-googlegreenG900 dark:text-[#CEEAD6]"
+									>SHA-256 (base64url):</span
+								>
+								{hashResult.phone_hash}
+							</p>
+						</div>
+					</div>
 				{/if}
 			</div>
 		{/if}

@@ -51,13 +51,21 @@ export async function sha256Hex(value: string): Promise<string> {
 }
 
 /**
- * Computes base64url-encoded SHA-256 hash (without `=` padding).
+ * Computes standard RFC 4648 Base64-encoded SHA-256 hash (with `=` padding).
  */
-export async function sha256Base64Url(value: string): Promise<string> {
+export async function sha256Base64(value: string): Promise<string> {
 	const bytes = await digestSha256(value);
 	let binary = '';
 	for (const b of bytes) {
 		binary += String.fromCharCode(b);
 	}
-	return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+	return btoa(binary);
+}
+
+/**
+ * Computes base64url-encoded SHA-256 hash (without `=` padding, matching Google Tag `tv.1~em.` format).
+ */
+export async function sha256Base64Url(value: string): Promise<string> {
+	const b64 = await sha256Base64(value);
+	return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
