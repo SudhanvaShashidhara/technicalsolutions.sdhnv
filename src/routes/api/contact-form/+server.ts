@@ -1,4 +1,10 @@
-import { normalizeEmail, normalizePhone, sha256Base64Url, sha256Hex } from '#lib/ec-hash.ts';
+import {
+	normalizeEmail,
+	normalizePhone,
+	sha256Base64,
+	sha256Base64Url,
+	sha256Hex
+} from '#lib/ec-hash.ts';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -18,10 +24,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const email_hash = await sha256Base64Url(normalized_email);
+	const email_hash_base64 = await sha256Base64(normalized_email);
 	const email_hash2 = await sha256Hex(normalized_email);
 
 	let normalised_phone: string | null = null;
 	let phone_hash: string | null = null;
+	let phone_hash_base64: string | null = null;
 	let phone_hash2: string | null = null;
 
 	if (rawPhone.trim()) {
@@ -33,6 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			);
 		}
 		phone_hash = await sha256Base64Url(normalised_phone);
+		phone_hash_base64 = await sha256Base64(normalised_phone);
 		phone_hash2 = await sha256Hex(normalised_phone);
 	}
 
@@ -40,9 +49,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		success: true,
 		normalized_email,
 		email_hash,
+		email_hash_base64,
 		email_hash2,
 		normalised_phone,
 		phone_hash,
+		phone_hash_base64,
 		phone_hash2
 	});
 };

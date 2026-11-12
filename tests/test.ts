@@ -54,3 +54,20 @@ test('serves self-hosted variable fonts without external Google Fonts requests a
 	expect(page.url()).toContain('?gclid=test_gclid_987xyz');
 	await expect(page.getByText('test_gclid_987xyz').first()).toBeVisible();
 });
+
+test('contact SHA-256 verifier displays hex, base64, and base64url digests for email and phone', async ({
+	page
+}) => {
+	await page.goto('/contact');
+	await page.fill('#email', 'Alex.Morgan@gmail.com');
+	await page.fill('#phone', '+1 555 234 5678');
+	await page.click('button[type="submit"]');
+
+	const status = page.getByRole('status');
+	await expect(status).toBeVisible();
+	await expect(status).toContainText('alexmorgan@gmail.com');
+	await expect(status).toContainText('+15552345678');
+	await expect(status).toContainText('SHA-256 (hex):');
+	await expect(status).toContainText('SHA-256 (base64):');
+	await expect(status).toContainText('SHA-256 (base64url):');
+});
