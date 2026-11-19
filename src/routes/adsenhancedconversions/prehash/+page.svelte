@@ -59,7 +59,7 @@ gtag('set', 'user_data', { sha256_email_address, sha256_phone_number });`;
 	category="Enhanced Conversions"
 	badge="SHA-256 Hex"
 	badgeColor="red"
-	description="Normalizes email and E.164 phone inputs in the browser and computes 64-character lowercase hexadecimal SHA-256 digests before passing sha256_email_address and sha256_phone_number to Google Tag."
+	description="Normalizes and SHA-256 hex-hashes PII in-browser before tag dispatch."
 	tabs={enhancedConversionsLinks}
 	{codeSnippet}
 	{livePayload}

@@ -24,25 +24,52 @@
 		category,
 		description,
 		badge,
-		badgeColor = 'blue',
 		tabs = [],
-		codeTitle = 'Reference implementation',
+		codeTitle = 'Snippet',
 		codeSnippet,
 		livePayload = null,
 		inspectorNotes = [],
 		children
 	}: Props = $props();
 
+	type InspectorTab = 'payload' | 'code' | 'notes';
+	let activeTab = $state<InspectorTab>('payload');
 	let copiedCode = $state(false);
 	let copiedPayload = $state(false);
+	let lastPayloadRef = $state<Record<string, unknown> | null>(null);
 
-	const badgeClasses: Record<NonNullable<Props['badgeColor']>, string> = {
-		blue: 'g-chip-blue',
-		green: 'g-chip-green',
-		yellow: 'g-chip-yellow',
-		red: 'g-chip-red',
-		neutral: 'g-chip-neutral'
-	};
+	let inspectorTabs = $derived.by<Array<{ id: InspectorTab; label: string }>>(() => {
+		const list: Array<{ id: InspectorTab; label: string }> = [{ id: 'payload', label: 'Payload' }];
+		if (codeSnippet) list.push({ id: 'code', label: 'Code' });
+		if (inspectorNotes.length > 0) list.push({ id: 'notes', label: 'Notes' });
+		return list;
+	});
+
+	$effect(() => {
+		if (livePayload && livePayload !== lastPayloadRef) {
+			lastPayloadRef = livePayload;
+			activeTab = 'payload';
+		}
+	});
+
+	function handleTabKeydown(e: KeyboardEvent, index: number) {
+		const count = inspectorTabs.length;
+		if (count <= 1) return;
+
+		let nextIndex: number | null = null;
+		if (e.key === 'ArrowRight') nextIndex = (index + 1) % count;
+		else if (e.key === 'ArrowLeft') nextIndex = (index - 1 + count) % count;
+		else if (e.key === 'Home') nextIndex = 0;
+		else if (e.key === 'End') nextIndex = count - 1;
+
+		if (nextIndex !== null) {
+			e.preventDefault();
+			const nextTab = inspectorTabs[nextIndex];
+			activeTab = nextTab.id;
+			const el = document.getElementById(`inspector-tab-${nextTab.id}`);
+			el?.focus();
+		}
+	}
 
 	async function copyText(value: string, target: 'code' | 'payload') {
 		try {
@@ -65,155 +92,164 @@
 	<meta name="description" content={description} />
 </svelte:head>
 
-<div
-	class="border-b border-googlegreyG300 bg-white dark:border-googlegreyG800 dark:bg-googledarkcard"
->
-	<div class="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-		<!-- Breadcrumb -->
+<div class="border-b border-line bg-surface dark:border-line-dark dark:bg-surface-dark">
+	<div class="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
 		<nav
-			class="flex items-center gap-2 text-xs font-medium text-googlegreyG700 dark:text-googlegreycore"
+			class="flex items-center gap-2 text-xs text-muted dark:text-muted-dark"
 			aria-label="Breadcrumb"
 		>
-			<a href="/" class="hover:text-googleblue600 dark:hover:text-googleblue300">Home</a>
+			<a href="/" class="hover:text-ink dark:hover:text-ink-dark">Home</a>
 			<span aria-hidden="true">/</span>
 			<span>{category}</span>
 		</nav>
 
-		<div class="mt-3 flex flex-wrap items-center gap-3">
-			<h1
-				class="text-2xl font-normal tracking-tight text-googlegreyG900 sm:text-3xl dark:text-white"
-			>
+		<div class="mt-2.5 flex flex-wrap items-center gap-2.5">
+			<h1 class="text-2xl font-semibold tracking-[-0.02em] text-ink sm:text-3xl dark:text-ink-dark">
 				{heading}
 			</h1>
 			{#if badge}
-				<span class={badgeClasses[badgeColor]}>{badge}</span>
+				<span class="ed-tag-accent">{badge}</span>
 			{/if}
 		</div>
 
-		<p
-			class="mt-2 max-w-3xl text-sm leading-6 text-googlegreyG700 sm:text-base dark:text-googlegreycore"
-		>
+		<p class="mt-1.5 max-w-2xl text-sm text-muted dark:text-muted-dark">
 			{description}
 		</p>
 
 		{#if tabs.length > 0}
-			<nav class="-mb-px mt-6 flex gap-1 overflow-x-auto" aria-label="{category} implementations">
+			<nav class="-mb-px mt-5 flex gap-1 overflow-x-auto" aria-label="{category} pages">
 				{#each tabs as tab (tab.href)}
 					{@const cleanHref = tab.href.split('?')[0]}
 					{@const active = page.url.pathname === cleanHref}
 					<a
 						href={tab.href}
 						aria-current={active ? 'page' : undefined}
-						class=" shrink-0 border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors {active
-							? 'border-googleblue600 text-googleblue600 dark:border-googleblue300 dark:text-googleblue300'
-							: 'border-transparent text-googlegreyG700 hover:border-googlegreyG300 hover:text-googlegreyG900 dark:text-googlegreycore dark:hover:border-googlegreyG700 dark:hover:text-white'}"
+						class="inline-flex min-h-[40px] shrink-0 items-center border-b-2 px-3 py-2 text-xs font-medium transition-colors sm:text-sm {active
+							? 'border-cobalt text-cobalt dark:border-cobalt-dark dark:text-cobalt-dark'
+							: 'border-transparent text-muted hover:border-line-strong hover:text-ink dark:text-muted-dark dark:hover:border-line-dark-strong dark:hover:text-ink-dark'}"
 					>
 						{tab.shortLabel}
 					</a>
 				{/each}
 			</nav>
 		{:else}
-			<div class="pb-6"></div>
+			<div class="pb-5"></div>
 		{/if}
 	</div>
 </div>
 
-<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+<div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
 	{#if codeSnippet || inspectorNotes.length > 0}
-		<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+		<div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
 			<div class="lg:col-span-7">
 				{@render children()}
 			</div>
 
-			<aside class="space-y-6 lg:col-span-5" aria-label="Tagging verification inspector">
-				<!-- Live Payload Card -->
-				<div class="g-card overflow-hidden">
+			<aside class="lg:col-span-5" aria-label="Inspector">
+				<div class="ed-card overflow-hidden">
 					<div
-						class="flex items-center justify-between border-b border-googlegreyG200 px-5 py-3.5 dark:border-googlegreyG800"
+						class="flex items-center justify-between border-b border-line px-3 py-2 dark:border-line-dark"
 					>
-						<div class="flex items-center gap-2">
-							<span
-								class="h-2.5 w-2.5 rounded-full {livePayload
-									? 'bg-googlegreencore'
-									: 'bg-googlegreyG300 dark:bg-googlegreyG700'}"
-							></span>
-							<h2 class="text-sm font-medium text-googlegreyG900 dark:text-white">
-								Live Tag Payload
-							</h2>
+						<div role="tablist" aria-label="Inspector views" class="flex items-center gap-1">
+							{#each inspectorTabs as tab, index (tab.id)}
+								<button
+									id="inspector-tab-{tab.id}"
+									type="button"
+									role="tab"
+									aria-selected={activeTab === tab.id}
+									aria-controls="inspector-panel-{tab.id}"
+									tabindex={activeTab === tab.id ? 0 : -1}
+									onclick={() => (activeTab = tab.id)}
+									onkeydown={(e) => handleTabKeydown(e, index)}
+									class="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors {activeTab ===
+									tab.id
+										? 'bg-subtle text-ink dark:bg-subtle-dark dark:text-ink-dark'
+										: 'text-muted hover:text-ink dark:text-muted-dark dark:hover:text-ink-dark'}"
+								>
+									{#if tab.id === 'payload'}
+										<span
+											class="h-1.5 w-1.5 rounded-full {livePayload
+												? 'bg-emerald-600 dark:bg-emerald-400'
+												: 'bg-line-strong dark:bg-line-dark-strong'}"
+											aria-hidden="true"
+										></span>
+									{/if}
+									{tab.label}
+								</button>
+							{/each}
 						</div>
-						{#if livePayload}
+
+						{#if activeTab === 'payload' && livePayload}
 							<button
 								type="button"
 								onclick={() => copyText(JSON.stringify(livePayload, null, 2), 'payload')}
-								class="rounded-md px-2.5 py-1 text-xs font-medium text-googleblue600 hover:bg-googleblueG50 dark:text-googleblue300 dark:hover:bg-googleblue300/10"
+								class="rounded-md px-2.5 py-1.5 text-xs font-medium text-cobalt hover:bg-cobalt-soft dark:text-cobalt-dark dark:hover:bg-cobalt-dark/15"
 							>
 								{copiedPayload ? 'Copied' : 'Copy JSON'}
 							</button>
-						{:else}
-							<span class="text-xs text-googlegreyG600 dark:text-googlegreycore"
-								>Awaiting submit</span
-							>
-						{/if}
-					</div>
-					<div class="bg-googlegreyG50 p-4 dark:bg-googlegreyG900/70">
-						{#if livePayload}
-							<pre
-								class="overflow-x-auto font-mono text-xs leading-5 text-googlegreyG900 dark:text-googlegreyG200"><code
-									>{JSON.stringify(livePayload, null, 2)}</code
-								></pre>
-						{:else}
-							<p class="text-xs leading-5 text-googlegreyG700 dark:text-googlegreycore">
-								Submit the demo form to inspect the exact parameters dispatched to <code
-									class="font-mono">gtag</code
-								>, <code class="font-mono">dataLayer</code>, or
-								<code class="font-mono">window</code>.
-							</p>
-						{/if}
-					</div>
-				</div>
-
-				{#if codeSnippet}
-					<div class="g-card overflow-hidden">
-						<div
-							class="flex items-center justify-between border-b border-googlegreyG200 px-5 py-3.5 dark:border-googlegreyG800"
-						>
-							<h2 class="text-sm font-medium text-googlegreyG900 dark:text-white">
-								{codeTitle}
-							</h2>
+						{:else if activeTab === 'code' && codeSnippet}
 							<button
 								type="button"
 								onclick={() => copyText(codeSnippet, 'code')}
-								class="rounded-md px-2.5 py-1 text-xs font-medium text-googleblue600 hover:bg-googleblueG50 dark:text-googleblue300 dark:hover:bg-googleblue300/10"
+								class="rounded-md px-2.5 py-1.5 text-xs font-medium text-cobalt hover:bg-cobalt-soft dark:text-cobalt-dark dark:hover:bg-cobalt-dark/15"
 							>
-								{copiedCode ? 'Copied' : 'Copy snippet'}
+								{copiedCode ? 'Copied' : 'Copy'}
 							</button>
+						{/if}
+					</div>
+
+					{#if activeTab === 'payload'}
+						<div
+							id="inspector-panel-payload"
+							role="tabpanel"
+							aria-labelledby="inspector-tab-payload"
+							class="bg-subtle/60 p-4 dark:bg-canvas-dark"
+						>
+							{#if livePayload}
+								<pre
+									class="max-h-[420px] overflow-auto font-mono text-xs leading-5 text-ink dark:text-ink-dark"><code
+										>{JSON.stringify(livePayload, null, 2)}</code
+									></pre>
+							{:else}
+								<p class="py-6 text-center text-xs text-muted dark:text-muted-dark">
+									Submit the form to inspect live <code class="font-mono">gtag</code> /
+									<code class="font-mono">dataLayer</code> output.
+								</p>
+							{/if}
 						</div>
-						<div class="bg-googlegreyG900 p-4 text-googlegreyG200 dark:bg-[#17181B]">
-							<pre class="overflow-x-auto font-mono text-xs leading-5"><code>{codeSnippet}</code
+					{:else if activeTab === 'code' && codeSnippet}
+						<div
+							id="inspector-panel-code"
+							role="tabpanel"
+							aria-labelledby="inspector-tab-code"
+							class="bg-ink p-4 text-zinc-100 dark:bg-canvas-dark"
+						>
+							<p class="sr-only">{codeTitle}</p>
+							<pre class="max-h-[420px] overflow-auto font-mono text-xs leading-5"><code
+									>{codeSnippet}</code
 								></pre>
 						</div>
-					</div>
-				{/if}
-
-				{#if inspectorNotes.length > 0}
-					<div class="g-card p-5">
-						<h2 class="text-sm font-medium text-googlegreyG900 dark:text-white">
-							Verification checklist
-						</h2>
-						<ul
-							class="mt-3 space-y-2 text-xs leading-5 text-googlegreyG700 dark:text-googlegreycore"
+					{:else if activeTab === 'notes' && inspectorNotes.length > 0}
+						<div
+							id="inspector-panel-notes"
+							role="tabpanel"
+							aria-labelledby="inspector-tab-notes"
+							class="p-4"
 						>
-							{#each inspectorNotes as note, idx (idx)}
-								<li class="flex items-start gap-2.5">
-									<span
-										class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-googleblue600 dark:bg-googleblue300"
-									></span>
-									<span>{note}</span>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				{/if}
+							<ul class="space-y-2.5 text-xs leading-5 text-muted dark:text-muted-dark">
+								{#each inspectorNotes as note, idx (idx)}
+									<li class="flex items-start gap-2.5">
+										<span
+											class="mt-2 h-1 w-1 shrink-0 rounded-full bg-cobalt dark:bg-cobalt-dark"
+											aria-hidden="true"
+										></span>
+										<span>{note}</span>
+									</li>
+								{/each}
+							</ul>
+						</div>
+					{/if}
+				</div>
 			</aside>
 		</div>
 	{:else}

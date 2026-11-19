@@ -80,24 +80,21 @@ gtag('event', 'lead_scoring_form_submit', {
 
 <DemoPageShell
 	title="Lead Scoring Demo - Multiple Checkbox Selections (gtag.js)"
-	heading="Lead Scoring: Multiple Checkboxes"
+	heading="Lead Scoring: Multi-Checkbox"
 	category="Lead Scoring"
 	badge="gtag.js"
-	badgeColor="blue"
-	description="Aggregates qualification points across multiple selected checkbox inputs (name=&quot;interest&quot;) via FormData.getAll('interest') and passes both the numeric total and comma-joined list to Google Tag."
+	description="Sums selected checkbox values and sends the total and list to Google Tag."
 	tabs={leadScoringLinks}
 	{codeSnippet}
 	{livePayload}
 	inspectorNotes={[
-		'Form retains id="lead_scoring_form_multiple_checkbox" and checkbox name="interest".',
-		'Fixes serialization of selected checkboxes using interest.join(",") instead of an uninvoked toString reference.',
-		'Live score badge updates reactively as you toggle interest checkboxes.'
+		'Preserves #lead_scoring_form_multiple_checkbox and name="interest".',
+		'Serializes selections via interest.join(",").'
 	]}
 >
 	<ServiceLeadForm
 		formId="lead_scoring_form_multiple_checkbox"
-		heading="Multi-interest lead qualification"
-		subheading="Select one or more interests below to accumulate a composite lead value."
+		heading="Select interests"
 		showServiceSelect={false}
 		{submitted}
 		onSubmit={handleSubmit}
@@ -105,36 +102,34 @@ gtag('event', 'lead_scoring_form_submit', {
 	>
 		{#snippet customFields()}
 			<fieldset>
-				<div class="flex items-center justify-between">
-					<legend class="text-sm font-medium text-googlegreyG800 dark:text-googlegreyG200">
-						Choose your interests
-					</legend>
-					<span class="g-chip-blue">Current score: {previewScore} pts</span>
-				</div>
+				<legend class="ed-label flex w-full items-center justify-between">
+					<span>Interests</span>
+					<span class="ed-tag-accent">{previewScore} pts</span>
+				</legend>
 
-				<div class="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+				<div class="mt-2 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
 					{#each interestOptions as opt (opt.id)}
 						{@const checked = selectedInterests.includes(opt.value)}
 						<label
 							for={opt.id}
-							class="flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors {checked
-								? 'border-googleblue600 bg-googleblueG50/60 dark:border-googleblue300 dark:bg-googleblue300/10'
-								: 'border-googlegreyG300 bg-white hover:bg-googlegreyG50 dark:border-googlegreyG700 dark:bg-googlegreyG900 dark:hover:bg-googledarktonal'}"
+							class="flex min-h-[44px] cursor-pointer items-center justify-between rounded-lg border px-3.5 py-2.5 transition-colors {checked
+								? 'border-cobalt bg-cobalt-soft/70 dark:border-cobalt-dark dark:bg-cobalt-dark/15'
+								: 'border-line-strong bg-surface hover:border-ink/40 dark:border-line-dark-strong dark:bg-canvas-dark dark:hover:border-ink-dark/40'}"
 						>
-							<span class="flex items-center gap-3">
+							<span class="flex items-center gap-2.5">
 								<input
 									id={opt.id}
 									value={opt.value}
 									name="interest"
 									type="checkbox"
 									bind:group={selectedInterests}
-									class="h-4 w-4 rounded border-googlegreyG600 text-googleblue600 focus:ring-googleblue600 dark:border-googlegreycore dark:bg-googlegreyG900 dark:text-googleblue300"
+									class="h-4 w-4 rounded border-line-strong text-cobalt focus:ring-cobalt dark:border-line-dark-strong dark:bg-canvas-dark dark:text-cobalt-dark"
 								/>
-								<span class="text-sm font-medium text-googlegreyG900 dark:text-googlegreyG200">
+								<span class="text-sm font-medium text-ink dark:text-ink-dark">
 									{opt.label}
 								</span>
 							</span>
-							<span class="g-chip-neutral">+{opt.points}</span>
+							<span class="ed-tag">+{opt.points}</span>
 						</label>
 					{/each}
 				</div>

@@ -1,22 +1,38 @@
 import { TYPEFORM_TOKEN } from '$app/env/private';
+import {
+	checkRateLimit,
+	getClientIdentifier,
+	parseJsonBody,
+	sanitizeText
+} from '#lib/server/security.ts';
 import type { RequestHandler } from './$types';
 
 const SAFE_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
 
 export const POST: RequestHandler = async ({ request, fetch }) => {
+	const rate = checkRateLimit(`typeform:${getClientIdentifier(request)}`, {
+		limit: 30,
+		windowMs: 60_000
+	});
+	if (!rate.allowed) {
+		return Response.json(
+			{ error: 'Too many requests. Please try again shortly.' },
+			{ status: 429, headers: { 'Retry-After': String(rate.retryAfterSec) } }
+		);
+	}
+
 	if (!TYPEFORM_TOKEN) {
 		return Response.json({ error: 'Typeform integration is not configured.' }, { status: 503 });
 	}
 
-	let body: Record<string, unknown>;
-	try {
-		body = (await request.json()) as Record<string, unknown>;
-	} catch {
-		return Response.json({ error: 'Invalid JSON request body.' }, { status: 400 });
+	const parsed = await parseJsonBody(request, 8_192);
+	if (!parsed.ok) {
+		return Response.json({ error: parsed.error }, { status: parsed.status });
 	}
+	const body = parsed.data;
 
-	const formId = typeof body.formId === 'string' ? body.formId.trim() : '';
-	const responseId = typeof body.response_id === 'string' ? body.response_id.trim() : '';
+	const formId = sanitizeText(body.formId, 64);
+	const responseId = sanitizeText(body.response_id, 64);
 
 	if (!SAFE_ID_PATTERN.test(formId) || !SAFE_ID_PATTERN.test(responseId)) {
 		return Response.json(

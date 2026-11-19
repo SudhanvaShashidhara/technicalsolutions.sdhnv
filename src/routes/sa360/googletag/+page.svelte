@@ -52,7 +52,7 @@ gtag('event', 'conversion', {
 	category="Search Ads 360"
 	badge="gtag.js"
 	badgeColor="yellow"
-	description="Fires a Search Ads 360 Floodlight Sales tag directly via gtag.js, passing custom Floodlight variables (u1, u2), revenue value, and a deduplicating transaction_id."
+	description="Fires an SA360 Floodlight Sales tag directly via gtag.js."
 	tabs={sa360Links}
 	{codeSnippet}
 	{livePayload}

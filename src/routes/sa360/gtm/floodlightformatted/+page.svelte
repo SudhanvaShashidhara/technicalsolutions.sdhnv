@@ -57,7 +57,7 @@ window.dataLayer.push({
 	category="Search Ads 360"
 	badge="Floodlight"
 	badgeColor="yellow"
-	description="Structures the dataLayer payload using canonical Floodlight Sales keys (src, type, cat, cost, qty, ord, u1, u2) for 1:1 mapping into GTM Floodlight Sales tags."
+	description="Emits canonical Floodlight Sales keys (src, type, cat, cost, qty, ord)."
 	tabs={sa360Links}
 	{codeSnippet}
 	{livePayload}

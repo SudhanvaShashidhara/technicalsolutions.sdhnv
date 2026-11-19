@@ -1,6 +1,12 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { page } from '$app/state';
 	import { serviceOptions, serviceRequirementOptions } from '#lib/nav.ts';
+	import {
+		recordClientSubmission,
+		serializeFormData,
+		type ArchiveSubmissionResponse
+	} from '#lib/submissions.ts';
 
 	interface Props {
 		formId?: string;
@@ -21,14 +27,14 @@
 
 	let {
 		formId,
-		heading = 'Request a service consultation',
-		subheading = 'Enter sample lead details to trigger this measurement implementation.',
+		heading = 'Demo form',
+		subheading = '',
 		showPhone = false,
 		showServiceSelect = true,
 		showRequirementSelect = false,
-		submitLabel = 'Submit lead',
+		submitLabel = 'Submit',
 		submitted = false,
-		successMessage = 'Form successfully submitted.',
+		successMessage = 'Submission recorded.',
 		successId = 'form_success',
 		ecCssSelectorValues = null,
 		onSubmit,
@@ -37,79 +43,111 @@
 	}: Props = $props();
 
 	let submitting = $state(false);
+	let archiveStatus = $state<ArchiveSubmissionResponse | null>(null);
+
+	function extractLeadScore(form: HTMLFormElement): number | null {
+		let total = 0;
+		let found = false;
+		const selects = form.querySelectorAll<HTMLSelectElement>('select');
+		for (const select of selects) {
+			const opt = select.selectedOptions[0];
+			const val = opt?.dataset.leadValue ? Number(opt.dataset.leadValue) : NaN;
+			if (!Number.isNaN(val)) {
+				total += val;
+				found = true;
+			}
+		}
+		return found ? total : null;
+	}
 
 	async function handleFormSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		const form = e.currentTarget as HTMLFormElement;
 		const formData = new FormData(form);
+		const fields = serializeFormData(formData);
+		const score = extractLeadScore(form);
+
 		submitting = true;
+		archiveStatus = null;
 		try {
 			await onSubmit(formData, form);
+			archiveStatus = await recordClientSubmission({
+				route: page.url.pathname,
+				formId: formId ?? null,
+				source: 'form',
+				fields,
+				score
+			});
 		} finally {
 			submitting = false;
 		}
 	}
 </script>
 
-<form id={formId} onsubmit={handleFormSubmit} class="g-card overflow-hidden">
-	<div class="border-b border-googlegreyG200 px-6 py-5 sm:px-8 dark:border-googlegreyG800">
-		<h2 class="text-base font-medium text-googlegreyG900 dark:text-white">{heading}</h2>
-		<p class="mt-1 text-sm text-googlegreyG700 dark:text-googlegreycore">{subheading}</p>
+<form id={formId} onsubmit={handleFormSubmit} class="ed-card overflow-hidden">
+	<div class="border-b border-line px-5 py-4 sm:px-6 dark:border-line-dark">
+		<h2 class="text-sm font-semibold text-ink dark:text-ink-dark">{heading}</h2>
+		{#if subheading}
+			<p class="mt-0.5 text-xs text-muted dark:text-muted-dark">{subheading}</p>
+		{/if}
 	</div>
 
-	<div class="space-y-5 px-6 py-6 sm:px-8">
-		<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+	<div class="space-y-4 px-5 py-5 sm:px-6">
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 			<div class={showPhone ? 'sm:col-span-2' : 'sm:col-span-1'}>
-				<label for="full-name" class="g-label">Full name</label>
+				<label for="full-name" class="ed-label">Full name</label>
 				<input
 					type="text"
 					required
+					aria-required="true"
 					name="full-name"
 					id="full-name"
 					autocomplete="name"
 					placeholder="Alex Morgan"
-					class="g-input"
+					class="ed-input"
 				/>
 			</div>
 
 			<div class="sm:col-span-1">
-				<label for="email" class="g-label">Email address</label>
+				<label for="email" class="ed-label">Email</label>
 				<input
 					id="email"
 					name="email"
 					type="email"
 					required
+					aria-required="true"
 					autocomplete="email"
 					placeholder="alex.morgan@gmail.com"
-					class="g-input"
+					class="ed-input"
 				/>
 			</div>
 
 			{#if showPhone}
 				<div class="sm:col-span-1">
-					<label for="tel" class="g-label">Phone number</label>
+					<label for="tel" class="ed-label">Phone</label>
 					<input
 						id="tel"
 						name="tel"
 						type="tel"
 						required
+						aria-required="true"
 						autocomplete="tel"
 						placeholder="+1 555 234 5678"
-						class="g-input"
+						class="ed-input"
 					/>
 				</div>
 			{/if}
 		</div>
 
 		{#if showServiceSelect || showRequirementSelect}
-			<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				{#if showServiceSelect}
 					<div class={showRequirementSelect ? 'sm:col-span-1' : 'sm:col-span-2'}>
-						<label for="service_details" class="g-label">Select your service</label>
-						<select id="service_details" name="service_details" class="g-input">
+						<label for="service_details" class="ed-label">Service</label>
+						<select id="service_details" name="service_details" class="ed-input">
 							{#each serviceOptions as opt (opt.value)}
 								<option data-lead-value={opt.leadValue} value={opt.value}>
-									{opt.label} (${opt.leadValue} value)
+									{opt.label} (${opt.leadValue})
 								</option>
 							{/each}
 						</select>
@@ -118,8 +156,8 @@
 
 				{#if showRequirementSelect}
 					<div class="sm:col-span-1">
-						<label for="service_requirement" class="g-label">Urgency / timeframe</label>
-						<select id="service_requirement" name="service_requirement" class="g-input">
+						<label for="service_requirement" class="ed-label">Timeframe</label>
+						<select id="service_requirement" name="service_requirement" class="ed-input">
 							{#each serviceRequirementOptions as opt (opt.value)}
 								<option data-lead-value={opt.leadValue} value={opt.value}>
 									{opt.label} (+${opt.leadValue})
@@ -136,57 +174,41 @@
 		{/if}
 
 		<div>
-			<label for="additional_details" class="g-label">Additional details (optional)</label>
+			<label for="additional_details" class="ed-label">Notes (optional)</label>
 			<textarea
 				id="additional_details"
 				name="additional_details"
-				rows="3"
-				placeholder="Project scope, preferred contact hours, or notes..."
-				class="g-input"></textarea>
+				rows="2"
+				placeholder="Optional context..."
+				class="ed-input"></textarea>
 		</div>
 	</div>
 
 	<div
-		class="flex flex-wrap items-center justify-between gap-4 border-t border-googlegreyG200 bg-googlegreyG50/70 px-6 py-4 sm:px-8 dark:border-googlegreyG800 dark:bg-googlegreyG900/40"
+		class="flex items-center justify-end border-t border-line bg-subtle/50 px-5 py-3.5 sm:px-6 dark:border-line-dark dark:bg-canvas-dark/40"
 	>
-		<p class="text-xs text-googlegreyG700 dark:text-googlegreycore">
-			No real quote is booked; data stays in your browser session.
-		</p>
-		<button type="submit" disabled={submitting} class="g-btn-primary">
+		<button type="submit" disabled={submitting} class="ed-btn-primary">
 			{submitting ? 'Submitting...' : submitLabel}
 		</button>
 	</div>
 
 	{#if submitted}
-		<div
-			class="border-t border-googlegreenG800/20 bg-googlegreenG50 px-6 py-4 sm:px-8 dark:border-googlegreencore/30 dark:bg-googlegreencore/15"
-			role="status"
-			aria-live="polite"
-		>
-			<div class="flex items-start gap-3">
-				<svg
-					class="mt-0.5 h-5 w-5 shrink-0 text-googlegreenG800 dark:text-[#81C995]"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				<div class="min-w-0 flex-1">
+		<div class="ed-status-ok px-5 py-3.5 sm:px-6" role="status" aria-live="polite">
+			<div class="flex items-start justify-between gap-3">
+				<div class="min-w-0 flex-1 space-y-1">
 					{#if ecCssSelectorValues}
-						<p class="text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
-							Thanks for submitting the form. A confirmation email is sent to
-							<span class="ec_email font-mono underline">{ecCssSelectorValues.email}</span>. We will
-							also be contacting you at
+						<p class="text-sm font-medium">
+							Confirmation sent to
+							<span class="ec_email font-mono underline">{ecCssSelectorValues.email}</span>
+							and
 							<span class="ec_tel font-mono underline">{ecCssSelectorValues.tel}</span>.
 						</p>
 					{:else}
-						<p id={successId} class="text-sm font-medium text-googlegreenG900 dark:text-[#CEEAD6]">
-							{successMessage}
+						<p id={successId} class="text-sm font-medium">{successMessage}</p>
+					{/if}
+					{#if archiveStatus?.saved && archiveStatus.id}
+						<p class="font-mono text-[11px] opacity-80">
+							Firestore ID: {archiveStatus.id}
 						</p>
 					{/if}
 				</div>
@@ -194,7 +216,7 @@
 					<button
 						type="button"
 						onclick={onDismiss}
-						class="rounded-full p-1 text-googlegreenG800 hover:bg-googlegreenG800/10 dark:text-[#81C995] dark:hover:bg-white/10"
+						class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
 						aria-label="Dismiss confirmation"
 					>
 						<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

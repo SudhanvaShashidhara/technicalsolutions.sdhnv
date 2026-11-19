@@ -35,7 +35,7 @@ window.enhanced_conversion_data = {
 	category="Enhanced Conversions"
 	badge="Window Variable"
 	badgeColor="neutral"
-	description="Populates window.enhanced_conversion_data on form submission so Google Tag or a GTM JavaScript Variable can read user-provided data directly from memory."
+	description="Populates window.enhanced_conversion_data on submit for GTM reads."
 	tabs={enhancedConversionsLinks}
 	{codeSnippet}
 	{livePayload}

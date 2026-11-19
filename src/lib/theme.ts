@@ -10,8 +10,13 @@ function create_theme() {
 
 	function apply(next: Theme) {
 		if (browser) {
-			document.documentElement.classList.toggle('dark', next === 'dark');
-			document.documentElement.style.colorScheme = next;
+			const root = document.documentElement;
+			root.classList.add('theme-switching');
+			root.classList.toggle('dark', next === 'dark');
+			root.style.colorScheme = next;
+			// Flush computed styles so surfaces, cards, and buttons switch in unison with zero flash
+			void getComputedStyle(root).color;
+			root.classList.remove('theme-switching');
 			try {
 				localStorage.setItem('theme', next);
 			} catch {

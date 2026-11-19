@@ -52,7 +52,7 @@ window.dataLayer.push({ event: 'floodlight_js_ready' });`;
 	category="Search Ads 360"
 	badge="Window Variable"
 	badgeColor="yellow"
-	description="Populates window.floodlight_data before firing a lightweight floodlight_js_ready trigger event so GTM JavaScript Variables (e.g. floodlight_data.cost) can read values directly."
+	description="Exposes window.floodlight_data for GTM JavaScript Variable extraction."
 	tabs={sa360Links}
 	{codeSnippet}
 	{livePayload}
