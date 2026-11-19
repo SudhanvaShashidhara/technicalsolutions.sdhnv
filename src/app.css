@@ -61,6 +61,13 @@
 		outline-color: var(--color-cobalt-dark);
 	}
 
+	.theme-switching,
+	.theme-switching *,
+	.theme-switching *::before,
+	.theme-switching *::after {
+		transition: none !important;
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		html {
 			scroll-behavior: auto;
