@@ -3,15 +3,15 @@
 	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
 	import { toolsLinks } from '#lib/nav.ts';
 	import { pushDataLayer } from '#lib/gtag.ts';
+	import { recordClientSubmission } from '#lib/submissions.ts';
 
 	let livePayload = $state<Record<string, unknown> | null>(null);
 
-	const codeSnippet = `// Listen for Calendly postMessage events in parent window
-window.addEventListener('message', (e) => {
+	const codeSnippet = `window.addEventListener('message', (e) => {
   if (e.origin === 'https://calendly.com' && e.data?.event?.startsWith('calendly.')) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
-      event: e.data.event, // e.g. "calendly.event_scheduled"
+      event: e.data.event,
       calendly_payload: e.data.payload
     });
   }
@@ -29,6 +29,7 @@ window.addEventListener('message', (e) => {
 		}
 
 		function handleMessage(e: MessageEvent) {
+			if (e.origin !== 'https://calendly.com') return;
 			if (
 				e.data &&
 				typeof e.data === 'object' &&
@@ -41,6 +42,18 @@ window.addEventListener('message', (e) => {
 				};
 				pushDataLayer(payload);
 				livePayload = payload;
+				if (e.data.event === 'calendly.event_scheduled') {
+					void recordClientSubmission({
+						route: '/iframe/calendly',
+						formId: 'calendly_embed',
+						source: 'iframe',
+						fields: {
+							provider: 'calendly',
+							event: e.data.event
+						},
+						tagPayload: payload
+					});
+				}
 			}
 		}
 
@@ -55,36 +68,33 @@ window.addEventListener('message', (e) => {
 
 <DemoPageShell
 	title="Iframe Demo - Calendly"
-	heading="Cross-Origin Iframe: Calendly Embed"
+	heading="Calendly Embed"
 	category="Tools & Embeds"
 	badge="Iframe"
-	badgeColor="green"
-	description="Embeds Calendly's inline scheduling widget and captures cross-origin calendly.* postMessage lifecycle events onto window.dataLayer."
+	description="Captures trusted calendly.* postMessage lifecycle events onto window.dataLayer."
 	tabs={toolsLinks}
 	{codeSnippet}
 	{livePayload}
 	inspectorNotes={[
-		'Fixes SSR ReferenceError by scoping DOM script cleanup inside the onMount teardown callback.',
-		'Forwards calendly.profile_page_viewed, calendly.date_and_time_selected, and calendly.event_scheduled to dataLayer.',
-		'See /iframe/calendly/confirmation for redirect-based thank-you page tracking.'
+		'Validates e.origin === "https://calendly.com" before accepting postMessage payloads.',
+		'Records calendly.event_scheduled bookings to /api/submissions.',
+		'See /iframe/calendly/confirmation for redirect-based conversion tracking.'
 	]}
 >
-	<div class="g-card overflow-hidden p-4 sm:p-6">
+	<div class="ed-card overflow-hidden p-4 sm:p-5">
 		<div
-			class="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-googlegreyG200 pb-3 dark:border-googlegreyG800"
+			class="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-line pb-3 dark:border-line-dark"
 		>
-			<h2 class="text-sm font-medium text-googlegreyG900 dark:text-white">
-				Calendly Inline Widget
-			</h2>
+			<h2 class="text-sm font-semibold text-ink dark:text-ink-dark">Inline scheduler</h2>
 			<a
 				href="/iframe/calendly/confirmation"
-				class="text-xs font-medium text-googleblue600 hover:underline dark:text-googleblue300"
+				class="text-xs font-medium text-cobalt hover:underline dark:text-cobalt-dark"
 			>
-				Preview redirect confirmation page &rarr;
+				Confirmation page &rarr;
 			</a>
 		</div>
 		<div
-			class="calendly-inline-widget overflow-hidden rounded-xl"
+			class="calendly-inline-widget overflow-hidden rounded-lg"
 			data-url="https://calendly.com/sudhanvashashidhara/30min"
 			style="min-width: 320px; height: 680px;"
 		></div>

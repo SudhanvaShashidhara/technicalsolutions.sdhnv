@@ -5,17 +5,17 @@
 <button
 	type="button"
 	onclick={theme.toggle}
-	class="inline-flex h-10 w-10 items-center justify-center rounded-full text-googlegreyG700 transition-colors hover:bg-googlegreyG100 hover:text-googlegreyG900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-googleblue600 dark:text-googlegreycore dark:hover:bg-googlegreyG800 dark:hover:text-white"
-	aria-label="Toggle color theme"
-	title="Toggle color theme"
+	aria-pressed={$theme === 'dark'}
+	class="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors hover:bg-subtle hover:text-ink dark:text-muted-dark dark:hover:bg-subtle-dark dark:hover:text-ink-dark"
+	aria-label={$theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+	title={$theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
 >
-	<!-- Sun (shown in dark mode via CSS to avoid SSR hydration mismatch) -->
 	<svg
 		class="hidden h-5 w-5 dark:block"
 		viewBox="0 0 24 24"
 		fill="none"
 		stroke="currentColor"
-		stroke-width="1.8"
+		stroke-width="1.75"
 		aria-hidden="true"
 	>
 		<circle cx="12" cy="12" r="4" />
@@ -24,13 +24,12 @@
 			d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
 		/>
 	</svg>
-	<!-- Moon (shown in light mode) -->
 	<svg
 		class="block h-5 w-5 dark:hidden"
 		viewBox="0 0 24 24"
 		fill="none"
 		stroke="currentColor"
-		stroke-width="1.8"
+		stroke-width="1.75"
 		aria-hidden="true"
 	>
 		<path

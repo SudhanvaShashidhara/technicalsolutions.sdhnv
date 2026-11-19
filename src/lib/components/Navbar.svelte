@@ -5,20 +5,27 @@
 
 	let mobileOpen = $state(false);
 	let openMenu = $state<NavGroup['id'] | null>(null);
+	let lastTrigger: HTMLButtonElement | null = null;
 
 	function toggleMenu(id: NavGroup['id'], e: MouseEvent) {
 		e.stopPropagation();
+		lastTrigger = e.currentTarget as HTMLButtonElement;
 		openMenu = openMenu === id ? null : id;
 	}
 
-	function closeAll() {
+	function closeAll(restoreFocus = false) {
+		const hadMenu = openMenu !== null;
 		openMenu = null;
 		mobileOpen = false;
+		if (restoreFocus && hadMenu && lastTrigger) {
+			lastTrigger.focus();
+		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			closeAll();
+		if (e.key === 'Escape' && (openMenu !== null || mobileOpen)) {
+			e.preventDefault();
+			closeAll(true);
 		}
 	}
 
@@ -30,47 +37,44 @@
 	}
 </script>
 
-<svelte:window onclick={() => (openMenu = null)} onkeydown={handleKeydown} />
+<svelte:window onclick={() => closeAll(false)} onkeydown={handleKeydown} />
 
 <header
-	class="sticky top-0 z-40 border-b border-googlegreyG300 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85 dark:border-googlegreyG800 dark:bg-googlegreyG900/95"
+	class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur dark:border-line-dark dark:bg-canvas-dark/95"
 >
 	<nav
-		class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
-		aria-label="Global"
+		class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
+		aria-label="Primary"
 	>
-		<!-- Google 4-color mark + wordmark -->
-		<div class="flex items-center">
-			<a
-				href="/"
-				onclick={closeAll}
-				class="flex items-center gap-2.5 rounded-lg py-1.5 pr-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-googleblue600"
+		<!-- Editorial monochrome wordmark -->
+		<a
+			href="/"
+			onclick={() => closeAll(false)}
+			class="inline-flex min-h-[44px] items-center gap-2.5 rounded-lg pr-2 text-sm font-semibold tracking-tight text-ink dark:text-ink-dark"
+		>
+			<span
+				class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-ink font-mono text-[11px] font-semibold text-white dark:bg-ink-dark dark:text-canvas-dark"
+				aria-hidden="true"
 			>
-				<span class="grid grid-cols-2 gap-0.5" aria-hidden="true">
-					<span class="h-2 w-2 rounded-full bg-googlebluecore"></span>
-					<span class="h-2 w-2 rounded-full bg-googleredcore"></span>
-					<span class="h-2 w-2 rounded-full bg-googleyellowcore"></span>
-					<span class="h-2 w-2 rounded-full bg-googlegreencore"></span>
-				</span>
-				<span class="text-[17px] font-medium tracking-tight text-googlegreyG900 dark:text-white">
-					Technical <span class="text-googlegreyG700 dark:text-googlegreycore">Solutions</span>
-				</span>
-			</a>
-		</div>
+				TS
+			</span>
+			<span>Technical Solutions</span>
+		</a>
 
-		<!-- Desktop navigation groups -->
-		<div class="hidden lg:flex lg:items-center lg:gap-x-1">
+		<!-- Desktop menus -->
+		<div class="hidden lg:flex lg:items-center lg:gap-1">
 			{#each navGroups as group (group.id)}
 				{@const active = isGroupActive(group, page.url.pathname)}
+				{@const menuId = `nav-menu-${group.id}`}
 				<div class="relative">
 					<button
 						type="button"
 						aria-expanded={openMenu === group.id}
-						aria-haspopup="true"
+						aria-controls={menuId}
 						onclick={(e) => toggleMenu(group.id, e)}
-						class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors {active
-							? 'bg-googleblueG50 text-googleblue600 dark:bg-googleblue300/15 dark:text-googleblue300'
-							: 'text-googlegreyG700 hover:bg-googlegreyG100 hover:text-googlegreyG900 dark:text-googlegreyG200 dark:hover:bg-googlegreyG800 dark:hover:text-white'}"
+						class="inline-flex min-h-[40px] items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium transition-colors {active
+							? 'bg-cobalt-soft text-cobalt dark:bg-cobalt-dark/15 dark:text-cobalt-dark'
+							: 'text-muted hover:bg-subtle hover:text-ink dark:text-muted-dark dark:hover:bg-subtle-dark dark:hover:text-ink-dark'}"
 					>
 						{group.title}
 						<svg
@@ -90,47 +94,33 @@
 					</button>
 
 					{#if openMenu === group.id}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_static_element_interactions -->
 						<div
-							onclick={(e) => e.stopPropagation()}
-							class="absolute left-0 top-full z-50 mt-2 w-80 rounded-2xl border border-googlegreyG300 bg-white p-2 shadow-[0_4px_16px_rgba(60,64,67,0.16)] dark:border-googlegreyG800 dark:bg-googledarkcard dark:shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+							id={menuId}
+							role="region"
+							aria-label="{group.title} pages"
+							class="absolute left-0 top-full z-50 mt-2 w-72 rounded-xl border border-line bg-surface p-1.5 shadow-lg dark:border-line-dark dark:bg-surface-dark"
 						>
-							<div class="px-3 py-2">
-								<p class="text-xs font-medium text-googlegreyG700 dark:text-googlegreycore">
-									{group.summary}
-								</p>
-							</div>
-							<div class="my-1 border-t border-googlegreyG200 dark:border-googlegreyG800"></div>
-							{#each group.items as item (item.href)}
-								{@const itemPath = item.href.split('?')[0]}
-								{@const itemActive = page.url.pathname === itemPath}
-								<a
-									href={item.href}
-									onclick={closeAll}
-									class="flex items-start justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors {itemActive
-										? 'bg-googleblueG50/80 text-googleblueG800 dark:bg-googleblue300/15 dark:text-googleblue300'
-										: 'hover:bg-googlegreyG50 dark:hover:bg-googledarktonal'}"
-								>
-									<div class="min-w-0">
-										<p
-											class="text-sm font-medium {itemActive
-												? 'text-googleblue600 dark:text-googleblue300'
-												: 'text-googlegreyG900 dark:text-googlegreyG200'}"
+							<ul class="space-y-0.5">
+								{#each group.items as item (item.href)}
+									{@const itemPath = item.href.split('?')[0]}
+									{@const itemActive = page.url.pathname === itemPath}
+									<li>
+										<a
+											href={item.href}
+											aria-current={itemActive ? 'page' : undefined}
+											onclick={() => closeAll(false)}
+											class="flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors {itemActive
+												? 'bg-cobalt-soft font-medium text-cobalt dark:bg-cobalt-dark/15 dark:text-cobalt-dark'
+												: 'text-ink hover:bg-subtle dark:text-ink-dark dark:hover:bg-subtle-dark'}"
 										>
-											{item.label}
-										</p>
-										<p
-											class="mt-0.5 line-clamp-1 text-xs text-googlegreyG700 dark:text-googlegreycore"
-										>
-											{item.description}
-										</p>
-									</div>
-									{#if item.badge}
-										<span class="g-chip-neutral shrink-0">{item.badge}</span>
-									{/if}
-								</a>
-							{/each}
+											<span class="truncate">{item.label}</span>
+											{#if item.badge}
+												<span class="ed-tag shrink-0">{item.badge}</span>
+											{/if}
+										</a>
+									</li>
+								{/each}
+							</ul>
 						</div>
 					{/if}
 				</div>
@@ -138,9 +128,11 @@
 		</div>
 
 		<!-- Desktop right actions -->
-		<div class="hidden lg:flex lg:items-center lg:gap-x-3">
+		<div class="hidden lg:flex lg:items-center lg:gap-2">
 			<ThemeToggle />
-			<a href="/contact" onclick={closeAll} class="g-btn-primary !px-4 !py-2">SHA-256 Tester</a>
+			<a href="/contact" onclick={() => closeAll(false)} class="ed-btn-primary !px-4 !text-xs">
+				SHA-256
+			</a>
 		</div>
 
 		<!-- Mobile controls -->
@@ -149,12 +141,16 @@
 			<button
 				type="button"
 				aria-expanded={mobileOpen}
-				aria-label="Toggle navigation menu"
-				onclick={() => (mobileOpen = !mobileOpen)}
-				class="inline-flex h-10 w-10 items-center justify-center rounded-full text-googlegreyG700 hover:bg-googlegreyG100 dark:text-googlegreyG200 dark:hover:bg-googlegreyG800"
+				aria-controls="mobile-nav-drawer"
+				aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+				onclick={(e) => {
+					e.stopPropagation();
+					mobileOpen = !mobileOpen;
+				}}
+				class="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted hover:bg-subtle hover:text-ink dark:text-muted-dark dark:hover:bg-subtle-dark dark:hover:text-ink-dark"
 			>
 				<svg
-					class="h-6 w-6"
+					class="h-5 w-5"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke-width="1.75"
@@ -178,33 +174,37 @@
 	<!-- Mobile menu drawer -->
 	{#if mobileOpen}
 		<div
-			class="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-googlegreyG300 bg-white px-4 pb-6 pt-3 lg:hidden dark:border-googlegreyG800 dark:bg-googlegreyG900"
+			id="mobile-nav-drawer"
+			class="max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-line bg-surface px-4 pb-6 pt-3 lg:hidden dark:border-line-dark dark:bg-canvas-dark"
 		>
 			{#each navGroups as group (group.id)}
-				<div class="py-2.5">
+				<div class="py-2">
 					<p
-						class="px-3 pb-1.5 text-xs font-semibold uppercase tracking-wider text-googlegreyG700 dark:text-googlegreycore"
+						class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted dark:text-muted-dark"
 					>
 						{group.title}
 					</p>
-					<div class="space-y-0.5">
+					<ul class="space-y-0.5">
 						{#each group.items as item (item.href)}
 							{@const itemPath = item.href.split('?')[0]}
 							{@const itemActive = page.url.pathname === itemPath}
-							<a
-								href={item.href}
-								onclick={closeAll}
-								class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium {itemActive
-									? 'bg-googleblueG50 text-googleblue600 dark:bg-googleblue300/15 dark:text-googleblue300'
-									: 'text-googlegreyG800 hover:bg-googlegreyG100 dark:text-googlegreyG200 dark:hover:bg-googlegreyG800'}"
-							>
-								<span>{item.label}</span>
-								{#if item.badge}
-									<span class="g-chip-neutral">{item.badge}</span>
-								{/if}
-							</a>
+							<li>
+								<a
+									href={item.href}
+									aria-current={itemActive ? 'page' : undefined}
+									onclick={() => closeAll(false)}
+									class="flex min-h-[44px] items-center justify-between rounded-lg px-3 py-2 text-sm {itemActive
+										? 'bg-cobalt-soft font-medium text-cobalt dark:bg-cobalt-dark/15 dark:text-cobalt-dark'
+										: 'text-ink hover:bg-subtle dark:text-ink-dark dark:hover:bg-subtle-dark'}"
+								>
+									<span>{item.label}</span>
+									{#if item.badge}
+										<span class="ed-tag">{item.badge}</span>
+									{/if}
+								</a>
+							</li>
 						{/each}
-					</div>
+					</ul>
 				</div>
 			{/each}
 		</div>

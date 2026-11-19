@@ -3,11 +3,12 @@
 	import DemoPageShell from '#lib/components/DemoPageShell.svelte';
 	import { toolsLinks } from '#lib/nav.ts';
 	import { pushDataLayer } from '#lib/gtag.ts';
+	import { recordClientSubmission } from '#lib/submissions.ts';
 
 	let livePayload = $state<Record<string, unknown> | null>(null);
 
-	const codeSnippet = `// Listen for Typeform embed postMessage submit events in parent window
-window.addEventListener('message', (event) => {
+	const codeSnippet = `window.addEventListener('message', (event) => {
+  if (!event.origin.endsWith('.typeform.com') && event.origin !== 'https://typeform.com') return;
   if (event.data?.type === 'form-submit') {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -30,6 +31,11 @@ window.addEventListener('message', (event) => {
 		}
 
 		function handleMessage(event: MessageEvent) {
+			const trustedOrigin =
+				event.origin === 'https://typeform.com' ||
+				(event.origin.startsWith('https://') && event.origin.endsWith('.typeform.com'));
+			if (!trustedOrigin) return;
+
 			if (event.data && typeof event.data === 'object' && event.data.type === 'form-submit') {
 				const payload = {
 					event: 'typeform_submit',
@@ -38,6 +44,16 @@ window.addEventListener('message', (event) => {
 				};
 				pushDataLayer(payload);
 				livePayload = payload;
+				void recordClientSubmission({
+					route: '/iframe/typeform',
+					formId: String(payload.formId),
+					source: 'iframe',
+					fields: {
+						provider: 'typeform',
+						response_id: payload.response_id
+					},
+					tagPayload: payload
+				});
 			}
 		}
 
@@ -52,30 +68,27 @@ window.addEventListener('message', (event) => {
 
 <DemoPageShell
 	title="Iframe Demo - Typeform"
-	heading="Cross-Origin Iframe: Typeform Embed"
+	heading="Typeform Embed"
 	category="Tools & Embeds"
 	badge="Iframe"
-	badgeColor="green"
-	description="Demonstrates cross-frame lead capture with Typeform's Next Embed SDK and parent-window postMessage event forwarding to window.dataLayer."
+	description="Captures trusted Typeform postMessage submit events onto window.dataLayer."
 	tabs={toolsLinks}
 	{codeSnippet}
 	{livePayload}
 	inspectorNotes={[
-		'Script injection and cleanup run inside onMount so SSR renders cleanly without ReferenceError.',
-		'Parent window listens for Typeform form-submit postMessage events and pushes typeform_submit to dataLayer.',
-		'Pair with POST /api/typeform-handler on the backend to enrich conversion events via Typeform Responses API.'
+		'Validates event.origin against *.typeform.com before handling messages.',
+		'Pushes typeform_submit to dataLayer and logs submissions to /api/submissions.',
+		'Pair with POST /api/typeform-handler for Typeform Responses API enrichment.'
 	]}
 >
-	<div class="g-card overflow-hidden p-4 sm:p-6">
+	<div class="ed-card overflow-hidden p-4 sm:p-5">
 		<div
-			class="mb-4 flex items-center justify-between border-b border-googlegreyG200 pb-3 dark:border-googlegreyG800"
+			class="mb-4 flex items-center justify-between border-b border-line pb-3 dark:border-line-dark"
 		>
-			<h2 class="text-sm font-medium text-googlegreyG900 dark:text-white">
-				Embedded Typeform Widget
-			</h2>
-			<span class="g-chip-neutral">01HT9JTWN98JDYTWBPD8F6E4V4</span>
+			<h2 class="text-sm font-semibold text-ink dark:text-ink-dark">Embedded widget</h2>
+			<span class="ed-tag">01HT9JTWN98JDYTWBPD8F6E4V4</span>
 		</div>
-		<div class="min-h-[520px] rounded-xl bg-googlegreyG50 p-2 dark:bg-googlegreyG900">
+		<div class="min-h-[520px] rounded-lg bg-subtle p-2 dark:bg-canvas-dark">
 			<div data-tf-live="01HT9JTWN98JDYTWBPD8F6E4V4"></div>
 		</div>
 	</div>

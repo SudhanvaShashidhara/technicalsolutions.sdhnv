@@ -53,7 +53,7 @@ gtag('event', 'conversion', {
 	category="Lead Scoring"
 	badge="gtag.js"
 	badgeColor="blue"
-	description="Reads predefined data-lead-value attributes directly from the chosen HTML <option> element and sends the dynamic conversion value to Google Ads via gtag('event', 'conversion', ...)."
+	description="Reads option data-lead-value attributes and sends conversion value via gtag.js."
 	tabs={leadScoringLinks}
 	{codeSnippet}
 	{livePayload}

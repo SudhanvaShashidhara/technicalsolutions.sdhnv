@@ -37,7 +37,7 @@ window.dataLayer.push({
 	category="Enhanced Conversions"
 	badge="dataLayer"
 	badgeColor="green"
-	description="Pushes user-provided email and phone fields alongside a custom form_submit_complete_dl event onto window.dataLayer for GTM Data Layer Variables."
+	description="Pushes user-provided fields onto dataLayer with form_submit_complete_dl."
 	tabs={enhancedConversionsLinks}
 	{codeSnippet}
 	{livePayload}

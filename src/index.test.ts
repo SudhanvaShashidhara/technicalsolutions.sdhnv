@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { beforeEach, describe, it, expect } from 'vitest';
 import {
 	normalizeEmail,
 	normalizePhone,
@@ -6,11 +6,23 @@ import {
 	sha256Base64Url,
 	sha256Hex
 } from '#lib/ec-hash.ts';
+import {
+	checkRateLimit,
+	isSameOriginRequest,
+	parseJsonBody,
+	resetRateLimitsForTest,
+	sanitizeText
+} from '#lib/server/security.ts';
 import { handle } from './hooks.server.ts';
 import { POST as identifyPost } from './routes/api/identify-interaction/+server.ts';
 import { GET as ecShaGet } from './routes/api/ec-sha-tester/+server.ts';
 import { POST as contactPost } from './routes/api/contact-form/+server.ts';
 import { POST as typeformPost } from './routes/api/typeform-handler/+server.ts';
+import { POST as submissionsPost } from './routes/api/submissions/+server.ts';
+
+beforeEach(() => {
+	resetRateLimitsForTest();
+});
 
 describe('Enhanced Conversions normalization & SHA-256 utilities', () => {
 	it('strips dots only on gmail.com and googlemail.com domains', () => {
@@ -46,8 +58,55 @@ describe('Enhanced Conversions normalization & SHA-256 utilities', () => {
 	});
 });
 
-describe('hooks.server.ts CORS & GCLID redirect', () => {
-	it('short-circuits OPTIONS preflight requests with 204 and CORS headers', async () => {
+describe('Security utilities', () => {
+	it('rejects oversized JSON payloads with 413 and strips prototype pollution keys', async () => {
+		const bigReq = new Request('http://localhost/api/submissions', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ data: 'x'.repeat(20_000) })
+		});
+		const bigRes = await parseJsonBody(bigReq, 1024);
+		expect(bigRes.ok).toBe(false);
+		if (!bigRes.ok) expect(bigRes.status).toBe(413);
+
+		const protoReq = new Request('http://localhost/api/submissions', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: '{"__proto__":{"polluted":true},"ok":"yes"}'
+		});
+		const protoRes = await parseJsonBody(protoReq, 1024);
+		expect(protoRes.ok).toBe(true);
+		if (protoRes.ok) {
+			expect(Object.prototype.hasOwnProperty.call(protoRes.data, '__proto__')).toBe(false);
+			expect(protoRes.data.ok).toBe('yes');
+		}
+	});
+
+	it('strips control characters and enforces rate limits and same-origin checks', () => {
+		expect(sanitizeText('  hello\x00\x07world  ', 20)).toBe('helloworld');
+
+		const url = new URL('https://example.com/api/submissions');
+		const sameOriginReq = new Request(url, {
+			method: 'POST',
+			headers: { Origin: 'https://example.com', 'Sec-Fetch-Site': 'same-origin' }
+		});
+		const crossOriginReq = new Request(url, {
+			method: 'POST',
+			headers: { Origin: 'https://evil.example', 'Sec-Fetch-Site': 'cross-site' }
+		});
+		expect(isSameOriginRequest(sameOriginReq, url)).toBe(true);
+		expect(isSameOriginRequest(crossOriginReq, url)).toBe(false);
+
+		expect(checkRateLimit('ip:1', { limit: 2, windowMs: 60_000 }).allowed).toBe(true);
+		expect(checkRateLimit('ip:1', { limit: 2, windowMs: 60_000 }).allowed).toBe(true);
+		const third = checkRateLimit('ip:1', { limit: 2, windowMs: 60_000 });
+		expect(third.allowed).toBe(false);
+		expect(third.retryAfterSec).toBeGreaterThanOrEqual(1);
+	});
+});
+
+describe('hooks.server.ts security headers, API CORS & GCLID redirect', () => {
+	it('short-circuits API OPTIONS preflight with 204, CORS, and security headers', async () => {
 		const url = new URL('http://localhost/api/contact-form');
 		const request = new Request(url, { method: 'OPTIONS' });
 		const response = await handle({
@@ -58,6 +117,23 @@ describe('hooks.server.ts CORS & GCLID redirect', () => {
 		expect(response.status).toBe(204);
 		expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		expect(response.headers.get('Access-Control-Allow-Methods')).toContain('OPTIONS');
+		expect(response.headers.get('X-Frame-Options')).toBe('DENY');
+		expect(response.headers.get('Content-Security-Policy')).toContain("frame-ancestors 'none'");
+	});
+
+	it('applies security headers to HTML responses without leaking wildcard CORS', async () => {
+		const url = new URL('http://localhost/');
+		const request = new Request(url, { method: 'GET' });
+		const response = await handle({
+			event: { request, url } as Parameters<typeof handle>[0]['event'],
+			resolve: async () => new Response('<html></html>', { status: 200 })
+		});
+
+		expect(response.headers.get('Strict-Transport-Security')).toContain('max-age=');
+		expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
+		expect(response.headers.get('X-Frame-Options')).toBe('DENY');
+		expect(response.headers.get('Referrer-Policy')).toBe('strict-origin-when-cross-origin');
+		expect(response.headers.get('Access-Control-Allow-Origin')).toBeNull();
 	});
 
 	it('redirects mixed-case gclid on /ogt/landing-page before calling resolve', async () => {
@@ -83,6 +159,55 @@ describe('hooks.server.ts CORS & GCLID redirect', () => {
 });
 
 describe('API endpoints', () => {
+	it('POST /api/submissions validates inputs, blocks cross-origin requests, and computes hashes', async () => {
+		const url = new URL('http://localhost/api/submissions');
+		const crossReq = new Request(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Origin: 'https://attacker.example',
+				'Sec-Fetch-Site': 'cross-site'
+			},
+			body: JSON.stringify({ route: '/lead-scoring/gtm-1', fields: { email: 'a@b.com' } })
+		});
+		const crossRes = await submissionsPost({
+			request: crossReq,
+			url
+		} as Parameters<typeof submissionsPost>[0]);
+		expect(crossRes.status).toBe(403);
+
+		const okReq = new Request(url, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', Origin: 'http://localhost' },
+			body: JSON.stringify({
+				route: '/lead-scoring/google-tag-1',
+				formId: 'demo_form',
+				score: 50,
+				fields: {
+					'full-name': 'Alex Morgan',
+					email: 'Alex.Morgan@gmail.com',
+					tel: '+1 555 234 5678',
+					service_details: 'hvac'
+				}
+			})
+		});
+		const okRes = await submissionsPost({
+			request: okReq,
+			url
+		} as Parameters<typeof submissionsPost>[0]);
+		expect(okRes.status).toBe(200);
+		const data = await okRes.json();
+		expect(data.success).toBe(true);
+		expect(data.storage).toBe('unconfigured');
+		expect(data.normalized).toEqual({
+			email: 'alexmorgan@gmail.com',
+			phone: '+15552345678'
+		});
+		expect(data.hashes.email_sha256_hex).toHaveLength(64);
+		expect(data.hashes.email_sha256_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
+		expect(data.hashes.email_sha256_base64url).toHaveLength(43);
+	});
+
 	it('POST /api/identify-interaction parses body once and returns event count', async () => {
 		const request = new Request('http://localhost/api/identify-interaction', {
 			method: 'POST',
@@ -117,15 +242,19 @@ describe('API endpoints', () => {
 	});
 
 	it('GET /api/ec-sha-tester hashes email/phone and returns 400 when empty', async () => {
+		const emptyUrl = new URL('http://localhost/api/ec-sha-tester');
 		const badRes = await ecShaGet({
-			url: new URL('http://localhost/api/ec-sha-tester')
+			request: new Request(emptyUrl),
+			url: emptyUrl
 		} as Parameters<typeof ecShaGet>[0]);
 		expect(badRes.status).toBe(400);
 
+		const okUrl = new URL(
+			'http://localhost/api/ec-sha-tester?email=First.Last%40company.com&phone=%2B15552345678'
+		);
 		const okRes = await ecShaGet({
-			url: new URL(
-				'http://localhost/api/ec-sha-tester?email=First.Last%40company.com&phone=%2B15552345678'
-			)
+			request: new Request(okUrl),
+			url: okUrl
 		} as Parameters<typeof ecShaGet>[0]);
 		expect(okRes.status).toBe(200);
 		const data = await okRes.json();
@@ -139,11 +268,18 @@ describe('API endpoints', () => {
 		expect(data.phone_hash2).toHaveLength(64);
 	});
 
-	it('POST /api/contact-form validates email and returns normalized hashes', async () => {
+	it('POST /api/contact-form validates email and returns normalized hashes plus submission status', async () => {
 		const req = new Request('http://localhost/api/contact-form', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email: 'Jane.Doe@gmail.com', phone: '+1 555 987 6543' })
+			body: JSON.stringify({
+				firstName: 'Jane',
+				lastName: 'Doe',
+				email: 'Jane.Doe@gmail.com',
+				phone: '+1 555 987 6543',
+				city: 'Bengaluru',
+				postalCode: '560001'
+			})
 		});
 		const res = await contactPost({ request: req } as Parameters<typeof contactPost>[0]);
 		expect(res.status).toBe(200);
@@ -156,6 +292,11 @@ describe('API endpoints', () => {
 		expect(data.phone_hash).toHaveLength(43);
 		expect(data.phone_hash_base64).toMatch(/^[A-Za-z0-9+/]{43}=$/);
 		expect(data.phone_hash2).toHaveLength(64);
+		expect(data.submission).toEqual({
+			saved: false,
+			storage: 'unconfigured',
+			id: null
+		});
 	});
 
 	it('POST /api/typeform-handler returns 503 when token is unset and blocks path traversal', async () => {

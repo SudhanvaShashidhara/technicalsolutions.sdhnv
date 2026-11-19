@@ -43,7 +43,7 @@ window.dataLayer.push({
 	category="Lead Scoring"
 	badge="dataLayer"
 	badgeColor="green"
-	description="Pushes raw form inputs to window.dataLayer with event lead_scoring_form_submit so Google Tag Manager Lookup Table or RegEx Table variables map service selections to conversion values."
+	description="Pushes form inputs to dataLayer for GTM Lookup Table scoring."
 	tabs={leadScoringLinks}
 	{codeSnippet}
 	{livePayload}

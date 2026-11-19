@@ -42,7 +42,7 @@
 	category="Enhanced Conversions"
 	badge="CSS Selector"
 	badgeColor="yellow"
-	description="Renders submitted user fields inside dedicated .ec_email and .ec_tel confirmation elements so Google Tag or GTM DOM Element variables can extract them via CSS selectors."
+	description="Renders .ec_email and .ec_tel elements for GTM CSS selector capture."
 	tabs={enhancedConversionsLinks}
 	{codeSnippet}
 	{livePayload}

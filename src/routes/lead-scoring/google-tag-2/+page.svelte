@@ -69,33 +69,30 @@ gtag('event', 'conversion', {
 
 <DemoPageShell
 	title="Lead Scoring Demo - Google Tag (Programmatic Values)"
-	heading="Lead Scoring: Google Tag (Programmatic)"
+	heading="Lead Scoring: Programmatic"
 	category="Lead Scoring"
 	badge="gtag.js"
-	badgeColor="blue"
-	description="Calculates lead qualification value in JavaScript lookup maps from annual income and address tenure, keeping scoring logic decoupled from HTML attributes."
+	description="Computes lead score in JavaScript lookup maps without exposing weights in HTML."
 	tabs={leadScoringLinks}
 	{codeSnippet}
 	{livePayload}
 	inspectorNotes={[
-		'Computes total lead value in JS (income bracket + years at current address) rather than DOM attributes.',
-		'Dispatches gtag("event", "conversion", ...) with the computed numeric value in USD.',
-		'Recommended when you do not want competitors inspecting qualification weights in HTML markup.'
+		'Sums income bracket and address tenure scores in JS.',
+		'Dispatches gtag("event", "conversion", ...) in USD.'
 	]}
 >
 	<ServiceLeadForm
-		heading="Financial qualification demo"
-		subheading="Select income band and address tenure to compute a programmatic lead score."
+		heading="Financial qualification"
 		showServiceSelect={false}
 		{submitted}
 		onSubmit={handleSubmit}
 		onDismiss={() => (submitted = false)}
 	>
 		{#snippet customFields()}
-			<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<div>
-					<label for="income" class="g-label">Annual income (USD)</label>
-					<select id="income" name="income" class="g-input">
+					<label for="income" class="ed-label">Annual income (USD)</label>
+					<select id="income" name="income" class="ed-input">
 						<option value="<$30,000">&lt;$30,000</option>
 						<option value="$30,000 - $45,000">$30,000 &ndash; $45,000</option>
 						<option value="$45,000 - $65,000">$45,000 &ndash; $65,000</option>
@@ -106,8 +103,8 @@ gtag('event', 'conversion', {
 				</div>
 
 				<div>
-					<label for="years_at_address" class="g-label">Years at current address</label>
-					<select id="years_at_address" name="years_at_address" class="g-input">
+					<label for="years_at_address" class="ed-label">Years at address</label>
+					<select id="years_at_address" name="years_at_address" class="ed-input">
 						<option value="3">3 years</option>
 						<option value="4">4 years</option>
 						<option value="5">5+ years</option>

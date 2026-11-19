@@ -46,7 +46,7 @@ ${'</' + 'script>'}`;
 	category="Enhanced Conversions"
 	badge="Automatic"
 	badgeColor="blue"
-	description="Google Tag inspects standard type=&quot;email&quot; and type=&quot;tel&quot; form inputs on submit when Automatic Enhanced Conversions is enabled in Google Ads."
+	description="Standard email and tel inputs for Google Ads automatic detection."
 	tabs={enhancedConversionsLinks}
 	{codeSnippet}
 	{livePayload}

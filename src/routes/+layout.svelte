@@ -9,9 +9,10 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
-<div class="flex min-h-screen flex-col bg-googlegreyG50 dark:bg-googlegreyG900">
+<div class="flex min-h-screen flex-col bg-canvas text-ink dark:bg-canvas-dark dark:text-ink-dark">
+	<a href="#main-content" class="skip-link">Skip to main content</a>
 	<Navbar />
-	<main class="flex-1">
+	<main id="main-content" tabindex="-1" class="flex-1 focus:outline-none">
 		{@render children()}
 	</main>
 	<Footer />

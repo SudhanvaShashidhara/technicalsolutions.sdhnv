@@ -1,18 +1,21 @@
 import { building } from '$app/env';
+import { API_CORS_HEADERS, SECURITY_HEADERS } from '#lib/server/security.ts';
 import { redirect } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit/hooks';
 
-export const corsHeaders: Record<string, string> = {
-	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE',
-	'Access-Control-Allow-Headers': '*'
-};
+export const corsHeaders = API_CORS_HEADERS;
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (event.request.method === 'OPTIONS') {
+	const isApiRoute = event.url.pathname.startsWith('/api/');
+
+	if (isApiRoute && event.request.method === 'OPTIONS') {
 		return new Response(null, {
 			status: 204,
-			headers: corsHeaders
+			headers: {
+				...SECURITY_HEADERS,
+				...API_CORS_HEADERS,
+				'Cache-Control': 'no-store'
+			}
 		});
 	}
 
@@ -31,8 +34,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
-	for (const [header, value] of Object.entries(corsHeaders)) {
+
+	for (const [header, value] of Object.entries(SECURITY_HEADERS)) {
 		response.headers.set(header, value);
+	}
+
+	if (isApiRoute) {
+		response.headers.set('Cache-Control', 'no-store');
+		for (const [header, value] of Object.entries(API_CORS_HEADERS)) {
+			response.headers.set(header, value);
+		}
 	}
 
 	return response;

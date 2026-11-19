@@ -8,37 +8,37 @@
 	--font-mono:
 		'Roboto Mono Variable', 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-	--color-googlebluecore: #4285f4;
-	--color-googleredcore: #ea4335;
-	--color-googleyellowcore: #fbbc04;
-	--color-googlegreencore: #34a853;
-	--color-googlegreycore: #9aa0a6;
-	--color-googleblue600: #1a73e8;
-	--color-googleblue700: #1557b0;
-	--color-googleblue300: #8ab4f8;
-	--color-googleblue200: #aecbfa;
-	--color-googleblueG50: #e8f0fe;
-	--color-googleredG50: #fce8e6;
-	--color-googleyellowG50: #fef7e0;
-	--color-googlegreenG50: #e6f4ea;
-	--color-googlegreyG50: #f8f9fa;
-	--color-googlegreyG100: #f1f3f4;
-	--color-googlegreyG200: #e8eaed;
-	--color-googlegreyG300: #dadce0;
-	--color-googlegreyG600: #80868b;
-	--color-googlegreyG700: #5f6368;
-	--color-googleblueG800: #185abc;
-	--color-googleredG800: #b31412;
-	--color-googleyellowG800: #ea8600;
-	--color-googlegreenG800: #137333;
-	--color-googlegreyG800: #3c4043;
-	--color-googleblueG900: #174ea6;
-	--color-googleredG900: #a50e0e;
-	--color-googleyellowG900: #e37400;
-	--color-googlegreenG900: #0d652d;
-	--color-googlegreyG900: #202124;
-	--color-googledarkcard: #292a2d;
-	--color-googledarktonal: #303134;
+	/* Editorial High-Contrast Minimal palette (WCAG AAA/AA verified) */
+	--color-canvas: #fafafa;
+	--color-surface: #ffffff;
+	--color-subtle: #f4f4f5;
+	--color-ink: #0a0a0a;
+	--color-muted: #525252;
+	--color-line: #e4e4e7;
+	--color-line-strong: #d4d4d8;
+
+	--color-canvas-dark: #09090b;
+	--color-surface-dark: #111113;
+	--color-subtle-dark: #18181b;
+	--color-ink-dark: #fafafa;
+	--color-muted-dark: #a1a1aa;
+	--color-line-dark: #27272a;
+	--color-line-dark-strong: #3f3f46;
+
+	/* Single Cobalt Accent (>6.5:1 light with white text; >7.5:1 dark on #09090b) */
+	--color-cobalt: #1d4ed8;
+	--color-cobalt-hover: #1e40af;
+	--color-cobalt-soft: #eff6ff;
+	--color-cobalt-dark: #60a5fa;
+	--color-cobalt-dark-hover: #93c5fd;
+
+	/* Semantic status tones (WCAG AA+ contrast in light & dark) */
+	--color-status-ok-bg: #ecfdf5;
+	--color-status-ok-text: #065f46;
+	--color-status-ok-border: #a7f3d0;
+	--color-status-err-bg: #fef2f2;
+	--color-status-err-text: #991b1b;
+	--color-status-err-border: #fecaca;
 }
 
 @layer base {
@@ -48,78 +48,94 @@
 	}
 
 	body {
-		@apply bg-googlegreyG50 text-googlegreyG900 antialiased;
-		@apply dark:bg-googlegreyG900 dark:text-googlegreyG200;
+		@apply bg-canvas text-ink antialiased;
+		@apply dark:bg-canvas-dark dark:text-ink-dark;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-cobalt);
+		outline-offset: 2px;
+	}
+
+	.dark :focus-visible {
+		outline-color: var(--color-cobalt-dark);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
 	}
 }
 
 @layer components {
-	.g-card,
-	.g-card-interactive {
-		@apply rounded-2xl border border-googlegreyG300 bg-white shadow-[0_1px_2px_0_rgba(60,64,67,0.06)];
-		@apply dark:border-googlegreyG800 dark:bg-googledarkcard dark:shadow-none;
+	.skip-link {
+		@apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2.5 focus:text-sm focus:font-medium focus:text-white focus:shadow-lg dark:focus:bg-ink-dark dark:focus:text-canvas-dark;
 	}
 
-	.g-card-interactive {
-		@apply transition-[border-color,box-shadow] duration-150;
-		@apply hover:border-googleblue600/50 hover:shadow-[0_1px_3px_0_rgba(60,64,67,0.16),0_4px_8px_3px_rgba(60,64,67,0.08)];
-		@apply dark:hover:border-googleblue300/50 dark:hover:bg-googledarktonal;
+	.ed-card,
+	.ed-card-interactive {
+		@apply rounded-xl border border-line bg-surface;
+		@apply dark:border-line-dark dark:bg-surface-dark;
 	}
 
-	.g-label {
-		@apply mb-1.5 block text-sm font-medium text-googlegreyG800 dark:text-googlegreyG200;
+	.ed-card-interactive {
+		@apply transition-colors duration-150;
+		@apply hover:border-ink/40 hover:bg-subtle/40;
+		@apply dark:hover:border-ink-dark/40 dark:hover:bg-subtle-dark;
 	}
 
-	.g-input {
-		@apply block w-full rounded-lg border border-googlegreyG300 bg-white px-3.5 py-2.5 text-sm text-googlegreyG900 transition-colors;
-		@apply placeholder:text-googlegreyG600;
-		@apply hover:border-googlegreyG600;
-		@apply focus:border-googleblue600 focus:ring-2 focus:ring-googleblue600/20 focus:outline-none;
-		@apply dark:border-googlegreyG700 dark:bg-googlegreyG900 dark:text-googlegreyG200 dark:placeholder:text-googlegreycore;
-		@apply dark:hover:border-googlegreycore dark:focus:border-googleblue300 dark:focus:ring-googleblue300/25;
+	.ed-label {
+		@apply mb-1.5 block text-xs font-medium tracking-wide text-ink dark:text-ink-dark;
 	}
 
-	.g-btn-primary {
-		@apply inline-flex items-center justify-center gap-2 rounded-full bg-googleblue600 px-6 py-2.5 text-sm font-medium text-white transition-all;
-		@apply hover:bg-googleblue700 hover:shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)];
-		@apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-googleblue600;
-		@apply active:bg-googleblueG900 disabled:cursor-not-allowed disabled:opacity-50;
-		@apply dark:bg-googleblue300 dark:text-googlegreyG900 dark:hover:bg-googleblue200 dark:focus-visible:outline-googleblue300;
+	.ed-input {
+		@apply block w-full rounded-lg border border-line-strong bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors;
+		@apply placeholder:text-muted/80;
+		@apply hover:border-ink/45;
+		@apply focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 focus:outline-none;
+		@apply dark:border-line-dark-strong dark:bg-canvas-dark dark:text-ink-dark dark:placeholder:text-muted-dark/80;
+		@apply dark:hover:border-ink-dark/45 dark:focus:border-cobalt-dark dark:focus:ring-cobalt-dark/25;
 	}
 
-	.g-btn-secondary {
-		@apply inline-flex items-center justify-center gap-2 rounded-full border border-googlegreyG300 bg-white px-5 py-2.5 text-sm font-medium text-googleblue600 transition-colors;
-		@apply hover:border-googleblue600/30 hover:bg-googleblueG50/60;
-		@apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-googleblue600;
-		@apply dark:border-googlegreyG700 dark:bg-transparent dark:text-googleblue300 dark:hover:border-googleblue300/40 dark:hover:bg-googleblue300/10;
+	.ed-btn-primary {
+		@apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full bg-cobalt px-5 py-2 text-sm font-medium text-white transition-colors;
+		@apply hover:bg-cobalt-hover active:bg-cobalt-hover;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+		@apply dark:bg-cobalt-dark dark:text-canvas-dark dark:hover:bg-cobalt-dark-hover;
 	}
 
-	.g-chip,
-	.g-chip-blue,
-	.g-chip-green,
-	.g-chip-yellow,
-	.g-chip-red,
-	.g-chip-neutral {
-		@apply inline-flex items-center rounded-md px-2 py-0.5 font-mono text-xs font-medium;
+	.ed-btn-secondary {
+		@apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full border border-line-strong bg-surface px-5 py-2 text-sm font-medium text-ink transition-colors;
+		@apply hover:border-ink/50 hover:bg-subtle;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+		@apply dark:border-line-dark-strong dark:bg-surface-dark dark:text-ink-dark dark:hover:border-ink-dark/50 dark:hover:bg-subtle-dark;
 	}
 
-	.g-chip-blue {
-		@apply bg-googleblueG50 text-googleblueG800 dark:bg-googleblue300/15 dark:text-googleblue300;
+	.ed-tag {
+		@apply inline-flex items-center rounded-md border border-line bg-subtle px-2 py-0.5 font-mono text-[11px] font-medium text-muted;
+		@apply dark:border-line-dark dark:bg-subtle-dark dark:text-muted-dark;
 	}
 
-	.g-chip-green {
-		@apply bg-googlegreenG50 text-googlegreenG800 dark:bg-googlegreencore/15 dark:text-[#81C995];
+	.ed-tag-accent {
+		@apply inline-flex items-center rounded-md border border-cobalt/20 bg-cobalt-soft px-2 py-0.5 font-mono text-[11px] font-medium text-cobalt;
+		@apply dark:border-cobalt-dark/30 dark:bg-cobalt-dark/15 dark:text-cobalt-dark;
 	}
 
-	.g-chip-yellow {
-		@apply bg-googleyellowG50 text-googleyellowG900 dark:bg-googleyellowcore/15 dark:text-[#FDD663];
+	.ed-status-ok {
+		@apply border-t border-status-ok-border bg-status-ok-bg text-status-ok-text;
+		@apply dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200;
 	}
 
-	.g-chip-red {
-		@apply bg-googleredG50 text-googleredG800 dark:bg-googleredcore/15 dark:text-[#F28B82];
-	}
-
-	.g-chip-neutral {
-		@apply bg-googlegreyG100 text-googlegreyG700 dark:bg-googlegreyG800 dark:text-googlegreyG200;
+	.ed-status-err {
+		@apply border-t border-status-err-border bg-status-err-bg text-status-err-text;
+		@apply dark:border-red-800/60 dark:bg-red-950/50 dark:text-red-200;
 	}
 }

@@ -45,7 +45,7 @@ window.dataLayer.push({
 	category="Search Ads 360"
 	badge="dataLayer"
 	badgeColor="yellow"
-	description="Pushes structured Floodlight parameters onto window.dataLayer with event floodlight_lead_submit so Google Tag Manager Floodlight Counter or Sales tags map Data Layer Variables cleanly."
+	description="Pushes u1, u2, value, and ord variables onto window.dataLayer."
 	tabs={sa360Links}
 	{codeSnippet}
 	{livePayload}

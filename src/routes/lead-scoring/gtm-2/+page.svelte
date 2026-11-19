@@ -93,7 +93,7 @@ gtag('event', 'lead_scoring_form_submit', {
 	category="Lead Scoring"
 	badge="GTM + gtag"
 	badgeColor="green"
-	description="Combines service category value and urgency timeframe into a composite lead score, dispatching both a GTM dataLayer event (form_submit_complete) and a gtag user_data + event call."
+	description="Combines service and timeframe into one score across dataLayer and gtag."
 	tabs={leadScoringLinks}
 	{codeSnippet}
 	{livePayload}
